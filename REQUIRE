@@ -1,5 +1,5 @@
 julia 0.7
-
+Makie
 GeometryTypes 0.4.5
 ImageCore
 ImageTransformations
@@ -12,3 +12,8 @@ Colors
 ColorVectorSpace
 FixedPointNumbers
 Documenter
+ModernGL
+MeshIO
+ImageMagick
+ImageTransformations
+GDAL

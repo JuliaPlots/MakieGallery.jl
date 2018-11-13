@@ -2,8 +2,7 @@ using Documenter, Makie
 using Markdown, Pkg, Random, FileIO
 using MakieGallery
 
-using MakieGallery: database
-
+using MakieGallery: database, eval_examples, generate_thumbnail
 cd(@__DIR__)
 
 import AbstractPlotting: _help, to_string, to_func, to_type
@@ -57,8 +56,6 @@ end
 
 #pkg"add ModernGL MeshIO ImageMagick ImageFilter ImageTransformations GDAL"
 
-AbstractPlotting.set_theme!(resolution = (500, 500))
-
 # you can restart the build, if something failed, by just searching for the index you ended with, and putting it into start
 findfirst(x-> x.title == "WorldClim visualization", database)
 
@@ -81,6 +78,9 @@ eval_examples(outputfile = output_path) do example, value
         println(stderr)
     end
 end
+
+
+
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file

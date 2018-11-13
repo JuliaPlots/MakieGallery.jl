@@ -2,19 +2,23 @@ using Makie, GeometryTypes, Colors
 using AbstractPlotting: slider!, playbutton
 using Observables
 using AbstractPlotting: textslider
+using FileIO, NIfTI
 
 cd(@__DIR__)
-using Pkg
-Pkg.pkg"add NRRD"
-using FileIO
-p = joinpath(homedir(), "Desktop", "brain.nrrd")
-brain_data = Array{Float32}(load(p))
-extrema(brain_data)
+#using Pkg
+#Pkg.pkg"add NRRD"
+# p = download("http://www.bic.mni.mcgill.ca/~vfonov/icbm/2009/mni_icbm152_nlin_asym_09a_nifti.zip")
+p = joinpath(homedir(), "Desktop", "brain.nii.gz")
+brain_data = Array{Float32}(niread(p))
 
 r = range(-1, stop = 1, length = size(brain_data, 1))
-scene3d = contour(
+
+scene3d = Scene(show_axis = false)
+
+contour!(
+    scene3d,
     r, r, r, brain_data,
-    colorrange = (10, 255), alpha = 0.2
+    alpha = 0.1, colorrange = (1, 93), transparency = true, levels = 5
 )
 c = scene3d[end]
 volume = c[4]
@@ -25,14 +29,13 @@ sliders = ntuple(3) do i
     indices = ntuple(3) do j
         planes[j] == plane ? 1 : (:)
     end
-    hmap = contour!(
+    hmap = heatmap!(
         scene3d, r, r, volume[][indices...],
-        raw = true, colorrange = (0.0, 1.0), fillrange = true,
-        interpolate = true, linewidth = 0.1
+        colorrange = (1, 93),
+        interpolate = true
     )[end]
-    onany(idx, volume) do _idx, vol
-        idx = (i in (1, 2)) ? (size(vol, i) - _idx) + 1 : _idx
-        transform!(hmap, (plane, r[_idx]))
+    onany(idx, volume) do idx, vol
+        transform!(hmap, (plane, r[idx]))
         indices = ntuple(3) do j
             planes[j] == plane ? idx : (:)
         end
@@ -54,6 +57,7 @@ button!(b2, "3d/2d"; dimensions = (60, 40)) do clicks
     end
 end
 
+reverse!(scene3d.plots)
 display(hbox(
     scene3d,
     vbox(sliders..., b2)

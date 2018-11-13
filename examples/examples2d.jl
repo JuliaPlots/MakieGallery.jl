@@ -6,7 +6,7 @@
         image!(map(x->RGBAf0(x,0.5, 0.5, 0.8), rand(32,32)))
     end
 
-    @cell "Interaction" [scatter, linesegment, record] begin
+    @cell "Animation" [scatter, linesegment, record] begin
         scene = Scene()
         f(t, v, s) = (sin(v + t) * s, cos(v + t) * s)
         time_node = Node(0.0)
@@ -293,7 +293,7 @@
         step!(st)
         st
     end
-    @cell "Parallel Prefix Sum" [lines scatter] begin
+    @cell "Parallel Prefix Sum" [lines, scatter] begin
         # credits to [jiahao chen](https://github.com/jiahao)
 
         function prefix_sum(y, func)
