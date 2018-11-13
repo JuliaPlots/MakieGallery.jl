@@ -2,39 +2,7 @@
 <img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/sd/abstract/docs/src/assets/logo.png" alt="Makie.jl" width="480">
 </div>
 
-
-
-From the japanese word [Maki-e](https://en.wikipedia.org/wiki/Maki-e), which is a technique to sprinkle lacquer with gold and silver powder.
-Data is basically the gold and silver of our age, so lets spread it out beautifully on the screen!
-
-**Documentation**: [![][docs-stable-img]][docs-stable-url]
-
-Build status: [![][gitlab-img]][gitlab-url]
-
-[gitlab-img]: https://gitlab.com/JuliaGPU/Makie.jl/badges/master/pipeline.svg
-[gitlab-url]: https://gitlab.com/JuliaGPU/Makie.jl/pipelines
-[docs-stable-img]: https://img.shields.io/badge/docs-stable-blue.svg
-[docs-stable-url]: http://makie.juliaplots.org/stable/
-
-
-
-# Installation
-
-```julia
-julia>]
-pkg> add Makie
-pkg> test Makie
-```
-
-## Dependencies
-You will need to have ffmpeg in the path to run the video recording examples.
-On linux you also need to add the following to get GLFW to build (if you don't have those already):
-```
-sudo apt-get install ffmpeg cmake xorg-dev
-```
-
-
-## Examples from the documentation: 
+## Examples for Makie:
 
 [![](http://makie.juliaplots.org/stable/media/thumb-3d_contour_with_2d_contour_slices.jpg)](http://makie.juliaplots.org/stable/examples-volume.html#3D-Contour-with-2D-contour-slices-1)
 [![](http://makie.juliaplots.org/stable/media/thumb-animated_scatter.jpg)](http://makie.juliaplots.org/stable/examples-scatter.html#Animated-Scatter-1)
@@ -107,31 +75,3 @@ sudo apt-get install ffmpeg cmake xorg-dev
 
 ## Complex examples
 <a href="https://github.com/JuliaPlots/Makie.jl/blob/master/examples/bigdata.jl#L2"><img src="https://user-images.githubusercontent.com/1010467/48002153-fc15a680-e10a-11e8-812d-a5d717c47288.gif" width="480"/></a>
-
-## IJulia examples:
-
-[![](https://user-images.githubusercontent.com/1010467/32204865-33482ddc-bdec-11e7-9693-b94d999187dc.png)](https://gist.github.com/SimonDanisch/8f5489cffaf6b89c9a3712ba3eb12a84)
-
-
-# Precompilation
-
-You can compile binary for Makie and add it to your system image for fast plotting times with no JIT overhead.
-To do that, you need to check out the additional packages for precompilation.
-Then you can build a system image like this:
-
-```julia
-# add PackageCompiler
-Pkg.add("PackageCompiler")
-using PackageCompiler
-# This is not well tested, so please be careful - I don't take any responsibilities for a messed up Julia install.
-
-# The safe option:
-PackageCompiler.compile_package("Makie", force = false) # can take around ~20 minutes
-
-# Replaces julias system image
-# please be very careful with the option below, since this can make your julia stop working.
-# If Julia doesn't start for you anymore, consider doing:
-# using PackageCompiler; PackageCompiler.revert() <- not well tested
-
-PackageCompiler.compile_package("Makie", force = true)
-```
