@@ -2,6 +2,8 @@
 <img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/sd/abstract/docs/src/assets/logo.png" alt="Makie.jl" width="480">
 </div>
 
+[Gallery Generated With this Package](http://htmlpreview.github.io/?https://github.com/JuliaPlots/MakieGallery.jl/blob/master/index.html)
+
 ## Examples for Makie:
 
 [![](http://makie.juliaplots.org/stable/media/thumb-3d_contour_with_2d_contour_slices.jpg)](http://makie.juliaplots.org/stable/examples-volume.html#3D-Contour-with-2D-contour-slices-1)
