@@ -18,3 +18,4 @@ ImageMagick
 ImageTransformations
 GDAL
 FileIO
+ImageFiltering

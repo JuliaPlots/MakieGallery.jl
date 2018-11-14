@@ -1,5 +1,3 @@
-
-
 struct DatabaseLookup <: Expanders.ExpanderPipeline end
 
 Selectors.order(::Type{DatabaseLookup}) = 0.5
@@ -371,9 +369,6 @@ function print_table(io::IO, dict::Dict)
 end
 
 
-
-using Makie, ImageTransformations, FileIO
-using ImageFiltering  # needed for Gaussian-filtering images during resize
 
 
 function rescale_image(path::AbstractString, target_path::AbstractString, sz::Int = 200)

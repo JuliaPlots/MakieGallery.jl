@@ -3,6 +3,8 @@ module MakieGallery
 using Makie
 using Documenter: Selectors, Expanders
 using Markdown: Link, Paragraph
+using ImageTransformations, FileIO
+using ImageFiltering  # needed for Gaussian-filtering images during resize
 
 
 include("documenter_extension.jl")
