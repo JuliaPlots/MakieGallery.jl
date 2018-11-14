@@ -21,6 +21,9 @@ function event_path(entry, ending)
     joinpath(@__DIR__, "..", "examples", "recorded_events", string(entry.unique_name, ".jls"))
 end
 
+"""
+Loads the example database and returns it!
+"""
 function load_database()
     empty!(unique_names)
     empty!(database)

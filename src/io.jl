@@ -27,7 +27,6 @@ end
 function save_media(example, events::RecordEvents, path::String) #TODO: this breaks thumbnail generation
     # the path is fixed at record time to be stored relative to the example
     epath = event_path(example, "")
-    @show epath
     isfile(epath) || error("Can't find events for example: $(example.unique_name). Please run `record_example_events()`")
     # the current path of RecordEvents is where we now actually want to store the video
     video_path = joinpath(path, "video.mp4")
@@ -166,7 +165,7 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false)
     result = []
     start = if resume && isassigned(last_evaled)
         idx = findfirst(e-> e.unique_name == last_evaled[], database)
-        idx === nothing ? 1 : minimum(idx + 1, length(database))
+        idx === nothing ? 1 : min(idx + 1, length(database))
     else
         1
     end

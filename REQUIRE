@@ -19,3 +19,5 @@ ImageTransformations
 GDAL
 FileIO
 ImageFiltering
+DataFrames
+RDatasets
