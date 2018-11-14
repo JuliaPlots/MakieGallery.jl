@@ -197,3 +197,20 @@ num_excluded = length(unique(indices_excluded))
 
 # run the tests
 test_examples(record_reference_images; exclude_tags = exclude_tags)
+
+
+
+using MakieGallery
+MakieGallery.load_database()
+result = MakieGallery.record_examples("/home/sd/ReferenceImages/recordings", resume = false)
+
+
+using MakieGallery: MediaItem
+using AbstractPlotting
+folder = "/home/sd/ReferenceImages/gallery"
+results = map(MakieGallery.database) do example
+    joinpath(folder, string(example.unique_name))
+end
+media_items = MakieGallery.MediaItem.(results, MakieGallery.database)
+
+tags = string.(AbstractPlotting.atomic_function_symbols)

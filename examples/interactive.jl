@@ -300,8 +300,6 @@
     end
 end
 
-event_path(entry, ending) = joinpath(dirname(pathof(Makie)), "..", "examples", "recorded_events", string(entry.unique_name, ".jls"))
-
 function record_example_events()
     eval_examples(:record_events, :scatter, :slider, :interactive, outputfile = event_path) do example, value
         record_events(value.scene, value.path) do

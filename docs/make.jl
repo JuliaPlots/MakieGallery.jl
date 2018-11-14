@@ -18,66 +18,12 @@ expdbpath = joinpath(buildpath, "examples-database.html")
 ispath(mediapath) || mkpath(mediapath)
 
 
-function output_path(entry, ending; subdir = nothing)
-    if subdir == nothing
-        joinpath(mediapath, string(entry.unique_name, ending))
-    else
-        joinpath(mediapath, subdir, string(entry.unique_name, ending))
-    end
-end
 
-
-function save_example(entry, x::Scene)
-    path = output_path(entry, ".jpg")
-    save(path, x)
-    path
-end
-
-save_example(entry, x::String) = x # nothing to do
-
-function save_example(entry, x::Makie.Stepper) #TODO: this breaks thumbnail generation
-    # return a list of all file names
-    path = [output_path(entry, "-$i.jpg"; subdir = string(entry.unique_name)) for i = 1:x.step - 1]
-    return path
-end
-function save_example(example, events::RecordEvents) #TODO: this breaks thumbnail generation
-    # the path is fixed at record time to be stored relative to the example
-    epath = event_path(example, "")
-    isfile(epath) || error("Can't find events for example. Please run `record_example_events()`")
-    # the current path of RecordEvents is where we now actually want to store the video
-    video_path = output_path(example, ".mp4")
-    record(events.scene, video_path) do io
-        replay_events(events.scene, epath) do
-            recordframe!(io)
-        end
-    end
-    return video_path
-end
 
 #pkg"add ModernGL MeshIO ImageMagick ImageFilter ImageTransformations GDAL"
 
 # you can restart the build, if something failed, by just searching for the index you ended with, and putting it into start
 findfirst(x-> x.title == "WorldClim visualization", database)
-
-eval_examples(outputfile = output_path) do example, value
-    AbstractPlotting.set_theme!(resolution = (500, 500))
-    Random.seed!(42)
-    path = save_example(example, value)
-    if isa(value, Makie.Stepper)
-        name = [string.("thumb-", example.unique_name, "-$i", ".jpg") for i = 1:value.step - 1]
-    else
-        name = string("thumb-", example.unique_name, ".jpg")
-    end
-    try
-        generate_thumbnail.(path, joinpath.(dirname.(path), name))
-    catch e
-        @warn("generate_thumbnail failed with path $path, entry $(example.unique_name), and filename $name")
-        Base.showerror(stderr, e)
-        println(stderr)
-        Base.show_backtrace(stderr, Base.catch_backtrace())
-        println(stderr)
-    end
-end
 
 
 

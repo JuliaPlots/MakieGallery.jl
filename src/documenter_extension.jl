@@ -149,27 +149,6 @@ function enumerate_stepper_examples(mediapath::AbstractString, uname::Symbol; fi
 end
 
 
-"""
-    embed_video(relpath::AbstractString[; pure_html::Bool = false])
-
-Generates a MD-formatted string for embedding video into Documenter Markdown files
-(since `Documenter.jl` doesn't support directly embedding mp4's using ![]() syntax).
-`raw_mode` specifies whether to print the @raw block for use in Documenter.
-"""
-function embed_video(relpath::AbstractString; pure_html::Bool = false)
-    embed_code = """
-        <video controls autoplay loop muted>
-          <source src="$(relpath)" type="video/mp4">
-          Your browser does not support mp4. Please use a modern browser like Chrome or Firefox.
-        </video>
-    """
-    if !pure_html
-        return str = "```@raw html\n" * embed_code * "```"
-    else
-        return embed_code
-    end
-end
-
 
 """
     embed_thumbnail(io::IO, func::Function, currpath::AbstractString)
@@ -275,9 +254,6 @@ function embed_plot(
         src_lines::AbstractRange = nothing,
         pure_html::Bool = false
     )
-    isa(uname, AbstractString) ? nothing : error("uname must be a string!")
-    isa(mediapath, AbstractString) ? nothing : error("mediapath must be a string!")
-    isa(buildpath, AbstractString) ? nothing : error("buildpath must be a string!")
     medialist = readdir(mediapath)
 
     if ("$(uname)") in medialist
