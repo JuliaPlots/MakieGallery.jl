@@ -19,5 +19,6 @@ job:
                           Pkg.instantiate();
                           Pkg.add(PackageSpec(name = \"MakieGallery\", path=ENV[\"CI_PROJECT_DIR\"]));
                           Pkg.pkg\"add AbstractPlotting#master\";
+                          Pkg.pkg\"add Makie#master\";
                           Pkg.build();
                           Pkg.test(\"MakieGallery\");"
