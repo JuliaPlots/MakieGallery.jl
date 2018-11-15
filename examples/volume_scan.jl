@@ -46,7 +46,6 @@ sliders = ntuple(3) do i
     s
 end
 
-
 b2 = Scene()
 button!(b2, "3d/2d"; dimensions = (60, 40)) do clicks
     if iseven(clicks)
