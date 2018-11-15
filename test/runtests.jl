@@ -1,216 +1,131 @@
 using Test
 using BinaryProvider, FileIO, Random, Pkg
-include("../examples/library.jl")
+using MakieGallery
+using Makie, AbstractPlotting
+using Statistics
+database = MakieGallery.load_database()
 
-record_reference_images = get(ENV, "RECORD_EXAMPLES", false) == "true"
-version = v"0.0.7"
+include("visualregression.jl")
 
+version = v"0.0.8"
 download_dir = joinpath(@__DIR__, "testimages")
-tarfile = joinpath(download_dir, "images.zip")
+tarfile = joinpath(download_dir, "gallery.zip")
 url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
-refpath = joinpath(download_dir, "ReferenceImages-$(version)", "images")
-recordpath = joinpath(homedir(), "ReferenceImages", "images")
-if record_reference_images
-    cd(homedir()) do
-        isdir(dirname(recordpath)) || run(`git clone git@github.com:SimonDanisch/ReferenceImages.git`)
-        isdir(recordpath) && rm(recordpath, recursive = true, force = true)
-        mkdir(recordpath)
-    end
-end
-
-
+refpath = joinpath(download_dir, "ReferenceImages-$(version)", "gallery")
 # function url2hash(url::String)
 #     path = download(url)
 #     open(io-> bytes2hex(BinaryProvider.sha256(io)), path)
 # end
 # url2hash(url) |> println
 
-
-if !record_reference_images
-    if get(ENV, "USE_REFERENCE_IMAGES", "false") == "true"
-        @info("Using Local reference image repository")
-        refpath = recordpath
-    elseif !isdir(refpath)
-        download_images() = BinaryProvider.download_verify(
-            url, "dabc4c35eb82a801708596964dc35c0acf1879b487a35b73322f094f611f19c3",
-            tarfile
-        )
-        try
+if !isdir(refpath) # if not yet downloaded
+    download_images() = BinaryProvider.download_verify(
+        url, "560041e8801bf49815868e781a3b9fed961b8507cfd762a94342f3ff19edc1c2",
+        tarfile
+    )
+    try
+        download_images()
+    catch e
+        if isa(e, ErrorException) && occursin("Hash Mismatch", e.msg)
+            rm(tarfile, force = true)
             download_images()
-        catch e
-            if isa(e, ErrorException) && occursin("Hash Mismatch", e.msg)
-                rm(tarfile, force = true)
-                download_images()
-            else
-                rethrow(e)
-            end
-        end
-        BinaryProvider.unpack(tarfile, download_dir)
-        # check again after download
-        if !isdir(refpath)
-            error("Something went wrong while downloading reference images. Plots can't be compared to references")
+        else
+            rethrow(e)
         end
     end
-else
-    refpath = recordpath
-end
-
-function toimages(f, example, x::Scene, record)
-    image = Makie.GLMakie.scene2image(x)
-    rpath = joinpath(refpath, "$(example.unique_name).jpg")
-    if record
-        FileIO.save(joinpath(recordpath, "$(example.unique_name).jpg"), image)
-    else
-        path = joinpath(refpath, "$(example.unique_name).jpg")
-        if isfile(path)
-            refimage = FileIO.load(path)
-            f(image, refimage)
-        else
-            @warn("No reference image for $(example.unique_name) - skipping test")
-            FileIO.save(joinpath(test_diff_path, "no_reference_$(basename(path))"), image)
-        end
+    BinaryProvider.unpack(tarfile, download_dir)
+    # check again after download
+    if !isdir(refpath)
+        error("Something went wrong while downloading reference images. Plots can't be compared to references")
     end
 end
 
 is_image_file(path) = lowercase(splitext(path)[2]) in (".png", ".jpg", ".jpeg")
 
-
-
-function toimages(f, example, events::RecordEvents, r)
-    # the path is fixed at record time to be stored relative to the example
-    epath = event_path(example, "")
-    isfile(epath) || error("Can't find events for example. Please run `record_example_events()`")
-    # the current path of RecordEvents is where we now actually want to store the video
-    video_path = events.path * ".mp4"
-    record(events.scene, video_path) do io
-        replay_events(events.scene, epath) do
-            recordframe!(io)
-        end
-    end
-    toimages(f, example, video_path, r)
+function extract_frames(video, frame_folder)
+    path = joinpath(frame_folder, "frames%04d.jpg")
+    run(`ffmpeg -loglevel quiet -i $video -y $path`)
 end
 
-
-function toimages(f, example, s::Stepper, record)
-    ispath(s.folder) || error("Not a path: $(s.folder)")
-    if record
-        # just copy the stepper files from s.folder into the recordpath
-        rpath2 = joinpath(recordpath, basename(s.folder))
-        cp(s.folder, rpath2, force = true)
-    else
-        for frame in readdir(s.folder)
-            is_image_file(frame) || continue
-            path = joinpath(s.folder, frame)
-            pathref = joinpath(refpath, basename(s.folder), frame)
-            if isfile(pathref)
-                image = FileIO.load(path)
-                refimage = FileIO.load(pathref)
-                f(image, refimage)
-            else
-                @warn("No reference frames for $(example.unique_name) found - skipping tests")
-                cp(path, joinpath(test_diff_path, "no_reference_$(basename(path))"), force = true)
-                break
+function compare_media(a, b; sigma = [1,1], eps = 0.02)
+    file, ext = splitext(a)
+    if ext in (".png", ".jpg", ".jpeg", ".JPEG", ".JPG")
+        imga = load(a)
+        imgb = load(b)
+        return approx_difference(imga, imgb, sigma, eps)
+    elseif ext in (".mp4", ".gif")
+        mktempdir() do folder
+            afolder = joinpath(folder, "a")
+            bfolder = joinpath(folder, "b")
+            mkpath(afolder); mkpath(bfolder)
+            extract_frames(a, afolder)
+            extract_frames(b, bfolder)
+            aframes = joinpath.(afolder, readdir(afolder))
+            bframes = joinpath.(bfolder, readdir(bfolder))
+            if length(aframes) > 10
+                # we don't want to compare too many frames since it's time costly
+                # so we just compare 10 random frames if more than 10
+                samples = rand(1:length(aframes), 10)
+                aframes = aframes[samples]
+                bframes = bframes[samples]
             end
+            # test by maximum diff
+            return mean(compare_media.(aframes, bframes; sigma = sigma, eps = eps))
         end
-    end
-end
-
-function toimages(f, example, path::String, record)
-    isfile(path) || error("Not a file: $path")
-    filepath, ext = splitext(path)
-    rpath = joinpath(refpath, basename(filepath))
-
-    if record
-        rpath2 = joinpath(recordpath, basename(filepath))
-        isdir(rpath2) || mkpath(rpath2)
-        run(`ffmpeg -loglevel quiet -i $(abspath(path)) -y $rpath2\\frames%04d.jpg`)
     else
-        filepath, ext = splitext(path)
-        isdir(filepath) || mkdir(filepath)
-        run(`ffmpeg -loglevel quiet -i $path -y $filepath\\frames%04d.jpg`)
-        for frame in readdir(filepath)
-            pathref = joinpath(refpath, basename(filepath), frame)
-            if isfile(pathref)
-                image = FileIO.load(joinpath(filepath, frame))
-                refimage = FileIO.load(pathref)
-                f(image, refimage)
-            else
-                @warn("No reference frames for $(example.unique_name) found - skipping tests")
-                cp(joinpath(filepath, frame), joinpath(test_diff_path, "no_reference_$(frame)"), force = true)
-                break
-            end
-        end
+        error("Unknown media extension: $ext")
     end
+
 end
 
-include("visualregression.jl")
-
-
-test_diff_path = joinpath(dirname(pathof(Makie)), "..", "test", "testresults")
+test_diff_path = joinpath(@__DIR__, "tested_different")
+test_record_path = joinpath(@__DIR__, "test_recordings")
 
 rm(test_diff_path, force = true, recursive = true)
 mkpath(test_diff_path)
 
-function test_examples(record, tags...; kw_args...)
-    Random.seed!(42)
-    @testset "Visual Regression" begin
-        eval_examples(tags..., replace_nframes = false, outputfile = (entry, ending)-> "./media/" * string(entry.unique_name, ending); kw_args...) do example, value
-            sigma = [1,1]; eps = 0.02
-            maxdiff = 0.05
-            toimages(example, value, record) do image, refimage
-                @testset "$(example.title):" begin
-                    diff = approx_difference(image, refimage, sigma, eps)
+rm(test_record_path, force = true, recursive = true)
+mkpath(test_record_path)
+
+AbstractPlotting.inline!(false)
+
+# THese examples download additional data - don't want to deal with that!
+to_skip = ["WorldClim visualization", "Image on Geometry (Moon)", "Image on Geometry (Earth)"]
+
+# we directly modify the database, which seems easiest for now
+filter!(entry-> !(entry.title in to_skip), database)
+
+results = MakieGallery.record_examples(test_record_path, resume = false)
+
+@testset "Reference Image Tests" begin
+    folders = readdir(test_record_path)
+    for folder in folders
+        media = joinpath(folder, "media")
+        ref_folder = joinpath(refpath, media)
+        test_folder = joinpath(test_record_path, media)
+        ref_media = sort(readdir(ref_folder))
+        test_media = sort(readdir(test_folder))
+        maxdiff = 0.08
+        @testset "$folder" begin
+            if length(ref_media) != length(test_media)
+                @warn("recodings are missing for $folder - skipping test")
+            else
+                for (ref, test) in zip(ref_media, test_media)
+                    ref = joinpath(ref_folder, ref)
+                    test = joinpath(test_folder, test)
+                    diff = compare_media(ref, test)
                     if diff >= maxdiff
-                        save(
-                            joinpath(test_diff_path, "$(example.unique_name)_differ.jpg"),
-                            hcat(image, refimage)
-                        )
+                        refdiff = joinpath(test_diff_path, folder, string("ref_", basename(ref)))
+                        testdiff = joinpath(test_diff_path, folder, string("test_", basename(test)))
+                        mkpath(dirname(refdiff)); mkpath(dirname(testdiff))
+                        cp(ref, refdiff, force = true)
+                        cp(test, testdiff, force = true)
+                        @test diff <= maxdiff
+                    else
+                        @test diff <= maxdiff
                     end
-                    @test diff < maxdiff
                 end
             end
-            # reset global states
-            Random.seed!(42)
-            AbstractPlotting.set_theme!(resolution = (500, 500))
         end
     end
 end
-
-cd(@__DIR__)
-isdir("media") || mkdir("media")
-isdir("testresults") || mkdir("testresults")
-AbstractPlotting.set_theme!(resolution = (500, 500))
-
-@info("Number of examples in database: $(length(database))")
-
-exclude_tags = ["bigdata"]
-@info("Excluding tags: $exclude_tags")
-
-indices_excluded = []
-for tag in exclude_tags
-    global indices_excluded
-    indices = find_indices(tag)
-    indices_excluded = vcat(indices_excluded, indices)
-end
-num_excluded = length(unique(indices_excluded))
-@info("Number of examples to be skipped: $(num_excluded)")
-
-# run the tests
-test_examples(record_reference_images; exclude_tags = exclude_tags)
-
-
-
-using MakieGallery
-MakieGallery.load_database()
-result = MakieGallery.record_examples("/home/sd/ReferenceImages/recordings", resume = false)
-
-
-using MakieGallery: MediaItem
-using AbstractPlotting
-folder = "/home/sd/ReferenceImages/gallery"
-results = map(MakieGallery.database) do example
-    joinpath(folder, string(example.unique_name))
-end
-media_items = MakieGallery.MediaItem.(results, MakieGallery.database)
-
-tags = string.(AbstractPlotting.atomic_function_symbols)

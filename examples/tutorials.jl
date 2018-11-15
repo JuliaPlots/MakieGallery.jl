@@ -1,15 +1,11 @@
 
 @block AnthonyWang [tutorials] begin
 
-    # @cell "Tutorial scene" [tutorial, scene] begin
-    #     scene = Scene()
-    # end
-
     @cell "Tutorial simple scatter" [tutorial, scatter] begin
+        @show AbstractPlotting._current_default_theme[:resolution][]
         x = rand(10)
         y = rand(10)
         colors = rand(10)
-
         scene = scatter(x, y, color = colors)
     end
 
@@ -17,7 +13,6 @@
         x = 1:10
         y = 1:10
         sizevec = [s for s = 1:length(x)] ./ 10
-
         scene = scatter(x, y, markersize = sizevec)
     end
 
@@ -25,7 +20,6 @@
         x = range(0, stop = 2pi, length = 40)
         f(x) = sin.(x)
         y = f(x)
-
         scene = lines(x, y, color = :blue)
     end
 

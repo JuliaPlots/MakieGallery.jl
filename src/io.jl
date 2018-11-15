@@ -170,19 +170,22 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false)
         1
     end
     @info("starting from index $start")
+    AbstractPlotting.set_theme!(resolution = resolution)
     eval_examples(outputfile = output_path, start = start) do example, value
         Random.seed!(42)
-        AbstractPlotting.set_theme!(resolution = resolution)
         uname = example.unique_name
         subfolder = joinpath(folder, string(uname))
         outfolder = joinpath(subfolder, "media")
         ispath(outfolder) || mkpath(outfolder)
         paths = save_media(example, value, outfolder)
-        save_markdown(joinpath(subfolder, "index.md"), example, paths)
+        mdpath = joinpath(subfolder, "index.md")
+        save_markdown(mdpath, example, paths)
+        md2html(mdpath)
         push!(result, subfolder)
         last_evaled[] = uname
-        # generate_thumbnail(path, joinpath.(dirname.(path), name))
+        AbstractPlotting.set_theme!(resolution = resolution) # reset befor next example
     end
+    rm(joinpath(folder, "tmp"), recursive = true, force = true)
     result
 end
 
