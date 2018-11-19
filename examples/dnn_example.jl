@@ -3,7 +3,8 @@ using Flux: onehotbatch, onecold, crossentropy, throttle
 using Base.Iterators: repeated, partition
 using CuArrays
 using Colors, FileIO, ImageShow
-using Makie
+using Makie, GLMakie
+scatter(rand(10)) |> display
 
 function imgviz!(scene, img)
   image!(scene, 0..16, 0..1, img, show_axis = false, scale_plot = false)
@@ -103,15 +104,12 @@ using Observables
 img_node = Node(tX[:, :, 1:1, 1:1])
 scene = create_viz(m, img_node)
 
-# io = Makie.VideoStream(scene)
-
 evalcb = throttle(0.01) do
   img_node[] = img_node[] # update image
-  # Makie.recordframe!(io)
 end
+
 opt = ADAM(Flux.params(m));
 
 for i in 1:10
     Flux.train!(loss, train, opt, cb = evalcb)
 end
-# Makie.save(joinpath(homedir(), "Desktop", "flux.mp4"), io)

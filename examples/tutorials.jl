@@ -2,7 +2,6 @@
 @block AnthonyWang [tutorials] begin
 
     @cell "Tutorial simple scatter" [tutorial, scatter] begin
-        @show AbstractPlotting._current_default_theme[:resolution][]
         x = rand(10)
         y = rand(10)
         colors = rand(10)
