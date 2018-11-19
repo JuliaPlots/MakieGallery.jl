@@ -69,7 +69,6 @@ function create_viz(m, input)
   scene
 end
 
-
 # Classify MNIST digits with a convolutional network
 imgs = MNIST.images()
 labels = onehotbatch(MNIST.labels(), 0:9)
@@ -104,15 +103,15 @@ using Observables
 img_node = Node(tX[:, :, 1:1, 1:1])
 scene = create_viz(m, img_node)
 
-io = Makie.VideoStream(scene)
+# io = Makie.VideoStream(scene)
 
 evalcb = throttle(0.01) do
   img_node[] = img_node[] # update image
-  Makie.recordframe!(io)
+  # Makie.recordframe!(io)
 end
 opt = ADAM(Flux.params(m));
 
-record(scene, "flux.mp4", 1:10) do i
+for i in 1:10
     Flux.train!(loss, train, opt, cb = evalcb)
 end
-Makie.save(joinpath(homedir(), "Desktop", "flux.mp4"), io)
+# Makie.save(joinpath(homedir(), "Desktop", "flux.mp4"), io)
