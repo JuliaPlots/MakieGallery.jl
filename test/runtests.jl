@@ -7,7 +7,7 @@ database = MakieGallery.load_database()
 
 include("visualregression.jl")
 
-version = v"0.0.8"
+version = v"0.0.9"
 download_dir = joinpath(@__DIR__, "testimages")
 tarfile = joinpath(download_dir, "gallery.zip")
 url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
@@ -20,7 +20,7 @@ refpath = joinpath(download_dir, "ReferenceImages-$(version)", "gallery")
 
 if !isdir(refpath) # if not yet downloaded
     download_images() = BinaryProvider.download_verify(
-        url, "560041e8801bf49815868e781a3b9fed961b8507cfd762a94342f3ff19edc1c2",
+        url, "6f950d5124369b77b234251c68160c1bfa08524902e2cb2d81966b56accc56e1",
         tarfile
     )
     try

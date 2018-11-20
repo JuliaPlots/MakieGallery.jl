@@ -177,12 +177,15 @@
         end
         x = range(-2pi, stop = 2pi, length = 100)
         scene = Scene()
-        xm, ym, zm = minimum(scene.limits[])
         # c[4] == fourth argument of the above plotting command
         c = contour!(scene, x, x, x, test, levels = 6, alpha = 0.3, transparency = true)[end]
-        contour!(scene, x, x, map(v-> v[1, :, :], c[4]), transformation = (:xy, zm), linewidth = 10)
+        xm, ym, zm = minimum(scene.limits[])
+        contour!(scene, x, x, map(v-> v[1, :, :], c[4]), transformation = (:xy, zm), linewidth = 2)
         heatmap!(scene, x, x, map(v-> v[:, 1, :], c[4]), transformation = (:xz, ym))
-        contour!(scene, x, x, map(v-> v[:, :, 1], c[4]), fillrange = true, transformation = (:yz, xm), transparency = true)
+        contour!(scene, x, x, map(v-> v[:, :, 1], c[4]), fillrange = true, transformation = (:yz, xm))
+        # reorder plots for transparency
+        scene.plots[:] = scene.plots[[1, 3, 4, 5, 2]]
+        scene
     end
 
     @cell "Contour3d" [contour3d] begin
