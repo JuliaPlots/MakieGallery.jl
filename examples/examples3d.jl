@@ -57,13 +57,14 @@
         volume(rand(32, 32, 32), algorithm = :mip)
     end
     @cell "Textured Mesh" [mesh, texture, cat] begin
-        using FileIO
+        using FileIO, GLMakie
         scene = Scene(@resolution)
-        catmesh = FileIO.load(Makie.assetpath("cat.obj"), GLNormalUVMesh)
-        mesh(catmesh, color = Makie.loadasset("diffusemap.tga"))
+        catmesh = FileIO.load(GLMakie.assetpath("cat.obj"), GLNormalUVMesh)
+        mesh(catmesh, color = GLMakie.loadasset("diffusemap.tga"))
     end
     @cell "Load Mesh" [mesh, cat] begin
-        mesh(Makie.loadasset("cat.obj"))
+        using GLMakie
+        mesh(GLMakie.loadasset("cat.obj"))
     end
     @cell "Colored Mesh" [mesh, axis] begin
         x = [0, 1, 2, 0]
@@ -78,7 +79,8 @@
         mesh(x, y, z, indices, color = color)
     end
     @cell "Wireframe of a Mesh" [mesh, wireframe, cat] begin
-        wireframe(Makie.loadasset("cat.obj"))
+        using GLMakie
+        wireframe(GLMakie.loadasset("cat.obj"))
     end
     @cell "Wireframe of Sphere" [wireframe] begin
         wireframe(Sphere(Point3f0(0), 1f0))
@@ -175,12 +177,15 @@
         end
         x = range(-2pi, stop = 2pi, length = 100)
         scene = Scene()
-        xm, ym, zm = minimum(scene.limits[])
         # c[4] == fourth argument of the above plotting command
         c = contour!(scene, x, x, x, test, levels = 6, alpha = 0.3, transparency = true)[end]
-        contour!(scene, x, x, map(v-> v[1, :, :], c[4]), transformation = (:xy, zm), linewidth = 10)
+        xm, ym, zm = minimum(scene.limits[])
+        contour!(scene, x, x, map(v-> v[1, :, :], c[4]), transformation = (:xy, zm), linewidth = 2)
         heatmap!(scene, x, x, map(v-> v[:, 1, :], c[4]), transformation = (:xz, ym))
-        contour!(scene, x, x, map(v-> v[:, :, 1], c[4]), fillrange = true, transformation = (:yz, xm), transparency = true)
+        contour!(scene, x, x, map(v-> v[:, :, 1], c[4]), fillrange = true, transformation = (:yz, xm))
+        # reorder plots for transparency
+        scene.plots[:] = scene.plots[[1, 3, 4, 5, 2]]
+        scene
     end
 
     @cell "Contour3d" [contour3d] begin
@@ -272,8 +277,8 @@
     end
 
     @cell "FEM mesh 3D" [mesh, fem] begin
-        using GeometryTypes
-        cat = Makie.loadasset("cat.obj")
+        using GeometryTypes, GLMakie
+        cat = GLMakie.loadasset("cat.obj")
         vertices = decompose(Point3f0, cat)
         faces = decompose(Face{3, Int}, cat)
         coordinates = [vertices[i][j] for i = 1:length(vertices), j = 1:3]
@@ -429,8 +434,8 @@
     end
 
     @cell "Normals of a Cat" [mesh, linesegment, cat] begin
-        using LinearAlgebra
-        x = Makie.loadasset("cat.obj")
+        using LinearAlgebra, GLMakie
+        x = GLMakie.loadasset("cat.obj")
         mesh(x, color = :black)
         pos = map(x.vertices, x.normals) do p, n
             p => p .+ (normalize(n) .* 0.05f0)
@@ -527,6 +532,7 @@
     end
 
     @cell "Line GIF" [lines, animated, gif, offset, record] begin
+        using GLMakie
         us = range(0, stop = 1, length = 100)
         scene = Scene()
         scene = linesegments!(scene, FRect3D(Vec3f0(0, -1, 0), Vec3f0(1, 2, 2)))
@@ -548,7 +554,7 @@
                 pushfirst!(lineplots, p)
                 translate!(p, 0, 0, 0)
                 #TODO automatically insert new plots
-                insert!(Makie.GLMakie.global_gl_screen(), scene, p)
+                insert!(GLMakie.global_gl_screen(), scene, p)
             else
                 lineplots = circshift(lineplots, 1)
                 lp = first(lineplots)
@@ -577,16 +583,16 @@
     end
 
     @cell "Explicit frame rendering" [opengl, render_frame, meshscatter] begin
-        using ModernGL, Makie
+        using ModernGL, Makie, GLMakie
         using GLFW
-        Makie.GLMakie.opengl_renderloop[] = (screen) -> nothing
+        GLMakie.opengl_renderloop[] = (screen) -> nothing
         function update_loop(m, buff, screen)
             for i = 1:20
                 GLFW.PollEvents()
                 buff .= rand.(Point3f0) .* 20f0
                 m[1] = buff
-                Makie.GLMakie.render_frame(screen)
-                GLFW.SwapBuffers(Makie.GLMakie.to_native(screen))
+                GLMakie.render_frame(screen)
+                GLFW.SwapBuffers(GLMakie.to_native(screen))
                 glFinish()
             end
         end
@@ -594,11 +600,11 @@
         display(scene)
         meshplot = scene[end]
         buff = rand(Point3f0, 10^4) .* 20f0;
-        screen = Makie.GLMakie.global_gl_screen();
+        screen = GLMakie.global_gl_screen();
         @time update_loop(meshplot, buff, screen)
-        Makie.GLMakie.opengl_renderloop[] = Makie.GLMakie.renderloop # restore previous loop
+        GLMakie.opengl_renderloop[] = GLMakie.renderloop # restore previous loop
         # when done:
-        Makie.GLMakie.destroy!(screen)
+        GLMakie.destroy!(screen)
         scene
     end
     # @cell "2D text in 3D" [text, annotations] begin
