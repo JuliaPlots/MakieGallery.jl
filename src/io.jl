@@ -179,7 +179,7 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false)
         ispath(outfolder) || mkpath(outfolder)
         paths = save_media(example, value, outfolder)
         mdpath = joinpath(subfolder, "index.md")
-        save_markdown(mdpath, example, paths)
+        save_markdown(mdpath, example, master_url.(paths))
         md2html(mdpath)
         push!(result, subfolder)
         last_evaled[] = uname
