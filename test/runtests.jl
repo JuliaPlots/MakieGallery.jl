@@ -15,7 +15,6 @@ mkpath(tested_diff_path)
 rm(test_record_path, force = true, recursive = true)
 mkpath(test_record_path)
 
-database = MakieGallery.load_database()
 # THese examples download additional data - don't want to deal with that!
 ref_path = MakieGallery.download_reference(v"0.0.9")
 MakieGallery.record_examples(test_record_path)
