@@ -11,7 +11,7 @@ using Random
 using Documenter.Writers
 using Documenter.Writers.HTMLWriter
 using Test, Statistics
-
+using BinaryProvider
 include("documenter_extension.jl")
 include("database.jl")
 include("io.jl")

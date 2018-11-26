@@ -21,3 +21,4 @@ FileIO
 ImageFiltering
 DataFrames
 RDatasets
+BinaryProvider
