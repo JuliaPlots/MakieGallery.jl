@@ -10,11 +10,14 @@ using ImageFiltering  # needed for Gaussian-filtering images during resize
 using Random
 using Documenter.Writers
 using Documenter.Writers.HTMLWriter
-
+using Test, Statistics
+using BinaryProvider
 include("documenter_extension.jl")
 include("database.jl")
 include("io.jl")
 include("gallery.jl")
+include("visualregression.jl")
+include("testruns.jl")
 
 
 function event_path(entry, ending)
