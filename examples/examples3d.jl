@@ -542,7 +542,7 @@
         colors = to_colormap(:RdYlBu)
         #display(scene) # would be needed without the record
         N = 150
-        path = record(scene, @replace_with_a_path(gif), 1:N) do i
+        path = record(scene, "test.gif", 1:N) do i
             global lineplots, scene
             if length(lineplots) < 20
                 p = lines!(

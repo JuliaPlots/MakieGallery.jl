@@ -158,9 +158,11 @@ Records all examples in the database. If error happen, you can fix them and
 start record with `resume = true`, to start at the last example that errored.
 """
 function record_examples(folder = ""; resolution = (500, 500), resume = false)
+    AbstractPlotting.inline!(false)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end
+    ispath(folder) || mkpath(folder)
     ispath(joinpath(folder, "tmp")) || mkdir(joinpath(folder, "tmp"))
     result = []
     start = if resume && isassigned(last_evaled)
