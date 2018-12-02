@@ -70,6 +70,11 @@ Any plot created based on this pipeline system will get updated whenever the nod
 Note: for now, `lift` is just an alias for `Observables.map`,
 and `Node` is just an alias for `Observables.Observable`. This allows decoupling of the APIs. For more info please have a look at [`Observables`](https://juliagizmos.github.io/Observables.jl/stable/).
 
+## Atomic interaction functions
+This section overviews some simple and specific functions that make interaction much simpler.
+
+_coming soon..._
+
 ## Animation using time
 To animate a scene, you need to create a `Node`, e.g.:
 
@@ -96,14 +101,6 @@ now, whenever the Node `time` is updated (e.g. when you `push!` to it), the plot
 push!(time, Base.time())
 ```
 
-
-### Examples
-
-@example_database("pulsing marker")
-
-@example_database("Interaction")
-
-@example_database("pong")
 
 ## Interaction using the mouse
 A few default Nodes are already implemented in a `scene`'s Events (see them in `scene.events`), so to use them in your interaction pipeline, you can simply `lift` them.
