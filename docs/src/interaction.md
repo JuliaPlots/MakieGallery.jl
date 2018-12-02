@@ -19,10 +19,10 @@ Makie offers a sophisticated referencing system to share attributes across the S
 in your plot. This is great for animations and saving resources -- also if the backend
 decides to put data on the GPU you might even share those in GPU memory.
 
-Animations in Makie are handled by using [`Reactive`](https://github.com/JuliaGizmos/Reactive.jl) signals.
+Animations in Makie are handled by using [`Observables`](https://juliagizmos.github.io/Observables.jl/stable/). An "observable", called `Node` in Makie, is a structure that can have its value updated interactively.
 These signals are called `Node`s in Makie, and can be continuously updated by pushing a value to it.
 
-In this page we overview how these `Node`s pipeline works, and we give an introduction to the existing "atomic" functions for interaction. Examples that use interaction can be found in the
+In this page we overview how the `Node`s pipeline works, and we give an introduction to the existing "atomic" functions for interaction. Examples that use interaction can be found in the
 Examples/`interaction` page (see [Examples index](@ref)).
 
 ## Interaction pipeline
