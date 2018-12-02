@@ -16,13 +16,14 @@ using Makie
 
 # Interaction
 Makie offers a sophisticated referencing system to share attributes across the Scene
-in your plot. This is great for animations and saving resources -- also if the backend
+in your plot. This is great for interaction, animations and saving resources -- also if the backend
 decides to put data on the GPU you might even share those in GPU memory.
 
 Interaction and animations in Makie are handled by using [`Observables`](https://juliagizmos.github.io/Observables.jl/stable/). An "observable", called `Node` in Makie, is a structure that can have its value updated interactively.
+Interaction, animations and more are done using `Node`s and event triggers.
 
-In this page we overview how the `Node`s pipeline works, and we give an introduction to the existing "atomic" functions for interaction. Examples that use interaction can be found in the
-Examples/`interaction` page (see [Examples index](@ref)).
+In this page we overview how the `Node`s pipeline works, how event-triggering works, and we give an introduction to the existing "atomic" functions for interaction.
+Examples that use interaction can be found in the Examples/`interaction` page (see [Examples index](@ref) as well).
 
 ## `Node` interaction pipeline
 ### The `Node` structure
@@ -67,8 +68,27 @@ That is to say, the `Node` `y` maps the function `f` (which is `a -> a^2` in thi
 This is the basis of updating `Node`s, and is used for updating plots in Makie.
 Any plot created based on this pipeline system will get updated whenever the nodes it is based on are updated!
 
-Note: for now, `lift` is just an alias for `Observables.map`,
-and `Node` is just an alias for `Observables.Observable`. This allows decoupling of the APIs. For more info please have a look at [`Observables`](https://juliagizmos.github.io/Observables.jl/stable/).
+*Note: for now, `lift` is just an alias for `Observables.map`,
+and `Node` is just an alias for `Observables.Observable`. This allows decoupling of the APIs.*
+
+### Event triggering
+Often it is the case that you want an event to be triggered each time a `Node` has its value updated.
+This is done using the `on-do` block from `Observables`.
+For example, the following code block "triggers" whenever `x`'s value is changed:
+```@example animation_tutorial
+on(x) do val
+    println("x just got the value $val")
+end
+```
+As you can see, at we have run this block in Julia, but nothing happened yet.
+Instead, a function was defined. However, upon doing:
+```@example animation_tutorial
+push!(x, 5.0);
+```
+Boom! The event of the `on-do` block was triggered!
+We will be using this in the following paragraphs to establish interactiveness.
+
+For more info please have a look at [`Observables`](https://juliagizmos.github.io/Observables.jl/stable/).
 
 ## Atomic interaction functions
 This section overviews some simple and specific functions that make interaction much simpler.
