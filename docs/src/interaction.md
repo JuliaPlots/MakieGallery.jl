@@ -47,7 +47,7 @@ to_value(x)
 
 ### `Node`s depending on other `Node`s
 
-You can create a node depending on the of another node using [`lift`](@ref):
+You can create a node depending on another node using [`lift`](@ref):
 
 ```@example animation_tutorial
 f(a) = a^2
