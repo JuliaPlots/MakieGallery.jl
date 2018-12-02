@@ -23,7 +23,7 @@ Animations in Makie are handled by using [`Reactive`](https://github.com/JuliaGi
 These signals are called `Node`s in Makie, and can be continuously updated by pushing a value to it.
 
 In this page we overview how these `Node`s pipeline works, and we give an introduction to the existing "atomic" functions for interaction. Examples that use interaction can be found in the
-Examples/`interaction` page.
+Examples/`interaction` page (see [Examples index](@ref)).
 
 ## Interaction pipeline
 First, create a `Node`:
@@ -110,12 +110,6 @@ pos = lift(scene.events.mouseposition) do mpos
     # do stuff
 end
 ```
-
-### Examples
-
-@example_database("Interaction with Mouse")
-
-For more examples, consult the [Examples index](@ref).
 
 
 ## Correct way to animate a plot
