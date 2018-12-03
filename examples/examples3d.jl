@@ -36,7 +36,7 @@
         meshes = map(GLNormalMesh, rectangles)
         scene = mesh(merge(meshes))
         display(scene)
-        cam = Makie.cameracontrols(scene)
+        cam = cameracontrols(scene)
         dir = scene.limits[].widths ./ 2.
         dir_scaled = Vec3f0(
             dir[1] * scene.transformation.scale[][1],
@@ -236,7 +236,7 @@
         z = [cospi(θ) for θ in θ, φ in φ]
         rand([-1f0, 1f0], 3)
         pts = vec(Point3f0.(x, y, z))
-        surface(x, y, z, color = Makie.logo())
+        surface(x, y, z, color = AbstractPlotting.logo(), transparency = true)
     end
 
     @cell "Arrows on Sphere" [surface, sphere, arrows, "3d"] begin
@@ -345,7 +345,7 @@
         ne = size(edges, 1); np = size(pts, 1)
         # define markers meshes
         meshC = GLNormalMesh(
-            Makie.Cylinder{3, Float32}(
+            Cylinder{3, Float32}(
                 Point3f0(0., 0., 0.),
                 Point3f0(0., 0, 1.),
                 Float32(1)
@@ -402,7 +402,7 @@
             markersize = 1,
             # can also be an array of images for each point
             # need to be the same size for best performance, though
-            marker = Makie.logo()
+            marker = AbstractPlotting.logo()
         )
     end
     @cell "Simple meshscatter" [meshscatter] begin
@@ -423,8 +423,8 @@
         z = surf_func(20)
         surf = surface!(scene, r, r, z)[end]
 
-        wf = wireframe!(scene, r, r, Makie.lift(x-> x .+ 1.0, surf[3]),
-            linewidth = 2f0, color = Makie.lift(x-> to_colormap(x)[5], surf[:colormap])
+        wf = wireframe!(scene, r, r, lift(x-> x .+ 1.0, surf[3]),
+            linewidth = 2f0, color = lift(x-> to_colormap(x)[5], surf[:colormap])
         )
         N = 150
         scene
@@ -583,7 +583,7 @@
     end
 
     @cell "Explicit frame rendering" [opengl, render_frame, meshscatter] begin
-        using ModernGL, Makie, GLMakie
+        using ModernGL, GLMakie
         using GLFW
         GLMakie.opengl_renderloop[] = (screen) -> nothing
         function update_loop(m, buff, screen)

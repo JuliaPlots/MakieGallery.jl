@@ -74,7 +74,7 @@
         end
 
         scene = Scene(resolution = (800, 800))
-        scene = Makie.mesh!(m, color = temperature[10], colorrange = (-50, 50), colormap = cmap, shading = true, show_axis = false)
+        scene = mesh!(m, color = temperature[10], colorrange = (-50, 50), colormap = cmap, shading = true, show_axis = false)
         temp_plot = scene[end];
         # plot precipitation as vertical bars
         watervals = watermap(uv, water[1])

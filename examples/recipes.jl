@@ -46,7 +46,6 @@
         end
 
         # To write out a video of the whole simulation
-        using Makie
         n = 5
         r = range(-1, stop = 1, length = n)
         grid = Point3f0.(r, reshape(r, (1, n, 1)), reshape(r, (1, 1, n)))

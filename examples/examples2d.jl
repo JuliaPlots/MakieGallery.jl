@@ -38,7 +38,7 @@
     end
     @cell "image" [image] begin
         hbox(
-            image(Makie.logo(), scale_plot = false),
+            image(AbstractPlotting.logo(), scale_plot = false),
             image(rand(100, 500), scale_plot = false),
         )
     end
@@ -336,7 +336,7 @@
         +(a::Nothing, b::Nothing)=a
         A = prefix_sum(AccessArray(8), +)
 
-        using Makie, GeometryTypes
+        using GeometryTypes
         function render(A::AccessArray)
             olast = depth = 0
             for y in A.history

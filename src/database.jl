@@ -59,7 +59,6 @@ function _print_source(io::IO, idx::Int; style = nothing, example_counter = NaN)
             style == "julia" ? "```julia" :
             style == "eval" ? "```@eval" :
             style == "example" ? "```@example" : "" )
-        # println(io, isempty(database[idx].toplevel) ? "using Makie, AbstractPlotting, GeometryTypes" : "$(database[idx].toplevel)")
         print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
         for line in split(database[idx].source, "\n")
             line = replace(line, "@resolution" => "resolution = (500, 500)")
@@ -72,7 +71,6 @@ function _print_source(io::IO, idx::Int; style = nothing, example_counter = NaN)
             style == "julia" ? "```julia" :
             style == "eval" ? "```@eval" :
             style == "example" ? "```@example $(example_counter)" : "" )
-        # println(io, isempty(database[idx].toplevel) ? "using Makie, AbstractPlotting, GeometryTypes" : "$(database[idx].toplevel)")
         print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
         for line in split(database[idx].source, "\n")
             line = replace(line, "@resolution" => "resolution = (500, 500)")
@@ -171,7 +169,7 @@ unique_names = Set(Symbol[])
 function unique_name!(name, unique_names = unique_names)
     funcname = Symbol(replace(lowercase(string(name)), r"[ #$!@#$%^&*()+]" => '_'))
     i = 1
-    while isdefined(Makie, funcname) || (funcname in unique_names)
+    while isdefined(AbstractPlotting, funcname) || (funcname in unique_names)
         funcname = Symbol("$(funcname)_$i")
         i += 1
     end
@@ -184,6 +182,7 @@ function CellEntry(author, title, tags, file, file_range, toplevel, source, grou
     CellEntry(string(author), title, uname, tags, file, file_range, toplevel, source, groupid)
 end
 
+const plotting_backends = String["AbstractPlotting"]
 
 """
 Prints the source of an entry in the database at `idx`.
@@ -198,7 +197,8 @@ function print_code(
         resolution = (entry)-> "resolution = (500, 500)",
         outputfile = (entry, ending)-> "./docs/media/" * string(entry.unique_name, ending)
     )
-    println(io, "using Makie")
+
+    println(io, "using ", join(plotting_backends, ", "))
     println(io, entry.toplevel)
     print(io, scope_start)
     for line in split(entry.source, "\n")
@@ -533,19 +533,20 @@ function eval_example(entry; kw_args...)
     # modules created via Module get gc'ed, so we need to store a global reference
     push!(module_cache, tmpmod)
     result = nothing
-    try
+    # try
         result = include_string(tmpmod, source, string(uname))
-    catch e
-        Base.showerror(stderr, e)
-        println(stderr)
-        println(stderr, "failed to evaluate the example:")
-        println(stderr, "```julia")
-        println(stderr, source)
-        println(stderr, "```")
-        println(stderr, "stacktrace:")
-        Base.show_backtrace(stderr, Base.catch_backtrace())
-        println(stderr)
-    end
+    # catch e
+    #     Base.showerror(stderr, e)
+    #     println(stderr)
+    #     println(stderr, "failed to evaluate $(repr(entry.title)):")
+    #     println(stderr, "```julia")
+    #     println(stderr, source)
+    #     println(stderr, "```")
+    #     println(stderr, "stacktrace:")
+    #     Base.show_backtrace(stderr, Base.backtrace())
+    #     println(stderr)
+    #     rethrow(e)
+    # end
     result
 end
 
@@ -556,13 +557,6 @@ Walks through examples and evaluates them. Returns the evaluated value and calls
 function eval_examples(f, tags...; start = 1, exclude_tags = nothing, kw_args...)
     enumerate_examples(tags...; start = start, exclude_tags = exclude_tags) do entry
         result = eval_example(entry; kw_args...)
-        try
-            f(entry, result)
-        catch e
-            @warn("Calling failed with example: $(entry.title)")
-            Base.showerror(stderr, e)
-            Base.show_backtrace(stderr, Base.backtrace())
-            rethrow(e)
-        end
+        f(entry, result)
     end
 end

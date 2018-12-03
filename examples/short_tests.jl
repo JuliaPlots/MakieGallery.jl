@@ -71,9 +71,9 @@
         scatter!(pos, markersize = 0.02, color = :red, scale_plot = false)
     end
     @cell begin
-        using Makie, GeometryTypes
+        using GeometryTypes
         s1 = GLNormalUVMesh(Sphere(Point3f0(0), 1f0))
-        Makie.mesh(GLNormalUVMesh(Sphere(Point3f0(0), 1f0)), color = rand(50, 50))
+        mesh(GLNormalUVMesh(Sphere(Point3f0(0), 1f0)), color = rand(50, 50))
         # ugh, bug In GeometryTypes for UVs of non unit spheres.
         s2 = GLNormalUVMesh(Sphere(Point3f0(0), 1f0))
         s2.vertices .= s2.vertices .+ (Point3f0(0, 2, 0),)
@@ -89,7 +89,7 @@
     @cell scatter!(Scene(), Theme(color = :green), rand(10), rand(10))
     @cell scatter(Theme(color = :green), rand(10), rand(10))
     @cell scatter(Theme(color = :green), rand(10), rand(10), markersize = 0.05)
-    
+
 end
 
 

@@ -264,7 +264,6 @@
 
     @cell "Labels" [labels, linesegments, vbox] begin
         #cell
-        using Makie
         scene = Scene(resolution = (500, 500))
         x = map([:dot, :dash, :dashdot], [2, 3, 4]) do ls, lw
             linesegments!(
@@ -275,7 +274,7 @@
         end
         x = [x..., scatter!(range(1, stop=5, length=100), rand(100), rand(100))[end]]
         center!(scene)
-        ls = Makie.legend(x, ["attribute $i" for i in 1:4], camera = campixel!, raw = true)
+        ls = AbstractPlotting.legend(x, ["attribute $i" for i in 1:4], camera = campixel!, raw = true)
 
         st = Stepper(vbox(scene, ls), @replace_with_a_path)
         l = ls[end]
@@ -293,7 +292,6 @@
         st
     end
     @cell "Color Legend" [surface, colorlegend] begin
-        using Makie
         s = surface(0..1, 0..1, rand(100, 100))
         ls = colorlegend(s[end], raw = true, camera = campixel!)
         st = Stepper(vbox(s, ls), @replace_with_a_path)

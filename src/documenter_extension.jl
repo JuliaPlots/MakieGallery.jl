@@ -1,7 +1,7 @@
 struct DatabaseLookup <: Expanders.ExpanderPipeline end
 
 Selectors.order(::Type{DatabaseLookup}) = 0.5
-Selectors.matcher(::Type{DatabaseLookup}, node, page, doc) = false
+Selectors.matcher(::Type{DatabaseLookup}, node, page, doc) = match_kw(node)
 
 const regex_pattern = r"\@example_database\(([\"a-zA-Z_0-9.+ ]+)(?:, )?(plot|code|stepperplot)?\)"
 
@@ -15,14 +15,13 @@ const atomics = (
     scatter,
     surface,
     text,
-    Makie.volume
+    volume
 )
 
 match_kw(x::String) = occursin(regex_pattern, x)
 match_kw(x::Paragraph) = any(match_kw, x.content)
 match_kw(x::Any) = false
 
-Selectors.matcher(::Type{DatabaseLookup}, node, page, doc) = match_kw(node)
 
 # ============================================= Simon's implementation
 function look_up_source(database_key)

@@ -29,7 +29,7 @@
             vbox(
                 image(x, y, z, colormap = :viridis),
                 surface(x, y, fill(0f0, N, N), color = z, shading = false),
-                image(-0.3..1, -1..0.5, Makie.logo())
+                image(-0.3..1, -1..0.5, AbstractPlotting.logo())
             )
         )
     end

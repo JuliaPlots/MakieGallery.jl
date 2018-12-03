@@ -104,7 +104,7 @@
         scene
         x = Node(false)
         on(scene.events.mouseposition) do event
-            plot, idx = Makie.mouse_selection(scene)
+            plot, idx = mouse_selection(scene)
             if plot == lineplot && idx > 0
                 visible[] = true
                 text_field[1] = sprint(io-> print(io, round.(Float64.(Tuple(lineplot[1][][idx])), digits = 3)))
@@ -117,7 +117,7 @@
     end
 
     @cell "GUI for exploring Lorenz equation" [vbox, hbox, meshscatter, slider, textslider, colorswatch] begin
-        using Colors, Makie
+        using Colors
         using AbstractPlotting: textslider, colorswatch
         s1, a = textslider(0f0:50f0, "a", start = 13)
         s2, b = textslider(-20f0:20f0, "b", start = 10)
@@ -177,7 +177,7 @@
             on(events(scene).mousedrag) do drag
                 if ispressed(scene, Mouse.left)
                     if drag == Mouse.down
-                        plot, _idx = Makie.mouse_selection(scene)
+                        plot, _idx = mouse_selection(scene)
                         if plot == pplot
                             idx[] = _idx; dragstart[] = true
                             startpos[] = to_world(scene, Point2f0(scene.events.mouseposition[]))
@@ -201,7 +201,7 @@
                     push!(points[], pos)
                     points[] = points[]
                 elseif ispressed(but, Mouse.right)
-                    plot, idx = Makie.mouse_selection(scene)
+                    plot, idx = mouse_selection(scene)
                     if plot == pplot && checkbounds(Bool, points[], idx)
                         deleteat!(points[], idx)
                         points[] = points[]
