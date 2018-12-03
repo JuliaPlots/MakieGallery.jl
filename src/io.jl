@@ -12,7 +12,7 @@ function save_media(entry, x::String, path::String)
     [out]
 end
 
-function save_media(entry, x::Makie.Stepper, path::String) # TODO: this breaks thumbnail generation
+function save_media(entry, x::AbstractPlotting.Stepper, path::String) # TODO: this breaks thumbnail generation
     # return a list of all file names
     images = filter(x-> endswith(x, ".jpg"), readdir(x.folder))
     return map(images) do img
@@ -158,7 +158,7 @@ Records all examples in the database. If error happen, you can fix them and
 start record with `resume = true`, to start at the last example that errored.
 """
 function record_examples(folder = ""; resolution = (500, 500), resume = false)
-    AbstractPlotting.inline!(false)
+    AbstractPlotting.inline!(true)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end
