@@ -1,6 +1,6 @@
 module MakieGallery
 
-using Makie
+using AbstractPlotting
 using Documenter
 using Documenter: Selectors, Expanders
 using Markdown
@@ -12,13 +12,13 @@ using Documenter.Writers
 using Documenter.Writers.HTMLWriter
 using Test, Statistics
 using BinaryProvider
+
 include("documenter_extension.jl")
 include("database.jl")
 include("io.jl")
 include("gallery.jl")
 include("visualregression.jl")
 include("testruns.jl")
-
 
 function event_path(entry, ending)
     joinpath(@__DIR__, "..", "examples", "recorded_events", string(entry.unique_name, ".jls"))
