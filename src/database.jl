@@ -182,7 +182,7 @@ function print_code(
         indent = " "^4,
         replace_nframes = false,
         resolution = (entry)-> "resolution = (500, 500)",
-        outputfile = (entry, ending)-> "./docs/media/" * string(entry.unique_name, ending)
+        outputfile = (entry, ending)-> string(entry.unique_name, ending)
     )
 
     println(io, "using ", join(plotting_backends, ", "))
@@ -446,6 +446,11 @@ end
 macro cell(block)
 end
 
+"""
+Makes a code section linkeable inside of a cell, with separate media output
+"""
+macro substep()
+end
 # Group macro
 macro group(block_of_grouped_cells)
     # only for marking
@@ -513,28 +518,27 @@ end
 
 const module_cache = Module[]
 
-function eval_example(entry; kw_args...)
-    source = example2source(entry; kw_args..., scope_start = "", scope_end = "")
+function eval_example(
+        entry;
+        kw_args...
+    )
+    source = example2source(
+        entry; kw_args...,
+        scope_start = "", scope_end = ""
+    )
+
     uname = entry.unique_name
     tmpmod = Module(gensym(uname))
     # modules created via Module get gc'ed, so we need to store a global reference
     push!(module_cache, tmpmod)
-    result = nothing
-    # try
-        result = include_string(tmpmod, source, string(uname))
-    # catch e
-    #     Base.showerror(stderr, e)
-    #     println(stderr)
-    #     println(stderr, "failed to evaluate $(repr(entry.title)):")
-    #     println(stderr, "```julia")
-    #     println(stderr, source)
-    #     println(stderr, "```")
-    #     println(stderr, "stacktrace:")
-    #     Base.show_backtrace(stderr, Base.backtrace())
-    #     println(stderr)
-    #     rethrow(e)
-    # end
-    result
+    steps = split(source, "@substep", keepempty = false)
+    if length(steps) == 1
+        return include_string(tmpmod, source, string(uname))
+    else
+        return map(enumerate(steps)) do (i, source)
+            include_string(tmpmod, source, string(uname, "_", i))
+        end
+    end
 end
 
 """

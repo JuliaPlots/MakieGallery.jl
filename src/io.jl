@@ -23,8 +23,20 @@ function save_media(entry, x::AbstractPlotting.Stepper, path::String) # TODO: th
     end
 end
 
+function save_media(entry, results::AbstractVector, path::String)
+    paths = String[]
+    for (i, res) in enumerate(results)
+        if res isa Scene
+            img = joinpath(path, "image$i.jpg")
+            save(img, res)
+            push!(paths, img)
+        end
+    end
+    paths
+end
 
-function save_media(example, events::RecordEvents, path::String) #TODO: this breaks thumbnail generation
+
+function save_media(example, events::RecordEvents, path::String)
     # the path is fixed at record time to be stored relative to the example
     epath = event_path(example, "")
     isfile(epath) || error("Can't find events for example: $(example.unique_name). Please run `record_example_events()`")
@@ -181,7 +193,7 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false)
         subfolder = joinpath(folder, string(uname))
         outfolder = joinpath(subfolder, "media")
         ispath(outfolder) || mkpath(outfolder)
-        paths = save_media(example, value, outfolder)
+        save_media(example, value, outfolder)
         mdpath = joinpath(subfolder, "index.md")
         push!(result, subfolder)
         last_evaled[] = uname
@@ -258,7 +270,9 @@ end
 function generate_thumbnails(media_root)
     for folder in readdir(media_root)
         media = joinpath(media_root, folder, "media")
-        sample = joinpath(media, first(readdir(media)))
-        generate_thumbnail(sample, joinpath(media, "thumb.jpg"))
+        if !isfile(media) && ispath(media)
+            sample = joinpath(media, first(readdir(media)))
+            generate_thumbnail(sample, joinpath(media, "thumb.jpg"))
+        end
     end
 end

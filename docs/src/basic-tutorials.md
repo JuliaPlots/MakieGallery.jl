@@ -64,4 +64,4 @@ See the [Output](@ref) section.
 
 ## More examples
 
-See the [Examples index](@ref).
+See the [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html).

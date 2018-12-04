@@ -42,6 +42,7 @@ function load_database()
         "$dir/examples/recipes.jl",
         "$dir/examples/bigdata.jl",
         "$dir/examples/layouting.jl",
+        "$dir/examples/statsmakie.jl",
     ]
     for file in files
         MakieGallery.eval(:(include($file)))

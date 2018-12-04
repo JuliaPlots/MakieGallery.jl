@@ -3,7 +3,7 @@ struct DatabaseLookup <: Expanders.ExpanderPipeline end
 Selectors.order(::Type{DatabaseLookup}) = 0.5
 Selectors.matcher(::Type{DatabaseLookup}, node, page, doc) = match_kw(node)
 
-const regex_pattern = r"\@example_database\(([\"a-zA-Z_0-9.+ ]+)(?:, )?(plot|code|stepperplot)?\)"
+const regex_pattern = r"\@example_database\(([\"a-zA-Z_0-9.+ ]+)(?:, )?(\d+|plot|code|stepperplot)?\)"
 
 
 match_kw(x::String) = occursin(regex_pattern, x)
@@ -41,6 +41,13 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
     capture = matched[1]
     embed = matched[2]
 
+    subidx = nothing
+    # we also allow to reference a subsection annotated with @substep with an
+    # inter: @example_database("Title", 2)
+    if embed isa AbstractString && all(isnumeric, embed)
+        subidx = parse(Int, embed)
+        embed = nothing
+    end
     # The sandboxed module -- either a new one or a cached one from this page.
     database_keys = lowercase.(filter(x-> !(x in ("", " ")), split(capture, '"')))
     # info("$database_keys with embed option $embed")
@@ -52,176 +59,50 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
 
         # bibliographic stuff
         idx = findall(x-> lowercase(x.title) == database_key, database)
-        isempty(idx) && error("can find example $database_key")
+        isempty(idx) && error("can't find example $database_key")
         entry = database[idx[1]]
         uname = string(entry.unique_name)
         lines = entry.file_range
         tags = entry.tags
-
-        # check whether the example is a stepper or not
-        is_stepper = any(x-> occursin("stepper", x), tags)
-
-        if is_stepper && isequal(embed, "plot")
-            @warn("you tried to output an @example_database(\"entry\", plot) but the entry type is a stepper!")
-        end
-
         # print source code for the example
         if embed == nothing || isequal(embed, "code")
-            source = Markdown.Code("julia", look_up_source(database_key))
-            src_code = Markdown.MD(source)
+            source = look_up_source(database_key)
+            if subidx != nothing
+                source = split(source, "@substep", keepempty = false)[subidx]
+            end
+            src_code = Markdown.MD(Markdown.Code("julia", source))
             push!(content, src_code)
         end
-
+        media_root = "/home/sd/ReferenceImages/gallery"
         # embed plot for the example
         if (embed == nothing) || isequal(embed, "plot")
             # print to buffer
             str = sprint() do io
-                mpath = joinpath("/home/sd/ReferenceImages/gallery", uname, "media")
+                mpath = joinpath(media_root, uname, "media")
                 files = readdir(mpath)
-                embed_media(io, joinpath.(mpath, files))
+                if subidx !== nothing
+                    idx = findfirst(files) do file
+                        num = match(r"\d+", file)
+                        num === nothing && return false
+                        subidx == parse(Int, num.match)
+                    end
+                    if idx !== nothing
+                        embed_media(io, [master_url(media_root, joinpath(mpath, files[idx]))])
+                    end
+                else
+                    embed_media(io, master_url.(media_root, joinpath.(mpath, files)))
+                end
             end
             # print code for embedding plot
             src_plot = Documenter.Documents.RawHTML(str)
             push!(content, src_plot)
         end
-
         # finally, map the content back to the page
         page.mapping[x] = content
     end
 end
 
 
-"""
-    enumerate_stepper_examples(filter!(x -> !startswith(x, "thumb"), plots_list))
-
-Enumerates the stepper plots from the `mediapath` from the example with the name `uname`.
-Accepts an optional `filter` argument to filter for specific files starting with this text.
-"""
-function enumerate_stepper_examples(mediapath::AbstractString, uname::String; filter = nothing)
-    # get all of the plots from the stepper
-    steppermediapath = joinpath(mediapath, uname)
-    plots_list = readdir(steppermediapath)
-    if filter != nothing
-        filter!(x -> !startswith(x, "$filter"), plots_list)
-    end
-
-    # the plot step indices always start with 1
-    steps = length(plots_list)
-end
-
-function enumerate_stepper_examples(mediapath::AbstractString, uname::Symbol; filter = nothing)
-    enumerate_stepper_examples(mediapath, String(uname); filter = filter)
-end
-
-
-
-"""
-    embed_thumbnail(io::IO, func::Function, currpath::AbstractString)
-
-Insert thumbnails matching a search tag.
-"""
-function embed_thumbnail(io::IO, func::Function, currpath::AbstractString)
-    indices = find_indices(func)
-    !ispath(currpath) && @warn("currepath does not exist!")
-    for idx in indices
-        uname = database[idx].unique_name
-        title = database[idx].title
-        # TODO: currently exporting video thumbnails as .jpg because of ImageMagick issue#120
-        testpath1 = joinpath(srcmediapath, "thumb-$uname.png")
-        testpath2 = joinpath(srcmediapath, "thumb-$uname.jpg")
-        if isfile(testpath1)
-            embedpath = relpath(testpath1, currpath)
-            println(io, "![]($(embedpath))")
-            # [![Alt text](/path/to/img.jpg)](http://example.net/)
-            # println(io, "[![$title]($(embedpath))](@ref)")
-        elseif isfile(testpath2)
-            embedpath = relpath(testpath2, currpath)
-            println(io, "![]($(embedpath))")
-            # println(io, "[![$title]($(embedpath))](@ref)")
-        else
-            @warn("thumbnail for index $idx with uname $uname not found")
-            embedpath = "not_found"
-        end
-        embedpath = []
-    end
-end
-
-embed_thumbnail(io::IO, func::Function) = embed_thumbnail(io::IO, func::Function, atomicspath)
-
-
-"""
-    embed_thumbnail_link(io::IO, func::Function, currpath::AbstractString, tarpath::AbstractString)
-
-Insert thumbnails matching a search tag.
-"""
-function embed_thumbnail_link(io::IO, func::Function, currpath::AbstractString, tarpath::AbstractString)
-    indices = find_indices(func)
-    !ispath(currpath) && @warn("currepath does not exist!")
-    !ispath(tarpath) && @warn("$(tarpath) does not exist! Note that on your first run of docs generation and before you `makedocs`, you will likely get this error.")
-    for idx in indices
-        is_stepper = false
-
-        entry = database[idx]
-        uname = entry.unique_name
-        title = entry.title
-        src_lines = entry.file_range
-        tags = entry.tags
-
-        # check whether the example is a stepper or not
-        is_stepper = any(x-> occursin("stepper", x), tags)
-
-        if is_stepper
-            steps = enumerate_stepper_examples(mediapath, uname; filter = "thumb")
-            println(io, "```@raw html\n")
-            for i = 1:steps
-                divblock = """<div style="display:inline-block"><p style="display:inline-block; text-align: center">"""
-                caption = "Step $i<br>"
-                imgpath = "media/$uname/thumb-$uname-$i.jpg"
-                imgsrc = """<img src="$imgpath" alt="$caption" /></p></div>"""
-                println(io, divblock * caption * imgsrc)
-            end
-            println(io, "```")
-            break
-        else
-            # TODO: currently exporting video thumbnails as .jpg because of ImageMagick issue#120
-            testpath1 = joinpath(mediapath, "thumb-$uname.png")
-            testpath2 = joinpath(mediapath, "thumb-$uname.jpg")
-            link = relpath(tarpath, currpath)
-            if isfile(testpath1)
-                embedpath = relpath(testpath1, currpath)
-                println(io, "[![library lines $(src_lines)]($(embedpath))]($(link))")
-            elseif isfile(testpath2)
-                embedpath = relpath(testpath2, currpath)
-                println(io, "[![library lines $(src_lines)]($(embedpath))]($(link))")
-            else
-                @warn("thumbnail for index $(repr(idx)) with uname $uname not found")
-                embedpath = "not_found"
-            end
-        end
-        embedpath = []
-    end
-end
-
-# embed_thumbnail_link(io::IO, func::Function) = embed_thumbnail_link(io::IO, func::Function, atomicspath)
-
-
-"""
-    embed_plot(io::IO, uname::AbstractString, mediapath::AbstractString, buildpath::AbstractString[;
-    pure_html::Bool = false])
-
-Outputs markdown code for embedding plots in `Documenter.jl`.
-"""
-function embed_plot(
-        io::IO,
-        uname::AbstractString,
-        mediapath::AbstractString,
-        buildpath::AbstractString;
-        src_lines::AbstractRange = nothing,
-        pure_html::Bool = false
-    )
-
-    print(io, "\n")
-end
 
 
 """

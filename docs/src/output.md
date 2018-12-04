@@ -66,4 +66,4 @@ In both cases, the returned value is a path pointing to the location of the reco
 
 @example_database("Record Video")
 
-For more info, consult the [Examples index](@ref).
+For more info, consult the [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html).

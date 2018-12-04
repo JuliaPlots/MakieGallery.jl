@@ -3,6 +3,8 @@ using Markdown, Pkg, Random, FileIO
 using MakieGallery, Makie
 import AbstractPlotting: _help, to_string, to_func, to_type
 using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table
+using MakieGallery: @cell, @block, @substep
+
 cd(@__DIR__)
 database = MakieGallery.load_database()
 
@@ -127,10 +129,11 @@ end
 # build docs with Documenter
 @info("Running `makedocs` with Documenter.")
 
+using Documenter, MakieGallery, Makie, AbstractPlotting
 
 makedocs(
     modules = [Makie, AbstractPlotting],
-    doctest = false, clean = false,
+    doctest = false, clean = true,
     format = :html,
     sitename = "Makie.jl",
     html_prettyurls = false,
@@ -138,6 +141,7 @@ makedocs(
         "Home" => "index.md",
         "Basics" => [
             "basic-tutorials.md",
+            "statsmakie.md",
             "help_functions.md",
             "functions-overview.md",
             "signatures.md",
@@ -154,6 +158,7 @@ makedocs(
         ],
     ]
 )
+
 using Conda, Documenter
 # deploy
 ENV["DOCUMENTER_DEBUG"] = "true"

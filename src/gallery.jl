@@ -42,7 +42,6 @@ function MediaItem(path, example)
 end
 
 function create_item(item::MediaItem; style = global_style)
-    @show item.link
     create_item(item.title, item.media, item.preview, item.link, item.tags; style = style)
 end
 
