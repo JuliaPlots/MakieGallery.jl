@@ -22,7 +22,7 @@ help_arguments
 Example usage:
 ```@example
 using Makie # hide
-help_arguments(STDOUT, scatter)
+help_arguments(stdout, scatter)
 ```
 
 ## `help_attributes`
@@ -34,7 +34,7 @@ help_attributes
 Example usage:
 ```@example
 using Makie # hide
-help_attributes(STDOUT, Scatter; extended = true)
+help_attributes(stdout, Scatter; extended = true)
 ```
 
 

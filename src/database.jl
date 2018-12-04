@@ -52,32 +52,18 @@ end
 # ==========================================================
 # Print source code given database index
 
-function _print_source(io::IO, idx::Int; style = nothing, example_counter = NaN)
-    if isnan(example_counter)
-        println(io, style == nothing ? "```" :
-            style == "source" ? "```" :
-            style == "julia" ? "```julia" :
-            style == "eval" ? "```@eval" :
-            style == "example" ? "```@example" : "" )
-        print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
-        for line in split(database[idx].source, "\n")
-            line = replace(line, "@resolution" => "resolution = (500, 500)")
-            println(io, line)
-        end
-        println(io, "```")
-    else
-        println(io, style == nothing ? "```" :
-            style == "source" ? "```" :
-            style == "julia" ? "```julia" :
-            style == "eval" ? "```@eval" :
-            style == "example" ? "```@example $(example_counter)" : "" )
-        print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
-        for line in split(database[idx].source, "\n")
-            line = replace(line, "@resolution" => "resolution = (500, 500)")
-            println(io, line)
-        end
-        println(io, "```")
+function _print_source(io::IO, idx::Int; style = "source", example_counter = NaN)
+    style = style == "source" ? "```" : (style == "julia") ? "```julia" : "```@$style"
+    print(io, style)
+    if example_counter != NaN
+        println(io, " ", example_counter)
     end
+    print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
+    for line in split(database[idx].source, "\n")
+        line = replace(line, "@resolution" => "resolution = (500, 500)")
+        println(io, line)
+    end
+    println(io, "```")
 end
 
 """
@@ -96,10 +82,11 @@ Print source code of database (hard coded internally) at given index `idx`.
 * some explanation text
 * ```example 2 # continuation of the same example - more code to be evaluated
 """
-function print_source(io::IO, idx::Int; style = nothing, example_counter = NaN)
-    io = IOBuffer()
-    _print_source(io, idx; style = style, example_counter = example_counter)
-    Base.Markdown.parse(String(take!(io)))
+function print_source(io::IO, idx::Int; style = "source", example_counter = NaN)
+    str = sprint() do io
+        _print_source(io, idx; style = style, example_counter = example_counter)
+    end
+    Markdown.parse(str)
 end
 
 print_source(idx; kw_args...) = print_source(stdout, idx; kw_args...) #defaults to STDOUT

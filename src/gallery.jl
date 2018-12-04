@@ -9,17 +9,11 @@ struct MediaItem
   tags::Vector{String}
 end
 
-function master_url(path)
-    urlbase = if endswith(path, ".html")
-        serve_url = "http://htmlpreview.github.io/?"
-        base = "https://github.com/SimonDanisch/ReferenceImages/blob/master/gallery/"
-        string(serve_url, base)
-    else
-        "https://raw.githubusercontent.com/SimonDanisch/ReferenceImages/master/gallery/"
-    end
+function master_url(root, path)
+    urlbase = "https://simondanisch.github.io/ReferenceImages/gallery/"
     url = replace(
         path,
-        "/home/sd/ReferenceImages/gallery/" => urlbase
+        root => urlbase
     )
 end
 
@@ -37,12 +31,12 @@ function MediaItem(path, example)
     if isempty(media_file)
         error("No media for $(example.title)")
     end
-
+    root = dirname(path)
     MediaItem(
         example.title,
-        embed_media(master_url(media_file)),
+        embed_media(master_url(root, media_file)),
         "",
-        master_url(joinpath(path, "index.html")),
+        master_url(root, joinpath(path, "index.html")),
         string.(example.tags)
     )
 end
@@ -64,7 +58,7 @@ function create_item(title, media, preview, link, tags; style = global_style)
       </div>
       <div class="picture-item__details">
         <figcaption class="picture-item__title"><a href=$(repr(link)) target="_blank" rel="noopener">$(repr(title))</a></figcaption>
-        <p class="picture-item__tags hidden@xs">animal</p>
+        <p class="picture-item__tags hidden@xs"></p>
       </div>
     </div>
   </figure>

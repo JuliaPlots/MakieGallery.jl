@@ -94,7 +94,7 @@ push!(time, Base.time())
 
 @example_database("pulsing marker")
 
-@example_database("Interaction")
+@example_database("Animation")
 
 @example_database("pong")
 

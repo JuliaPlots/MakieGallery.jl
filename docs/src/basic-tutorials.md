@@ -2,28 +2,16 @@
 
 Below is a quick tutorial to help get you started. Note that we assume you have [Julia](https://julialang.org/) installed and configured already.
 
-## Getting Makie on Julia 0.6
+## Getting Makie
 
 ```julia
-#=
-This will install the deprecated, first version of Makie
-Look at IJulia examples for the old style
-=#
-Pkg.add("Makie")
-
-#=
-Get the bleeding edge version, which is used to generate
-the `Examples from the documentation` + `Complex examples` section
-=#
-Pkg.checkout("Makie")
-Pkg.checkout("AbstractPlotting")
+add Makie
 ```
 
-## Getting Makie on Julia 0.7<sup>+</sup>
+## Getting latest version of Makie
 
 ```Julia
-add Makie#sd/07 AbstractPlotting#sd/07 GeometryTypes#sd/07 ImageMagick#sd/07 Reactive#sd/07
-add ImageFiltering#master
+add Makie#master AbstractPlotting#master GLMakie#master
 test Makie
 ```
 

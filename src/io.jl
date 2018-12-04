@@ -83,6 +83,8 @@ Embeds a vector of media files as HTML
 """
 function embed_media(io::IO, paths::AbstractVector{<: AbstractString}, caption = "")
     for (i, path) in enumerate(paths)
+        println(path)
+        occursin("thumb", path) && continue
         println(io, """
         <div style="display:inline-block">
             <p style="display:inline-block; text-align: center">
@@ -181,13 +183,13 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false)
         ispath(outfolder) || mkpath(outfolder)
         paths = save_media(example, value, outfolder)
         mdpath = joinpath(subfolder, "index.md")
-        save_markdown(mdpath, example, master_url.(paths))
-        md2html(mdpath)
         push!(result, subfolder)
         last_evaled[] = uname
         AbstractPlotting.set_theme!(resolution = resolution) # reset befor next example
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
+    gallery_from_recordings(folder, joinpath(folder, "index.html"))
+    generate_thumbnails(folder)
     result
 end
 
@@ -202,7 +204,7 @@ function gallery_from_recordings(
     items = map(MakieGallery.database) do example
         base_path = joinpath(folder, string(example.unique_name))
         media_path = joinpath(base_path, "media")
-        media = master_url.(joinpath.(media_path, readdir(media_path)))
+        media = master_url.(folder, joinpath.(media_path, readdir(media_path)))
         mdpath = joinpath(base_path, "index.md")
         save_markdown(mdpath, example, media)
         md2html(mdpath)
@@ -210,5 +212,53 @@ function gallery_from_recordings(
     end
     open(html_out, "w") do io
         println(io, create_page(items, tags))
+    end
+end
+
+
+
+
+function rescale_image(path::AbstractString, target_path::AbstractString, sz::Int = 200)
+    !isfile(path) && error("Input argument must be a file!")
+    img = FileIO.load(path)
+    # calculate new image size `newsz`
+    (height, width) = size(img)
+    (scale_height, scale_width) = sz ./ (height, width)
+    scale = min(scale_height, scale_width)
+    newsz = round.(Int, (height, width) .* scale)
+
+    # filter image + resize image
+    gaussfactor = 0.4
+    σ = map((o,n) -> gaussfactor*o/n, size(img), newsz)
+    kern = KernelFactors.gaussian(σ)   # from ImageFiltering
+    imgf = ImageFiltering.imfilter(img, kern, NA())
+    newimg = ImageTransformations.imresize(imgf, newsz)
+    # save image
+    FileIO.save(target_path, newimg)
+end
+
+
+"""
+    generate_thumbnail(path::AbstractString, target_path, thumb_size::Int = 200)
+
+Generates a (proportionally-scaled) thumbnail with maximum side dimension `sz`.
+`sz` must be an integer, and the default value is 200 pixels.
+"""
+function generate_thumbnail(path, thumb_path, thumb_size = 128)
+    if any(ext-> endswith(path, ext), (".png", ".jpeg", ".jpg"))
+        rescale_image(path, thumb_path, thumb_size)
+    elseif any(ext-> endswith(path, ext), (".gif", ".mp4", ".webm"))
+        seektime = get_video_duration(path) / 2
+        run(`ffmpeg -loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
+    else
+        @warn("Unsupported return file format in $path")
+    end
+end
+
+function generate_thumbnails(media_root)
+    for folder in readdir(media_root)
+        media = joinpath(media_root, folder, "media")
+        sample = joinpath(media, first(readdir(media)))
+        generate_thumbnail(sample, joinpath(media, "thumb.jpg"))
     end
 end

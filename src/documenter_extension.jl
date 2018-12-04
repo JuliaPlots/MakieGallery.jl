@@ -5,27 +5,14 @@ Selectors.matcher(::Type{DatabaseLookup}, node, page, doc) = match_kw(node)
 
 const regex_pattern = r"\@example_database\(([\"a-zA-Z_0-9.+ ]+)(?:, )?(plot|code|stepperplot)?\)"
 
-const atomics = (
-    heatmap,
-    image,
-    lines,
-    linesegments,
-    mesh,
-    meshscatter,
-    scatter,
-    surface,
-    text,
-    volume
-)
 
 match_kw(x::String) = occursin(regex_pattern, x)
 match_kw(x::Paragraph) = any(match_kw, x.content)
 match_kw(x::Any) = false
 
-
 # ============================================= Simon's implementation
 function look_up_source(database_key)
-    entries = findall(x-> x.title == database_key, database)
+    entries = findall(x-> lowercase(x.title) == lowercase(database_key), database)
     # current implementation finds titles, but we can also search for tags too
     isempty(entries) && error("No entry found for database reference $database_key")
     length(entries) > 1 && error("Multiple entries found for database reference $database_key")
@@ -37,7 +24,7 @@ function look_up_source(database_key)
             scope_end = "",
             indent = "",
             resolution = (entry)-> "resolution = (500, 500)",
-            outputfile = (entry, ending)-> Pkg.dir("Makie", "docs", "media", string(entry.unique_name, ending))
+            outputfile = (entry, ending)-> string(entry.unique_name, ending)
         )
     end
 end
@@ -55,7 +42,7 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
     embed = matched[2]
 
     # The sandboxed module -- either a new one or a cached one from this page.
-    database_keys = filter(x-> !(x in ("", " ")), split(capture, '"'))
+    database_keys = lowercase.(filter(x-> !(x in ("", " ")), split(capture, '"')))
     # info("$database_keys with embed option $embed")
     map(database_keys) do database_key
         is_stepper = false
@@ -64,7 +51,8 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
         content = []
 
         # bibliographic stuff
-        idx = findall(x-> x.title == database_key, database)
+        idx = findall(x-> lowercase(x.title) == database_key, database)
+        isempty(idx) && error("can find example $database_key")
         entry = database[idx[1]]
         uname = string(entry.unique_name)
         lines = entry.file_range
@@ -85,38 +73,16 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
         end
 
         # embed plot for the example
-        if (embed == nothing && !is_stepper) || isequal(embed, "plot")
+        if (embed == nothing) || isequal(embed, "plot")
             # print to buffer
-            io = IOBuffer()
-            embed_plot(io, uname, mediapath, buildpath; src_lines = lines, pure_html = true)
-            str = String(take!(io))
-
+            str = sprint() do io
+                mpath = joinpath("/home/sd/ReferenceImages/gallery", uname, "media")
+                files = readdir(mpath)
+                embed_media(io, joinpath.(mpath, files))
+            end
             # print code for embedding plot
             src_plot = Documenter.Documents.RawHTML(str)
             push!(content, src_plot)
-        end
-
-        # use stepper for the example
-        if (embed == nothing && is_stepper) || isequal(embed, "stepperplot")
-
-            steps = enumerate_stepper_examples(mediapath, uname; filter = "thumb")
-            steppermediapath = joinpath(mediapath, uname)
-
-            # print to buffer
-            io = IOBuffer()
-
-            for step = 1:steps
-				divblock = """<div style="display:inline-block"><p style="display:inline-block; text-align: center">"""
-	            caption = "Step $step<br>"
-	            imgpath = "media/$uname/thumb-$uname-$step.jpg"
-	            imgsrc = """<img src="$imgpath" alt="$caption" /></p></div>"""
-	            println(io, divblock * caption * imgsrc)
-                str = String(take!(io))
-
-                # print code for embedding plot
-                src_plot = Documenter.Documents.RawHTML(str)
-                push!(content, src_plot)
-            end
         end
 
         # finally, map the content back to the page
@@ -253,43 +219,7 @@ function embed_plot(
         src_lines::AbstractRange = nothing,
         pure_html::Bool = false
     )
-    medialist = readdir(mediapath)
 
-    if ("$(uname)") in medialist
-        steps = enumerate_stepper_examples(mediapath, uname; filter = "thumb")
-        println(io, "```@raw html\n")
-        for i = 1:steps
-            divblock = """<div style="display:inline-block"><p style="display:inline-block; text-align: center">"""
-            caption = "Step $i<br>"
-            imgpath = "media/$uname/thumb-$uname-$i.jpg"
-            imgsrc = """<img src="$imgpath" alt="$caption" /></p></div>"""
-            println(io, divblock * caption * imgsrc)
-        end
-        println(io, "```")
-    end
-    extensions = [".jpg", ".gif"]
-    for i in extensions
-        if ("$(uname)" * i) in medialist
-            println("$(uname)" * i)
-            embedpath = joinpath(relpath(mediapath, buildpath), "$(uname)" * i)
-            if pure_html
-                embed_code = """
-                    <img src="$(embedpath)" alt="library lines $(src_lines)">
-                """
-                println(io, embed_code)
-            else
-                println(io, "![library lines $(src_lines)]($(embedpath))")
-            end
-            break
-        elseif "$(uname).mp4" in medialist
-            println("$(uname).mp4")
-            embedcode = embed_video(joinpath(relpath(mediapath, buildpath), "$(uname).mp4"); pure_html = pure_html)
-            println(io, embedcode)
-            break
-        else
-            @warn("file $(uname)$i with unknown extension in mediapath, or file nonexistent")
-        end
-    end
     print(io, "\n")
 end
 
@@ -343,47 +273,6 @@ function print_table(io::IO, dict::Dict)
     end
 end
 
-
-
-
-function rescale_image(path::AbstractString, target_path::AbstractString, sz::Int = 200)
-    !isfile(path) && @warn("Input argument must be a file!")
-    img = FileIO.load(path)
-
-    # calculate new image size `newsz`
-    (height, width) = size(img)
-    (scale_height, scale_width) = sz ./ (height, width)
-    scale = min(scale_height, scale_width)
-    newsz = round.(Int, (height, width) .* scale)
-
-    # filter image + resize image
-    gaussfactor = 0.4
-    σ = map((o,n) -> gaussfactor*o/n, size(img), newsz)
-    kern = KernelFactors.gaussian(σ)   # from ImageFiltering
-    imgf = ImageFiltering.imfilter(img, kern, NA())
-    newimg = ImageTransformations.imresize(imgf, newsz)
-    # save image
-    FileIO.save(target_path, newimg)
-end
-
-
-"""
-    generate_thumbnail(path::AbstractString, target_path, thumb_size::Int = 200)
-
-Generates a (proportionally-scaled) thumbnail with maximum side dimension `sz`.
-`sz` must be an integer, and the default value is 200 pixels.
-"""
-function generate_thumbnail(path, thumb_path, thumb_size = 128)
-    if any(ext-> endswith(path, ext), (".png", ".jpeg", ".jpg"))
-        rescale_image(path, thumb_path, thumb_size)
-    elseif any(ext-> endswith(path, ext), (".gif", ".mp4", ".webm"))
-        seektime = get_video_duration(path) / 2
-        println(thumb_path)
-        run(`ffmpeg -loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
-    else
-        @warn("Unsupported return file format in $path")
-    end
-end
 
 
 """

@@ -1,101 +1,60 @@
-using Documenter, Makie
+using Documenter, AbstractPlotting
 using Markdown, Pkg, Random, FileIO
-using MakieGallery
-
-using MakieGallery: database, eval_examples, generate_thumbnail
-cd(@__DIR__)
-
+using MakieGallery, Makie
 import AbstractPlotting: _help, to_string, to_func, to_type
+using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table
+cd(@__DIR__)
+database = MakieGallery.load_database()
 
-pathroot = normpath(joinpath(dirname(pathof(Makie)), ".."))
+pathroot = normpath(joinpath(dirname(pathof(MakieGallery)), ".."))
 docspath = joinpath(pathroot, "docs")
 srcpath = joinpath(pathroot, "docs", "src")
-srcmediapath = joinpath(pathroot, "docs", "media")
 buildpath = joinpath(pathroot, "docs", "build")
 mediapath = joinpath(pathroot, "docs", "build", "media")
 expdbpath = joinpath(buildpath, "examples-database.html")
-# TODO can we teach this to documenter somehow?
-ispath(mediapath) || mkpath(mediapath)
 
+mediapath = joinpath(homedir(), "ReferenceImages", "gallery")
 
-
-
-#pkg"add ModernGL MeshIO ImageMagick ImageFilter ImageTransformations GDAL"
-
-# you can restart the build, if something failed, by just searching for the index you ended with, and putting it into start
-findfirst(x-> x.title == "WorldClim visualization", database)
-
-
-
+MakieGallery.gallery_from_recordings(mediapath, joinpath(mediapath, "index.html"))
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file
 @info("Generating functions overview")
 path = joinpath(srcpath, "functions-overview.md")
 srcdocpath = joinpath(srcpath, "src-functions.md")
-plotting_functions = (atomics..., contour, arrows, barplot, poly, band, slider, vbox)
+
+plotting_functions = (
+    AbstractPlotting.atomic_functions..., contour, arrows,
+    barplot, poly, band, slider, vbox
+)
+
 open(path, "w") do io
     !ispath(srcdocpath) && error("source document doesn't exist!")
-    medialist = readdir(mediapath)
-    isempty(medialist) && error("media folder is empty -- perhaps you forgot to generate the plots? :)")
-    println(io, "# Atomic functions overview")
+    println(io, "# Plotting functions overview")
     src = read(srcdocpath, String)
-    println(io, src)
-    print(io, "\n")
+    println(io, src, "\n")
     for func in plotting_functions
         fname = to_string(func)
-        expdbpath = joinpath(buildpath, "examples-$fname.html")
         println(io, "## `$fname`\n")
-        try
-            println(io, "```@docs")
-            println(io, "$fname")
-            println(io, "```\n")
-            help_attributes(io, func; extended = true)
-            embed_thumbnail_link(io, func, buildpath, expdbpath)
-        catch e
-            println("ERROR: Didn't work with $fname\n")
-            Base.showerror(stderr, e)
+        println(io, "```@docs")
+        println(io, "$fname")
+        println(io, "```\n")
+        help_attributes(io, func; extended = true)
+        # add previews of all tags related to function
+        for example in database
+            fname in example.tags || continue
+            base_path = joinpath(mediapath, string(example.unique_name))
+            thumb = master_url(mediapath, joinpath(base_path, "media", "thumb.jpg"))
+            code = master_url(mediapath, joinpath(base_path, "index.html"))
+            src_lines = example.file_range
+            println(io, """[![library lines $src_lines]($thumb)]($code)""")
         end
         println(io, "\n")
     end
 end
 
-# =============================================
-# automatically generate gallery based on looping through the database
-# using pre-generated plots from generate_plots.jl
-cd(docspath)
-example_pages = nothing
-example_list = String[]
-to_string(x::Symbol) = string(x)
 
-for func in (plotting_functions..., :interaction)
-    fname = to_string(func)
-    @info("Generating examples gallery for $fname")
-    path = joinpath(srcpath, "examples-$fname.md")
-    indices = find_indices(func)
-    open(path, "w") do io
-        println(io, "# `$fname`")
-        examples2source(fname, scope_start = "", scope_end = "", indent = "") do entry, source
-            # print bibliographic stuff
-            println(io, "## $(entry.title)")
-            print(io, "Tags: ")
-            tags = sort(collect(entry.tags))
-            for j = 1:length(tags) - 1; print(io, "`$(tags[j])`, "); end
-            println(io, "`$(tags[end])`.\n")
-            uname = string(entry.unique_name)
-            src_lines = entry.file_range
-            println(io, """
-                ```julia
-                $source
-                ```
-                """
-            )
-            embed_plot(io, uname, mediapath, buildpath; src_lines = src_lines)
-        end
-    end
-    push!(example_list, "examples-$fname.md")
-end
-example_list
+cd(docspath)
 
 # =============================================
 # automatically generate an overview of the plot attributes (keyword arguments), using a source md file
@@ -167,6 +126,8 @@ end
 
 # build docs with Documenter
 @info("Running `makedocs` with Documenter.")
+
+
 makedocs(
     modules = [Makie, AbstractPlotting],
     doctest = false, clean = false,
@@ -186,11 +147,6 @@ makedocs(
             "interaction.md",
             "output.md",
             # "layout.md"
-        ],
-        # atomics_pages,
-        "Examples" => [
-            "index-examples.md",
-            example_list...
         ],
         "Developer Documentation" => [
             "why-makie.md",
