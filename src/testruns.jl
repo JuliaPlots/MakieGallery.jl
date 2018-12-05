@@ -83,29 +83,31 @@ function run_comparison(test_record_path, reference, test_diff_path)
     @testset "Reference Image Tests" begin
         folders = readdir(test_record_path)
         for folder in folders
-            media = joinpath(folder, "media")
-            ref_folder = joinpath(reference, media)
-            test_folder = joinpath(test_record_path, media)
-            ref_media = sort(readdir(ref_folder))
-            test_media = sort(readdir(test_folder))
-            maxdiff = 0.08
-            @testset "$folder" begin
-                if length(ref_media) != length(test_media)
-                    @warn("recodings are missing for $folder - skipping test")
-                else
-                    for (ref, test) in zip(ref_media, test_media)
-                        ref = joinpath(ref_folder, ref)
-                        test = joinpath(test_folder, test)
-                        diff = compare_media(ref, test)
-                        if diff >= maxdiff
-                            refdiff = joinpath(test_diff_path, folder, string("ref_", basename(ref)))
-                            testdiff = joinpath(test_diff_path, folder, string("test_", basename(test)))
-                            mkpath(dirname(refdiff)); mkpath(dirname(testdiff))
-                            cp(ref, refdiff, force = true)
-                            cp(test, testdiff, force = true)
-                            @test diff <= maxdiff
-                        else
-                            @test diff <= maxdiff
+            if isdir(folder)
+                media = joinpath(folder, "media")
+                ref_folder = joinpath(reference, media)
+                test_folder = joinpath(test_record_path, media)
+                ref_media = sort(readdir(ref_folder))
+                test_media = sort(readdir(test_folder))
+                maxdiff = 0.08
+                @testset "$folder" begin
+                    if length(ref_media) != length(test_media)
+                        @warn("recodings are missing for $folder - skipping test")
+                    else
+                        for (ref, test) in zip(ref_media, test_media)
+                            ref = joinpath(ref_folder, ref)
+                            test = joinpath(test_folder, test)
+                            diff = compare_media(ref, test)
+                            if diff >= maxdiff
+                                refdiff = joinpath(test_diff_path, folder, string("ref_", basename(ref)))
+                                testdiff = joinpath(test_diff_path, folder, string("test_", basename(test)))
+                                mkpath(dirname(refdiff)); mkpath(dirname(testdiff))
+                                cp(ref, refdiff, force = true)
+                                cp(test, testdiff, force = true)
+                                @test diff <= maxdiff
+                            else
+                                @test diff <= maxdiff
+                            end
                         end
                     end
                 end
