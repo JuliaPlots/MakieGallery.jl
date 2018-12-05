@@ -171,7 +171,7 @@ const last_evaled = Ref{Symbol}()
 Records all examples in the database. If error happen, you can fix them and
 start record with `resume = true`, to start at the last example that errored.
 """
-function record_examples(folder = ""; resolution = (500, 500), resume = false)
+function record_examples(folder = ""; resolution = (500, 500), resume = false, generate_thumbnail = false)
     AbstractPlotting.inline!(true)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
@@ -201,7 +201,7 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false)
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"))
-    generate_thumbnails(folder)
+    generate_thumbnail && generate_thumbnails(folder)
     result
 end
 
