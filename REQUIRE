@@ -21,3 +21,4 @@ ImageFiltering
 DataFrames
 RDatasets
 BinaryProvider
+StatsMakie
