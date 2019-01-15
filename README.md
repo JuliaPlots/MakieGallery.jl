@@ -8,7 +8,7 @@ Build status: [![][gitlab-img]][gitlab-url]
 [gitlab-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
 
 
-[Gallery Generated With this Package](http://htmlpreview.github.io/?https://github.com/JuliaPlots/MakieGallery.jl/blob/master/index.html)
+[Gallery Generated With this Package](https://simondanisch.github.io/ReferenceImages/gallery/index.html)
 
 ## Examples for Makie:
 
