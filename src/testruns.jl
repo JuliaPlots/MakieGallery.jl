@@ -1,7 +1,7 @@
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version)
+function download_reference(version = v"0.1.0")
     download_dir = joinpath(@__DIR__, "..", "test", "testimages")
     tarfile = joinpath(download_dir, "gallery.zip")
     url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
@@ -70,9 +70,9 @@ end
 """
 Compares all media recursively in two recorded folders!
 """
-function run_comparison(test_record_path, reference, test_diff_path)
+function run_comparison(test_record_path, test_diff_path, reference = MakieGallery.download_reference())
     @testset "Reference Image Tests" begin
-        folders = readdir(test_record_path)
+        folders = joinpath.(test_record_path, readdir(test_record_path))
         for folder in folders
             if isdir(folder)
                 media = joinpath(folder, "media")
