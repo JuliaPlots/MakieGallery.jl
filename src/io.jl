@@ -190,6 +190,7 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false, g
     eval_examples(outputfile = output_path, start = start) do example, value
         Random.seed!(42)
         uname = example.unique_name
+        println("running $(example.title)")
         subfolder = joinpath(folder, string(uname))
         outfolder = joinpath(subfolder, "media")
         ispath(outfolder) || mkpath(outfolder)
