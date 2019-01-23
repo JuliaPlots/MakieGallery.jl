@@ -95,7 +95,6 @@ Embeds a vector of media files as HTML
 """
 function embed_media(io::IO, paths::AbstractVector{<: AbstractString}, caption = "")
     for (i, path) in enumerate(paths)
-        println(path)
         occursin("thumb", path) && continue
         println(io, """
         <div style="display:inline-block">
@@ -162,8 +161,28 @@ function save_markdown(mdpath::String, example::CellEntry, media::Vector{String}
 end
 
 
-const last_evaled = Ref{Symbol}()
+const last_evaled = Ref{Int}()
 
+"""
+    set_last_evaled!(database_idx::Int)
+Set's last evaled for resume
+"""
+function set_last_evaled!(database_idx::Int)
+    last_evaled[] = database_idx - 1
+    database_idx
+end
+
+"""
+    set_last_evaled!(database_idx::Int)
+Set's last evaled for resume
+"""
+function set_last_evaled!(unique_name::Symbol)
+    idx = findfirst(e-> e.unique_name == unique_name, database)
+    if idx === nothing
+        error("Unique name $unique_name not found in database")
+    end
+    last_evaled[] = idx - 1 # minus one, because record_example will start at idx + 1
+end
 
 """
     record_examples(folder = ""; resolution = (500, 500), resume = false)
@@ -171,7 +190,11 @@ const last_evaled = Ref{Symbol}()
 Records all examples in the database. If error happen, you can fix them and
 start record with `resume = true`, to start at the last example that errored.
 """
-function record_examples(folder = ""; resolution = (500, 500), resume = false, generate_thumbnail = false)
+function record_examples(
+        folder = "";
+        resolution = (500, 500), resume::Union{Bool, Integer} = false,
+        generate_thumbnail = false
+    )
     AbstractPlotting.inline!(true)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
@@ -179,9 +202,10 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false, g
     ispath(folder) || mkpath(folder)
     ispath(joinpath(folder, "tmp")) || mkdir(joinpath(folder, "tmp"))
     result = []
-    start = if resume && isassigned(last_evaled)
-        idx = findfirst(e-> e.unique_name == last_evaled[], database)
-        idx === nothing ? 1 : min(idx + 1, length(database))
+    start = if resume isa Int
+        start = resume
+    elseif (resume isa Bool) && resume && last_evaled[] >= 0 && last_evaled[] < length(database)
+        last_evaled[] + 1
     else
         1
     end
@@ -190,14 +214,14 @@ function record_examples(folder = ""; resolution = (500, 500), resume = false, g
     eval_examples(outputfile = output_path, start = start) do example, value
         Random.seed!(42)
         uname = example.unique_name
-        println("running $(example.title)")
+        println("running $(uname)")
         subfolder = joinpath(folder, string(uname))
         outfolder = joinpath(subfolder, "media")
         ispath(outfolder) || mkpath(outfolder)
         save_media(example, value, outfolder)
         mdpath = joinpath(subfolder, "index.md")
         push!(result, subfolder)
-        last_evaled[] = uname
+        set_last_evaled!(uname)
         AbstractPlotting.set_theme!(resolution = resolution) # reset befor next example
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
@@ -274,6 +298,22 @@ function generate_thumbnails(media_root)
         if !isfile(media) && ispath(media)
             sample = joinpath(media, first(readdir(media)))
             generate_thumbnail(sample, joinpath(media, "thumb.jpg"))
+        end
+    end
+end
+
+"""
+Embedds all produced media in one big html file
+"""
+function generate_preview(media_root, path = joinpath(@__DIR__, "preview.html"))
+    open(path, "w") do io
+        for folder in readdir(media_root)
+            media = joinpath(media_root, folder, "media")
+            if !isfile(media) && ispath(media)
+                medias = joinpath.(media, readdir(media))
+                println(io, "<h1> $folder </h1>")
+                MakieGallery.embed_media(io, medias)
+            end
         end
     end
 end

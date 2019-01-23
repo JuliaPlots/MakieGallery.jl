@@ -7,17 +7,7 @@ function download_reference(version)
     url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
     refpath = joinpath(download_dir, "ReferenceImages-$(version)", "gallery")
     if !isdir(refpath) # if not yet downloaded
-        download_images() = download(url, tarfile)
-        try
-            download_images()
-        catch e
-            if isa(e, ErrorException) && occursin("Hash Mismatch", e.msg)
-                rm(tarfile, force = true)
-                download_images()
-            else
-                rethrow(e)
-            end
-        end
+        download(url, tarfile)
         BinaryProvider.unpack(tarfile, download_dir)
         # check again after download
         if !isdir(refpath)
@@ -70,9 +60,9 @@ end
 """
 Compares all media recursively in two recorded folders!
 """
-function run_comparison(test_record_path, reference, test_diff_path)
+function run_comparison(test_record_path, test_diff_path, reference = MakieGallery.download_reference(v"0.1.0"))
     @testset "Reference Image Tests" begin
-        folders = readdir(test_record_path)
+        folders = joinpath.(test_record_path, readdir(test_record_path))
         for folder in folders
             if isdir(folder)
                 media = joinpath(folder, "media")

@@ -134,6 +134,10 @@ Demo.prototype._handleSortChange = function (evt) {
     return element.getAttribute('data-created');
   }
 
+  function sortByStars(element) {
+    return parseInt(element.getAttribute('data-stars'), 10);
+  }
+
   function sortByTitle(element) {
     return element.getAttribute('data-title').toLowerCase();
   }
@@ -146,6 +150,11 @@ Demo.prototype._handleSortChange = function (evt) {
   } else if (value === 'title') {
     options = {
       by: sortByTitle,
+    };
+  } else if (value === 'stars') {
+    options = {
+      reverse: true,
+      by: sortByStars,
     };
   }
 
@@ -184,8 +193,7 @@ Demo.prototype._handleSearchKeyup = function (evt) {
       }
     }
 
-    var titleElement = element.querySelector('.picture-item__title');
-    var titleText = titleElement.textContent.toLowerCase().trim();
+    var titleText = element.getAttribute('data-title').toLowerCase().trim();
 
     return titleText.indexOf(searchText) !== -1;
   });

@@ -29,6 +29,7 @@
         r = range(-1, stop = 1, length = 100)
         mat = [(x.^2 + y.^2 + z.^2) for x=r, y=r, z=r]
         mat2 = mat .* (mat .< 1.4)
+        typeof(mat2)
         #plot the space outside
         volume(50..100, 50..100, 50..100, mat2, algorithm = :absorptionrgba)
     end

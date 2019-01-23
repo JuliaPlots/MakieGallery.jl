@@ -7,10 +7,14 @@ struct MediaItem
   preview::String
   link::String
   tags::Vector{String}
+  data::Dict{String, Any}
 end
 
-function master_url(root, path)
-    urlbase = "https://simondanisch.github.io/ReferenceImages/gallery/"
+function master_url(
+        root, path;
+        urlbase = "https://simondanisch.github.io/ReferenceImages/gallery/"
+    )
+
     url = replace(
         path,
         root => urlbase
@@ -47,7 +51,8 @@ end
 
 function create_item(title, media, preview, link, tags; style = global_style)
   """
-  <figure class="col-3@xs col-4@sm col-3@md picture-item shuffle-item shuffle-item--visible" data-groups='$(repr(tags))' data-date-created="2017-04-30" data-title=$(repr(title)) style=$(repr(style))>
+  <figure class="col-3@xs col-4@sm col-3@md picture-item shuffle-item shuffle-item--visible"
+    data-groups='$(repr(tags))' data-date-created="2017-04-30" data-title=$(repr(title)) style=$(repr(style))>
     <div class="picture-item__inner">
       <div class="aspect aspect--16x9">
         <div class="aspect__inner">
@@ -65,15 +70,53 @@ function create_item(title, media, preview, link, tags; style = global_style)
 end
 
 
+struct DataItem
+  title::String
+  tags::Vector{String}
+  data::Vector{Pair{String, Any}}
+  style::String
+  content::String
+end
+function create_item(item::DataItem)
+    sprint(io-> create_item(io, item))
+end
+function create_item(io::IO, item::DataItem)
+    print(io, """<figure class="col-2@sm picture-item" """)
+    for (k, v) in item.data
+      print(io, "data-$k=\"", v, "\" ")
+    end
+    print(io, "data-groups='", repr(item.tags), "' ")
+    print(io, "data-title=", repr(item.title), " ")
+    if !isempty(item.style)
+        print(io, "style=", repr(item.style))
+    else
+        print(io, "style=", "\"border-style: solid; border-width: 2px; width: 250px; height: 180px\"")
+    end
+    println(io, ">")
+    println(io, item.content)
+    println(io, "</figure>")
+    return
+end
+
+
+function sort_button(data, display_text)
+    """
+    <label class="btn">
+      <input type="radio" name="sort-value" value=$(repr(data))> $display_text
+    </label>
+    """
+end
 
 function create_page(
     items, tags;
+    sort_buttons = ["dom" => "Default", "date-created" => "Date Created"],
     shufflejs = "https://cdnjs.cloudflare.com/ajax/libs/Shuffle/5.2.0/shuffle.min.js"
   )
   tag_buttons = join(map(tags) do tag
     """<button class="btn btn--primary" data-group=$(repr(tag))>$tag</button>"""
   end, "\n")
   groups = join(create_item.(items), "\n")
+  sort_buttons_html = join(sort_button.(first.(sort_buttons), last.(sort_buttons)), "\n")
   html_groups = """
   <script src="$shufflejs"></script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
@@ -108,15 +151,7 @@ function create_page(
           <fieldset class="filters-group">
             <legend class="filter-label">Sort</legend>
             <div class="btn-group sort-options">
-              <label class="btn active">
-                <input type="radio" name="sort-value" value="dom"> Default
-              </label>
-              <label class="btn">
-                <input type="radio" name="sort-value" value="title"> Title
-              </label>
-              <label class="btn">
-                <input type="radio" name="sort-value" value="date-created"> Date Created
-              </label>
+              $sort_buttons_html
             </div>
           </fieldset>
         </div>
