@@ -8,16 +8,11 @@ using MakieGallery: @cell, @block, @substep
 cd(@__DIR__)
 database = MakieGallery.load_database()
 
-pathroot = normpath(joinpath(dirname(pathof(MakieGallery)), ".."))
+pathroot = normpath(@__DIR__, "..")
 docspath = joinpath(pathroot, "docs")
-srcpath = joinpath(pathroot, "docs", "src")
-buildpath = joinpath(pathroot, "docs", "build")
-mediapath = joinpath(pathroot, "docs", "build", "media")
-expdbpath = joinpath(buildpath, "examples-database.html")
-
+srcpath = joinpath(docspath, "src")
+buildpath = joinpath(docspath, "build")
 mediapath = joinpath(homedir(), "ReferenceImages", "gallery")
-
-MakieGallery.gallery_from_recordings(mediapath, joinpath(mediapath, "index.html"))
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file
@@ -177,7 +172,7 @@ end
 
 
 
-#run(`pip install --upgrade pip`)
+run(`pip install --upgrade pip`)
 
 deploydocs(
     deps = Deps.pip("mkdocs", "python-markdown-math", "mkdocs-cinder"),

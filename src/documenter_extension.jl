@@ -73,7 +73,8 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             src_code = Markdown.MD(Markdown.Code("julia", source))
             push!(content, src_code)
         end
-        media_root = "/home/sd/ReferenceImages/gallery"
+        # TODO figure out a better way to not hardcode this
+        media_root = joinpath(homedir(), "ReferenceImages/gallery")
         # embed plot for the example
         if (embed == nothing) || isequal(embed, "plot")
             # print to buffer
