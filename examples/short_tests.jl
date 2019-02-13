@@ -49,6 +49,10 @@
     @cell lines(rand(10), rand(10), color = rand(RGBAf0, 10), linewidth = 10)
     @cell meshscatter(rand(10), rand(10), rand(10), color = rand(10))
     @cell meshscatter(rand(10), rand(10), rand(10), color = rand(RGBAf0, 10))
+    @cell scatter(0..1, rand(10), markersize = rand(10) .* 0.1)
+    @cell scatter(LinRange(0, 1, 10), rand(10))
+    @cell scatter(rand(10), LinRange(0, 1, 10))
+
 
     @cell begin
         scene = Scene()

@@ -1,7 +1,7 @@
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.1.0")
+function download_reference(version = v"0.1.1")
     download_dir = joinpath(@__DIR__, "..", "test", "testimages")
     tarfile = joinpath(download_dir, "gallery.zip")
     url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
@@ -9,6 +9,7 @@ function download_reference(version = v"0.1.0")
     if !isdir(refpath) # if not yet downloaded
         download_images() = download(url, tarfile)
         try
+            @info "downloading reference images for version $version"
             download_images()
         catch e
             if isa(e, ErrorException) && occursin("Hash Mismatch", e.msg)
@@ -23,6 +24,8 @@ function download_reference(version = v"0.1.0")
         if !isdir(refpath)
             error("Something went wrong while downloading reference images. Plots can't be compared to references")
         end
+    else
+        @info "using reference images for version $version (already downloaded)"
     end
     refpath
 end

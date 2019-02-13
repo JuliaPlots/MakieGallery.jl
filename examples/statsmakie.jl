@@ -85,5 +85,9 @@
             :SepalLength, (:PetalLength, :PetalWidth)
         )
         @substep
+
+        barplot(["hi", "ima", "string"], rand(3))
+        @substep
+        
     end
 end
