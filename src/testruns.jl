@@ -6,17 +6,8 @@ function download_reference(version)
     tarfile = joinpath(download_dir, "gallery.zip")
     url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
     refpath = joinpath(download_dir, "ReferenceImages-$(version)", "gallery")
-    # function url2hash(url::String)
-    #     path = download(url)
-    #     open(io-> bytes2hex(BinaryProvider.sha256(io)), path)
-    # end
-    # url2hash(url) |> println
-
     if !isdir(refpath) # if not yet downloaded
-        download_images() = BinaryProvider.download_verify(
-            url, "6f950d5124369b77b234251c68160c1bfa08524902e2cb2d81966b56accc56e1",
-            tarfile
-        )
+        download_images() = download(url, tarfile)
         try
             download_images()
         catch e

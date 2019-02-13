@@ -16,6 +16,6 @@ rm(test_record_path, force = true, recursive = true)
 mkpath(test_record_path)
 
 # THese examples download additional data - don't want to deal with that!
-ref_path = MakieGallery.download_reference(v"0.0.9")
+ref_path = MakieGallery.download_reference(v"0.1.0")
 MakieGallery.record_examples(test_record_path)
 MakieGallery.run_comparison(test_record_path, ref_path, tested_diff_path)
