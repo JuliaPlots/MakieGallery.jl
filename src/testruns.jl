@@ -1,8 +1,11 @@
+const makiegallery_dir = abspath(first(Base.DEPOT_PATH), "makiegallery")
+
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
 function download_reference(version = v"0.1.1")
-    download_dir = joinpath(@__DIR__, "..", "test", "testimages")
+    download_dir = joinpath(makiegallery_dir, "testimages")
+    isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
     url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz"
     refpath = joinpath(download_dir, "ReferenceImages-$(version)", "gallery")
