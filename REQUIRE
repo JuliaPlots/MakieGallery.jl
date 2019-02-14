@@ -22,3 +22,4 @@ DataFrames
 RDatasets
 BinaryProvider
 StatsMakie
+ZipFile
