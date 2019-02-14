@@ -1,5 +1,5 @@
 @block AnthonyWang [documentation] begin
-    @cell "pong" [animated, scatter, updating] begin
+    @cell "pong" [animated, scatter, updating, record] begin
         # init speed and velocity vector
         xyvec = rand(Point2f0, (2)) .* 5 .+ 1
         velvec = rand(Point2f0, (2)) .* 10
@@ -33,7 +33,7 @@
         end
     end
 
-    @cell "pulsing marker" [animated, scatter, markersize, updating] begin
+    @cell "pulsing marker" [animated, scatter, markersize, updating, record] begin
         N = 100
         scene = scatter([0], [0], marker = '❤', markersize = 0.5, color = :red, raw = true)
         s = scene[end] # last plot in scene
@@ -42,7 +42,7 @@
         end
     end
 
-    @cell "Travelling wave" [animated, lines, updating, interaction] begin
+    @cell "Travelling wave" [animated, lines, updating, interaction, record] begin
         scene = Scene()
         mytime = Node(0.0)
         f(v, t) = sin(v + t)

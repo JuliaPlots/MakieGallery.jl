@@ -2,7 +2,7 @@
     @cell "WorldClim visualization" [visualization, dataset, bigdata] begin
         # fixes for GDAL messing with LD library path and therefore using wrong curl
         # for downloads
-        using FileIO, GeometryTypes, Colors, GDAL
+        using FileIO, GeometryTypes, Colors, GDAL, BinaryProvider
         env = ENV["LD_LIBRARY_PATH"]
         #=
         This example requires the GDAL package, from https://github.com/JuliaGeo/GDAL.jl
@@ -16,7 +16,7 @@
 
 
         # set up 7zip
-        exe7z = "7z"
+        exe7z = BinaryProvider.gen_unpack_cmd("bla.zip", "dest").a[1]
 
         unzip(in, out) = run(`$exe7z x -y $in -o$out`)
 
@@ -48,6 +48,7 @@
                 download("http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_10m_$name.zip", "$name.zip")
             end
             if !isdir(name)
+                #BinaryProvider.unpack("$name.zip", name)  doesn't work -.-
                 unzip("$name.zip", name)
             end
             ENV["LD_LIBRARY_PATH"] = env

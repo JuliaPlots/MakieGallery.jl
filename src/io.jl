@@ -236,7 +236,7 @@ Creates a Gallery in `html_out` from already recorded examples in `folder`.
 function gallery_from_recordings(
         folder::String,
         html_out::String = abspath(joinpath(pathof(MakieGallery), "..", "..", "index.html"));
-        tags = [string.(AbstractPlotting.atomic_function_symbols)..., "interaction"]
+        tags = [string.(AbstractPlotting.atomic_function_symbols)..., "interaction", "record"]
     )
     items = map(MakieGallery.database) do example
         base_path = joinpath(folder, string(example.unique_name))

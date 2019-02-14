@@ -45,7 +45,7 @@
     @cell "scatter colormap" [scatter, colormap] begin
         scatter(rand(10), rand(10), color = rand(10))
     end
-    @cell "Lots of Heatmaps" [heatmap, performance, vbox] begin
+    @cell "Lots of Heatmaps" [heatmap, performance, vbox, record] begin
         # example by @ssfrr
         function makeheatmaps(bufs)
             heatmaps = map(bufs) do buf
