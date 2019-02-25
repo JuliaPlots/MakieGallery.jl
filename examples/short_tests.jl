@@ -4,7 +4,7 @@
         text!(
             scene, "boundingbox",
             align = (:left, :center),
-            position = (200, 50)
+            position = (50, 50)
         )
         scale!(scene, Vec3f0(4, 1, 1))
         linesegments!(boundingbox(scene))
@@ -14,7 +14,7 @@
             t = text!(
                 "boundingbox",
                 align = (a_lign, b_lign),
-                position = (200, 100 + offset)
+                position = (50, 100 + offset)
             )[end]
             linesegments!(boundingbox(t))
             offset += 50

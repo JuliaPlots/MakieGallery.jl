@@ -76,7 +76,11 @@
         plot(Position.stack, histogram, Data(iris), Group(:Species), :SepalLength)
         @substep
 
-        wireframe(density(trim=true), Data(iris), Group(:Species), :SepalLength, :SepalWidth)
+        wireframe(
+            density(trim=true),
+            Data(iris), Group(:Species), :SepalLength, :SepalWidth,
+            transparency = true, linewidth = 0.1
+        )
         @substep
 
         scatter(
@@ -88,6 +92,6 @@
 
         barplot(["hi", "ima", "string"], rand(3))
         @substep
-        
+
     end
 end

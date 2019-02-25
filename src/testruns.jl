@@ -76,7 +76,11 @@ end
 """
 Compares all media recursively in two recorded folders!
 """
-function run_comparison(test_record_path, test_diff_path, reference = MakieGallery.download_reference())
+function run_comparison(
+        test_record_path, test_diff_path,
+        reference = MakieGallery.download_reference();
+        maxdiff = 0.02
+    )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
         for folder in folders
@@ -86,7 +90,6 @@ function run_comparison(test_record_path, test_diff_path, reference = MakieGalle
                 test_folder = joinpath(test_record_path, media)
                 ref_media = sort(readdir(ref_folder))
                 test_media = sort(readdir(test_folder))
-                maxdiff = 0.02
                 @testset "$folder" begin
                     if length(ref_media) != length(test_media)
                         @warn("recodings are missing for $folder - skipping test")
