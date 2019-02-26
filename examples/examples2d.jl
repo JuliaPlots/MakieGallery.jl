@@ -172,7 +172,7 @@
     @cell "Contour Function" [contour] begin
         r = range(-10, stop = 10, length = 512)
         z = ((x, y)-> sin(x) + cos(y)).(r, r')
-        contour(r, r, z, levels = 5, color = :viridis, linewidth = 3)
+        contour(r, r, z, levels = 5, colormap = :viridis, linewidth = 3)
     end
     @cell "Hbox" [lines, scatter, hbox] begin
         t = range(-122277.93103448274, stop=-14798.035304081845, length=29542)
