@@ -76,17 +76,20 @@ end
 """
 Compares all media recursively in two recorded folders!
 """
-function run_comparison(test_record_path, test_diff_path, reference = MakieGallery.download_reference())
+function run_comparison(
+        test_record_path, test_diff_path,
+        reference = MakieGallery.download_reference();
+        maxdiff = 0.02
+    )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
         for folder in folders
             if isdir(folder)
                 media = joinpath(folder, "media")
-                ref_folder = joinpath(reference, media)
+                ref_folder = joinpath(reference, basename(folder), "media")
                 test_folder = joinpath(test_record_path, media)
                 ref_media = sort(readdir(ref_folder))
                 test_media = sort(readdir(test_folder))
-                maxdiff = 0.08
                 @testset "$folder" begin
                     if length(ref_media) != length(test_media)
                         @warn("recodings are missing for $folder - skipping test")
@@ -96,8 +99,8 @@ function run_comparison(test_record_path, test_diff_path, reference = MakieGalle
                             test = joinpath(test_folder, test)
                             diff = compare_media(ref, test)
                             if diff >= maxdiff
-                                refdiff = joinpath(test_diff_path, folder, string("ref_", basename(ref)))
-                                testdiff = joinpath(test_diff_path, folder, string("test_", basename(test)))
+                                refdiff = joinpath(test_diff_path, basename(folder), string("ref_", basename(ref)))
+                                testdiff = joinpath(test_diff_path, basename(folder), string("test_", basename(test)))
                                 mkpath(dirname(refdiff)); mkpath(dirname(testdiff))
                                 cp(ref, refdiff, force = true)
                                 cp(test, testdiff, force = true)

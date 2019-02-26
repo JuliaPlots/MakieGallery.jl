@@ -12,7 +12,7 @@ function save_media(entry, x::String, path::String)
     [out]
 end
 
-function save_media(entry, x::AbstractPlotting.Stepper, path::String) # TODO: this breaks thumbnail generation
+function save_media(entry, x::AbstractPlotting.Stepper, path::String)
     # return a list of all file names
     images = filter(x-> endswith(x, ".jpg"), readdir(x.folder))
     return map(images) do img

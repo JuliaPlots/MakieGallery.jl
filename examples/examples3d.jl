@@ -390,8 +390,12 @@
         large_sphere = Sphere(Point3f0(0), 1f0)
         positions = decompose(Point3f0, large_sphere)
         linepos = view(positions, rand(1:length(positions), 1000))
-        scene = lines(linepos, linewidth = 0.1, color = :black)
-        scatter!(scene, positions, strokewidth = 10, strokecolor = :white, color = RGBAf0(0.9, 0.2, 0.4, 0.6))
+        scene = lines(linepos, linewidth = 0.1, color = :black, transparency = true)
+        scatter!(
+            scene, positions, markersize = 0.05,
+            strokewidth = 2, strokecolor = :white,
+            color = RGBAf0(0.9, 0.2, 0.4, 0.5)
+        )
         scene
     end
     @cell "image scatter" [image, scatter] begin
@@ -452,12 +456,14 @@
         scene = Scene(backgroundcolor = :black)
         scatter!(
             scene,
-            (rand(Point3f0, stars) .- 0.5) .* 10,
-            glowwidth = 0.005, glowcolor = :white, color = RGBAf0(0.8, 0.9, 0.95, 0.4),
-            markersize = rand(range(0.0001, stop = 0.01, length = 100), stars),
-            show_axis = false
+            (randn(Point3f0, stars) .- 0.5) .* 10,
+            glowwidth = 1, glowcolor = (:white, 0.1), color = rand(stars),
+            colormap = [(:white, 0.4), (:blue, 0.4), (:yellow, 0.4)],
+            markersize = rand(range(0.0001, stop = 0.05, length = 100), stars),
+            show_axis = false, transparency = true
         )
-        update_cam!(scene, FRect3D(Vec3f0(-2), Vec3f0(4)))
+        update_cam!(scene, FRect3D(Vec3f0(-5), Vec3f0(10)))
+        scene.center = false
         scene
     end
 

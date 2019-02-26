@@ -12,7 +12,7 @@
         r = range(-3, stop = 3, length = 100)
         me = [((1 ./ x).^2 + (1 ./ y).^2 + (1 ./ z).^2) for x=r, y=r, z=r]
         me2 = me .* (abs.(me) .> 1.5)
-        contour(me2, color = :Set2)
+        contour(me2, colormap = :Set2)
     end
 
     @cell "3D cube with sphere cutout, inside" ["3d", volume, implicit] begin
