@@ -625,3 +625,32 @@
         # scene
     # end
 end
+
+@block "Anshul Singhvi"  ["3d"] begin
+    
+    @cell "Volume on black background" [3d, volume] begin
+        
+        xs = LinRange(-3, 3, 100);  # x values
+        ys = copy(xs);              # y values
+        zs = copy(xs);              # z values
+
+        ρ(x, y, z) = exp(-(abs(x))) # function (charge density)
+
+        qs = [ρ(x, y , z) for x in xs, y in ys, z in zs]; # charge density
+
+        sc = Scene(backgroundcolor = :black) # create a Scene with the attribute `backgroundcolor = :black`, 
+        # can be any compatible color.  Useful for better contrast and not killing your eyes with a white background.
+        
+        volume!(sc, 
+            xs, ys, zs,       # coordinates to plot on
+            qs,               # charge density (functions as colorant)
+            algorithm = :mip  # maximum-intensity-projection
+        )
+        
+        sc[Axis][:names, :textcolor] = :gray # let axis labels be seen on dark background
+        
+        sc # show scene
+        
+    end
+    
+end
