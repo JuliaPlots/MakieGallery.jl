@@ -19,7 +19,7 @@ You can copy this code and substitute `cmap` with any `Colormap` to show the col
 
 `Makie` supports multiple colormap libraries.  Currently, `Colors` and `ColorBrewer` are inbuilt, and `ColorSchemes` and `PerceptualColourMaps` work as well.
 
-Natively, `Makie` supports these `ColorBrewer` colormaps (see (their docs)[https://github.com/timothyrenner/ColorBrewer.jl] as well):
+Natively, `Makie` supports these `ColorBrewer` colormaps (see [their docs](https://github.com/timothyrenner/ColorBrewer.jl) as well):
 
 @example_database("colormaps")
 
