@@ -414,7 +414,7 @@ end
 
     end
 
-    @cell "Viridis color legend" [colorlegend, colors] begin
+    @cell "Viridis color scheme" [colorlegend, colors] begin
 
         using AbstractPlotting
 
