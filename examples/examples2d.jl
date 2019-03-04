@@ -387,12 +387,10 @@ end
 
     @cell "Line with varying colors" [lines, colors, colorlegend] begin
 
-        using AbstractPlotting, # duh :)
+        using AbstractPlotting,
               ColorSchemes      # colormaps galore
 
-        AbstractPlotting.__init__();
-
-        t = range(0, stop=1, length=100) # times
+        t = range(0, stop=1, length=100) # time steps
 
         θ = (6π) .* t    # angles
 
@@ -420,25 +418,15 @@ end
 
         using AbstractPlotting
 
-        AbstractPlotting.__init__();
+        # default Colormap
+        c = to_colormap(:viridis) # get colors of colormap
 
-        scene = Scene()
-
-        cam2d!(scene) ## TODO what do this?
-
-        cmap = :viridis # default Colormap
-
-        c = to_colormap(cmap) # get colors of colormap
-
-        image!(        # to plot colors, an image is best
-            scene,
-            range(0, stop = 10, length = length(c)), # x range
-            range(0, stop = 1, length = length(c)),  # y range
-            reshape(c, (length(c),1)),               # reshape this to a matrix for the colors
-            show_axis = false                        # don't show axes
+        image(         # to plot colors, an image is best
+           0..10,      # x range
+           0..1,       # y range
+           hcat(c, c), # reshape this to a matrix for the colors
+           show_axis = false # don't show axes
         )
-
-        scene # show the scene
 
     end
 
