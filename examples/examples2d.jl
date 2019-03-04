@@ -387,8 +387,7 @@ end
 
     @cell "Line with varying colors" [lines, colors, colorlegend] begin
 
-        using AbstractPlotting,
-              ColorSchemes      # colormaps galore
+        using ColorSchemes      # colormaps galore
 
         t = range(0, stop=1, length=100) # time steps
 
@@ -407,7 +406,8 @@ end
         cm = colorlegend(
             p1[end],           # access the plot of Scene p1
             raw = true,        # without axes or grid
-            camera = campixel! # TODO describe
+            camera = campixel! # gives a concrete bounding box in pixels
+            # so that the `vbox` gives you the right size
             )
 
         scene_final = vbox(p1, cm) # put the colorlegend and the plot together in a `vbox`
@@ -416,9 +416,6 @@ end
 
     @cell "Viridis color scheme" [colorlegend, colors] begin
 
-        using AbstractPlotting
-
-        # default Colormap
         c = to_colormap(:viridis) # get colors of colormap
 
         image(         # to plot colors, an image is best
