@@ -298,6 +298,239 @@
         )
         RecordEvents(scene, @replace_with_a_path)
     end
+
+
+    @cell "Robot Arm" [slider, interactive, linesegments, vbox] begin
+        #  example by @pbouffard from JuliaPlots/Makie.jl#307
+        # https://github.com/pbouffard/miniature-garbanzo/
+        using Makie: Mesh, Scene, LineSegments, translate!, rotate!, vbox, hbox, qrotation, mesh!
+        using GeometryTypes: HyperRectangle, Vec3f0, Point3f0, Sphere
+        using StaticArrays: SVector
+        using AbstractPlotting: textslider
+        using Observables: on
+
+        function triad!(scene, len; translation = (0f0,0f0,0f0), show_axis = false)
+            ret = linesegments!(
+                scene, [
+                    Point3f0(0,0,0) => Point3f0(len,0,0),
+                    Point3f0(0,0,0) => Point3f0(0,len,0),
+                    Point3f0(0,0,0) => Point3f0(0,0,len)
+                ],
+                color = [:red, :green, :blue],
+                linewidth = 3, show_axis = show_axis
+            )[end]
+            translate!(ret, translation)
+            return ret
+        end
+        # Joint vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv
+        mutable struct Joint
+            scene::Scene
+            triad::LineSegments
+            # link::Mesh
+            angle::Float32
+            axis::Vec3f0
+            offset::Vec3f0
+        end
+
+        s = Scene()
+
+        function Joint(s::Scene)
+            newscene = Scene(s)
+            triad = triad!(newscene, 1)
+            Joint(newscene, triad, 0f0, (0, 1, 0), (0, 0, 0))
+        end
+
+        function Joint(j::Joint; offset::Point3f0=(0,0,0), axis=(0, 1, 0), angle=0)
+            jnew = Joint(j.scene)
+            translate!(jnew.scene, j.offset)
+            linesegments!(jnew.scene, [Point3f0(0) => offset], linewidth=4, color=:magenta, show_axis=false)
+            jnew.axis = axis
+            jnew.offset = offset
+            setangle!(jnew, angle)
+            return jnew
+        end
+
+        function setangle!(j::Joint, angle::Real)
+            j.angle = angle
+            rotate!(j.scene, qrotation(j.axis, angle))
+        end
+
+        # Joint ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+        joints = Vector{Joint}()
+        links = Float32[5, 5]
+        #triad!(s, 10; show_axis=true)
+
+        push!(joints, Joint(s))
+        joints[1].axis = (0,0,1) # first joint is yaw
+        joints[1].offset = (0, 0, 1)
+        push!(joints, Joint(joints[end]; offset=Point3f0(3,0,0), axis=(0,1,0), angle=-pi/4)) # Pitch
+        push!(joints, Joint(joints[end]; offset=Point3f0(3,0,0), axis=(0,1,0), angle=pi/2)) # Pitch
+        push!(joints, Joint(joints[end]; offset=Point3f0(1,0,0), axis=(0,1,0), angle=-pi/4)) # Pitch
+        push!(joints, Joint(joints[end]; offset=Point3f0(1,0,0), axis=(0,0,1))) # Yaw
+        push!(joints, Joint(joints[end]; offset=Point3f0(0,0,0), axis=(1,0,0))) # Roll
+
+        sliders = []
+        vals = []
+        for i = 1:length(joints)
+            slider, val = textslider(-180.0:1.0:180.0, "Joint $(i)", start=rad2deg(joints[i].angle))
+            push!(sliders, slider)
+            push!(vals, val)
+            on(val) do x
+                setangle!(joints[i], deg2rad(x))
+            end
+        end
+
+        # Add sphere to end effector:
+        mesh!(joints[end].scene, Sphere(Point3f0(0.5, 0, 0), 0.25f0), color=:cyan, show_axis=false)
+        center!(s)
+        RecordEvents(vbox(hbox(sliders...), s), @replace_with_a_path)
+    end
+
+    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox] begin
+        #  example by @pbouffard from JuliaPlots/Makie.jl#307
+        # https://github.com/pbouffard/miniature-garbanzo/
+
+        using AbstractPlotting: textslider
+        using GeometryTypes, FileIO
+        using LinearAlgebra
+
+        const rearth_km = 6371.1f0
+        const mearth_kg = 5.972e24
+        const rmoon_km = 1738.1f0
+        const mmoon_kg = 7.34e22
+        const rship_km = 500f0
+        const mship_kg = 1000.0
+        const dbetween_km = 378_000.0f0
+        const radius_mult = 1.0f0
+        const timestep = 1.0f0
+
+        mutable struct Ship
+            mass_kg::Float32
+            position_m::Vec3f0
+            velocity_mps::Vec3f0
+            color::Symbol
+            mesh::Mesh
+        end
+
+
+        function moveto!(ship::Ship, (x, y, z))
+            ship.position_m = Vec3f0(x, y, z)
+            translate!(ship.mesh, x, y, z)
+            ship.position_m, ship.velocity_mps
+        end
+
+        function orbit(r; steps=80)
+            return [Point3f0(r*cos(x), r*sin(x), 0) for x in range(0, stop=2pi, length=steps)]
+        end
+
+        function loadordownload(localfname, url)
+            return isfile(localfname) ? load(localfname) : load(download(url, localfname))
+        end
+
+        # http://corysimon.github.io/articles/uniformdistn-on-sphere/
+        function makestars(n)
+            return map(1:n) do i
+                v = [0, 0, 0]  # initialize so we go into the while loop
+                while norm(v) < .0001
+                    v = randn(Point3f0)
+                end
+                v = v / norm(v)  # normalize to unit norm
+                v
+            end
+        end
+
+        function makecontrols()
+            orbit_slider, orbit_speed = textslider(0f0:10f0, "Speed", start=1.0)
+            scale_slider, scale = textslider(1f0:20f0, "Scale", start=10.0)
+            return orbit_slider, orbit_speed, scale_slider, scale
+        end
+
+
+        function makeships(scene, N)
+            return map(1:N) do i
+                sm = mesh!(scene, Sphere(Point3f0(0), rship_km*radius_mult), color=:green, show_axis=false)[end]
+                ship = Ship(mship_kg, [0, 0, 0], [0, 0, 0], :green, sm)
+                moveto!(ship, (100000f0 * randn(Float32), dbetween_km/2 + randn(Float32) * 50000f0, 50000f0*randn(Float32)))
+                ship.velocity_mps = [40000*randn(Float32), -1000*randn(Float32), 1000*randn(Float32)]
+                ship
+            end
+        end
+
+        function makeobjects(scene)
+            earthfname = "bluemarble-2048.png"
+            earthurl = "https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/" * earthfname
+            earthbitmap = loadordownload(earthfname, earthurl)
+            earth = mesh!(scene, Sphere(Point3f0(0), rearth_km*radius_mult), color=earthbitmap)[end]
+
+            moonfname = "phases.0001_print.jpg"
+            moonurl = "https://svs.gsfc.nasa.gov/vis/a000000/a004600/a004675/" * moonfname
+            moonbitmap = loadordownload(moonfname, moonurl)
+            moon = mesh!(scene, Sphere(Point3f0(0), rmoon_km*radius_mult), color=moonbitmap)[end]
+            translate!(moon, Vec3f0(0, dbetween_km, 0))
+            orb = lines!(scene, orbit(dbetween_km), color=:gray)
+            # stars = scatter!(1000000*makestars(1000), color=:white, markersize=2000)
+
+            return earth, moon #, stars#, ships
+        end
+
+        function spin(scene, orbit_speed, scale, moon, earth, ships)
+            center!(scene) # update far / near automatically.
+            # could also be done manually:
+            # cam.near[] = 100
+            # cam.far[] = 1.5*dbetween_km
+            update_cam!(scene, Vec3f0(1.3032e5, 7.12119e5, 3.60022e5), Vec3f0(0, 0, 0))
+            θ = 0.0
+            # wait untill window is open
+            while !isopen(scene)
+                sleep(0.1)
+            end
+            while isopen(scene)
+                scale!(moon, (scale[], scale[], scale[]))
+                scale!(earth, (scale[], scale[], scale[]))
+                for ship in ships
+                    scale!(ship.mesh, (scale[], scale[], scale[]))
+                end
+                translate!(moon, Vec3f0(-dbetween_km*sin(θ/28), dbetween_km*cos(θ/28), 0))
+                rotate!(earth, Vec3f0(0, 0, 1), θ)
+                rotate!(moon, Vec3f0(0, 0, 1), π/2 + θ/28)
+                sleep(0.01)
+                θ += 0.05 * orbit_speed[]
+                timestep = 10 * orbit_speed[]
+                gravity(timestep, ships, earth, moon)
+            end
+        end
+
+        function gravity(timestep, ships, earth, moon)
+            for ship in ships
+                rship = ship.position_m #translation(ship)[]
+                rearth = translation(earth)[]
+                rmoon = translation(moon)[]
+                rship_earth = (rearth - rship) * 1e3 # convert to m
+                rship_moon = (rmoon - rship) * 1e3 # convert to m
+                G = 6.67408e-11 # m^3⋅kg^-2⋅s^-1
+                nrship_earth = max(0.1, norm(rship_earth))
+                nrship_moon = max(0.1, norm(rship_moon))
+                fearth = G * (mship_kg * mearth_kg)/(nrship_earth^2) * rship_earth/nrship_earth
+                fmoon = G * (mship_kg * mmoon_kg)/(nrship_moon^2) * rship_earth/nrship_earth
+                ftot = fearth + fmoon
+                ship.velocity_mps += timestep * ftot
+                drship = timestep * ship.velocity_mps / 1e3
+                rship = rship + drship
+                moveto!(ship, rship)
+            end
+        end
+        universe = Scene(backgroundcolor=:black, show_axis=false, resolution=(2048,1024))
+        ships = makeships(universe, 600)
+        earth, moon = makeobjects(universe);
+        orbit_slider, orbit_speed, scale_slider, scale = makecontrols();
+        controls = (orbit_slider, scale_slider);
+        scene = hbox(vbox(controls...), universe)
+        universe.center = false
+        task = @async spin(universe, orbit_speed, scale, moon, earth, ships)
+        scene.center = false
+        RecordEvents(scene, @replace_with_a_path)
+    end
 end
 
 function record_example_events()
@@ -311,9 +544,12 @@ function record_example(title = "Orbit Diagram")
     set_theme!(resolution = (500, 500))
     idx = findfirst(x-> x.title == title, database)
     entry = database[idx]
-    value = eval_example(entry, outputfile = event_path)
+    value = MakieGallery.eval_example(entry, outputfile = MakieGallery.event_path)
+    last = AbstractPlotting.use_display[]
+    AbstractPlotting.inline!(false)
     record_events(value.scene, value.path) do
         wait(value.scene)
     end
+    AbstractPlotting.use_display[] = last
 end
-# record_example()
+# record_example("Earth & Ships")
