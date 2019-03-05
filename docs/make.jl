@@ -141,6 +141,7 @@ makedocs(
             "functions-overview.md",
             "signatures.md",
             "plot-attributes.md",
+            "colors.md",
             # "extending.md",
             "axis.md",
             "interaction.md",

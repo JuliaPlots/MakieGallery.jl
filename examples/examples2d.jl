@@ -382,3 +382,49 @@
         render(A)
     end
 end
+
+@block AnshulSinghvi ["colors"] begin
+
+    @cell "Line with varying colors" [lines, colors, colorlegend] begin
+
+        using ColorSchemes      # colormaps galore
+
+        t = range(0, stop=1, length=100) # time steps
+
+        θ = (6π) .* t    # angles
+
+        x = t .* cos.(θ) # x coords of spiral
+        y = t .* sin.(θ) # y coords of spiral
+
+        p1 = lines(
+            x,
+            y,
+            color = t,
+            colormap = ColorSchemes.magma.colors,
+            linewidth=3)
+
+        cm = colorlegend(
+            p1[end],           # access the plot of Scene p1
+            raw = true,        # without axes or grid
+            camera = campixel! # gives a concrete bounding box in pixels
+            # so that the `vbox` gives you the right size
+            )
+
+        scene_final = vbox(p1, cm) # put the colorlegend and the plot together in a `vbox`
+
+    end
+
+    @cell "Viridis color scheme" [colorlegend, colors] begin
+
+        c = to_colormap(:viridis) # get colors of colormap
+
+        image(         # to plot colors, an image is best
+           0..10,      # x range
+           0..1,       # y range
+           hcat(c, c), # reshape this to a matrix for the colors
+           show_axis = false # don't show axes
+        )
+
+    end
+
+end
