@@ -18,5 +18,3 @@ mkpath(test_record_path)
 # THese examples download additional data - don't want to deal with that!
 examples = MakieGallery.record_examples(test_record_path)
 MakieGallery.run_comparison(test_record_path, tested_diff_path)
-
-MakieGallery.generate_preview(test_record_path)

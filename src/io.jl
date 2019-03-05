@@ -195,6 +195,7 @@ function record_examples(
         resolution = (500, 500), resume::Union{Bool, Integer} = false,
         generate_thumbnail = false
     )
+    last = AbstractPlotting.use_display[]
     AbstractPlotting.inline!(true)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
@@ -227,6 +228,7 @@ function record_examples(
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"))
     generate_thumbnail && generate_thumbnails(folder)
+    AbstractPlotting.use_display[] = last
     result
 end
 

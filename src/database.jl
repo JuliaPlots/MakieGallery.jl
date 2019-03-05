@@ -498,7 +498,6 @@ function enumerate_examples(f, tags...; start = 1, exclude_tags = nothing)
             f(entry)
         end
     end
-    @info("Number of examples actually skipped: $num_excluded")
     return
 end
 
