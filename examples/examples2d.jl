@@ -27,6 +27,16 @@
         barplot(rand(10), color = rand(10))
         # barplot(rand(3), color = [:red, :blue, :green])
     end
+    @cell "poly and colormap" [poly, colormap, colorrang] begin
+        # example by @Paulms from JuliaPlots/Makie.jl#310
+        points = Point2f0[[0.0, 0.0], [0.1, 0.0], [0.1, 0.1], [0.0, 0.1]]
+        colors = [0.0 ,0.0, 0.5, 0.0]
+        scene = poly(points, color = colors, colorrange = (0.0,1.0))
+        points = Point2f0[[0.1, 0.1], [0.2, 0.1], [0.2, 0.2], [0.1, 0.2]]
+        colors = [0.5,0.5,1.0,0.3]
+        poly!(scene, points, color = colors, colorrange = (0.0,1.0))
+        scene
+    end
     @cell "quiver" [quiver, arrows, vectorfield, gradient] begin
         using ImageFiltering
         x = range(-2, stop = 2, length = 21)
