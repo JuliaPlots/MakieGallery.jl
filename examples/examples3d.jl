@@ -626,7 +626,7 @@
     # end
 end
 
-@block "Anshul Singhvi"  ["3d"] begin
+@block AnshulSinghvi ["3d"] begin
     
     @cell "Volume on black background" [3d, volume] begin
         
