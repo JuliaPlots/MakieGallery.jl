@@ -119,18 +119,14 @@
     end
 
     @cell "Available markers" [annotations, markers, meta] begin
-        using GeometryTypes
-        scene = Scene()
-        cam2d!(scene)
         marker = collect(AbstractPlotting._marker_map)
         positions = Point2f0.(0, 1:length(marker))
-        scatter!(
-            scene,
+        scene = scatter(
             positions,
             marker = last.(marker),
             markersize = 0.8,
-            raw = true,
-            marker_offset = Vec2f0(0.5, -0.4)
+            marker_offset = Vec2f0(0.5, -0.4),
+            show_axis = false,
         )
         annotations!(
             scene,
@@ -140,6 +136,8 @@
             textsize = 0.4,
             raw = true
         )
+        update_cam!(scene, FRect(-2.5, 0, 2, length(marker) + 2))
+        scene
     end
 
     #TODO: this doesn't work starting on step 9
