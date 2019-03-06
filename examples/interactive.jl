@@ -303,7 +303,7 @@
     @cell "Robot Arm" [slider, interactive, linesegments, vbox] begin
         #  example by @pbouffard from JuliaPlots/Makie.jl#307
         # https://github.com/pbouffard/miniature-garbanzo/
-        using Makie: Mesh, Scene, LineSegments, translate!, rotate!, vbox, hbox, qrotation, mesh!
+        using AbstractPlotting: Mesh, Scene, LineSegments, translate!, rotate!, vbox, hbox, qrotation, mesh!
         using GeometryTypes: HyperRectangle, Vec3f0, Point3f0, Sphere
         using StaticArrays: SVector
         using AbstractPlotting: textslider
