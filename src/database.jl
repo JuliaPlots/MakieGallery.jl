@@ -531,6 +531,7 @@ function eval_example(
     # modules created via Module get gc'ed, so we need to store a global reference
     push!(module_cache, tmpmod)
     steps = split(source, "@substep", keepempty = false)
+    Random.seed!(42)
     if length(steps) == 1
         return include_string(tmpmod, source, string(uname))
     else

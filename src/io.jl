@@ -213,7 +213,6 @@ function record_examples(
     @info("starting from index $start")
     AbstractPlotting.set_theme!(resolution = resolution)
     eval_examples(outputfile = output_path, start = start) do example, value
-        Random.seed!(42)
         uname = example.unique_name
         println("running $(uname)")
         subfolder = joinpath(folder, string(uname))
