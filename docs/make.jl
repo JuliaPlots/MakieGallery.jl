@@ -146,6 +146,7 @@ makedocs(
             "axis.md",
             "interaction.md",
             "output.md",
+            "compilation.md",
             # "layout.md"
         ],
         "Developer Documentation" => [
