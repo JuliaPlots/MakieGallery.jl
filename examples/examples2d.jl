@@ -414,10 +414,14 @@ end
             linewidth=3)
 
         cm = colorlegend(
-            p1[end],           # access the plot of Scene p1
-            raw = true,        # without axes or grid
-            camera = campixel! # gives a concrete bounding box in pixels
+            p1[end],             # access the plot of Scene p1
+            raw = true,          # without axes or grid
+            camera = campixel!,  # gives a concrete bounding box in pixels
             # so that the `vbox` gives you the right size
+            width = (                     # make the colorlegend longer so it looks nicer
+                30,                       # the width
+                AbstractPlotting.reasonable_resolution()[end] # a reasonable height
+            )    # the height
             )
 
         scene_final = vbox(p1, cm) # put the colorlegend and the plot together in a `vbox`
