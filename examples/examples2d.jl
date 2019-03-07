@@ -399,7 +399,7 @@ end
 
         using ColorSchemes      # colormaps galore
 
-        t = range(0, stop=1, length=100) # time steps
+        t = range(0, stop=1, length=500) # time steps
 
         θ = (6π) .* t    # angles
 
@@ -411,13 +411,17 @@ end
             y,
             color = t,
             colormap = ColorSchemes.magma.colors,
-            linewidth=3)
+            linewidth=8)
 
         cm = colorlegend(
-            p1[end],           # access the plot of Scene p1
-            raw = true,        # without axes or grid
-            camera = campixel! # gives a concrete bounding box in pixels
-            # so that the `vbox` gives you the right size
+            p1[end],             # access the plot of Scene p1
+            raw = true,          # without axes or grid
+            camera = campixel!,  # gives a concrete bounding box in pixels
+                                 # so that the `vbox` gives you the right size
+            width = (            # make the colorlegend longer so it looks nicer
+                30,              # the width
+                540              # the height
+            )
             )
 
         scene_final = vbox(p1, cm) # put the colorlegend and the plot together in a `vbox`
