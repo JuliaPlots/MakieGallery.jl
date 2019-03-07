@@ -420,7 +420,7 @@ end
             # so that the `vbox` gives you the right size
             width = (                     # make the colorlegend longer so it looks nicer
                 30,                       # the width
-                AbstractPlotting.reasonable_resolution()[end] # a reasonable height
+                540 # a reasonable height
             )    # the height
             )
 
