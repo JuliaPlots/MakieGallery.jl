@@ -3,7 +3,7 @@
 
 ## Compiling into system image
 
-You can compile a binary for Makie and add it to your system image for fast plotting times with no JIT overhead, using [`PackageCompiler.jl`](https://github.com/JuliaLang/PackageCompiler.jl). 
+You can compile a binary for Makie and add it to your system image for fast plotting times with no JIT overhead, using [`PackageCompiler.jl`](https://github.com/JuliaLang/PackageCompiler.jl).
 
 To do that, you need to check out the additional packages for precompilation.  Then, you can build a system image using the `compile_incremental` method.
 
@@ -42,4 +42,4 @@ PackageCompiler.compile_incremental(:Makie, :AbstractPlotting, force = true)
 
 Due to some issues around the precompilation of the display stack, you will have to call `AbstractPlotting.__init__()` after `using AbstractPlotting` to display plots.  Alternatively, you can do `display(AbstractPlotting.PlotDisplay(), scene);` on your `Scene` to get it to display in a plot window.
 
-If you plan to develop Makie, it is impossible to do so using statically compiled Makie, because the functions are baked into the system image.  
+If you plan to modify or develop Makie, any changes you make to Makie will not propagate normally, since the functions are already in the system image.  You will have to, using Atom (the IDE), `eval` the changed files.
