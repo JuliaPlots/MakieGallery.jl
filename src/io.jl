@@ -219,7 +219,6 @@ function record_examples(
         outfolder = joinpath(subfolder, "media")
         ispath(outfolder) || mkpath(outfolder)
         save_media(example, value, outfolder)
-        mdpath = joinpath(subfolder, "index.md")
         push!(result, subfolder)
         set_last_evaled!(uname)
         AbstractPlotting.set_theme!(resolution = resolution) # reset befor next example
