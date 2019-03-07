@@ -395,7 +395,7 @@ end
 
 @block AnshulSinghvi ["colors"] begin
 
-    @cell "Line with varying colors" [lines, colors, colorlegend] begin
+    @cell "Line with varying colors" [lines, colors, colorlegend, camera] begin
 
         using ColorSchemes      # colormaps galore
 

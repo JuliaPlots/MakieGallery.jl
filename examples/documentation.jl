@@ -89,7 +89,7 @@
         scatter!(scene, points, marker_offset = offset, color = :red)
     end
 
-    @cell "colormaps" [image, translate, colormap, colorbrewer, meta] begin
+    @cell "colormaps" [image, translate, colormap, colorbrewer, meta, camera] begin
         h = 0.0
         offset = 0.1
         scene = Scene()
@@ -260,8 +260,7 @@
         stepper_demo()
     end
 
-    @cell "Labels" [labels, linesegments, vbox] begin
-        #cell
+    @cell "Labels" [legend, linesegments, vbox] begin
         scene = Scene(resolution = (500, 500))
         x = map([:dot, :dash, :dashdot], [2, 3, 4]) do ls, lw
             linesegments!(
@@ -289,7 +288,7 @@
         step!(st)
         st
     end
-    @cell "Color Legend" [surface, colorlegend] begin
+    @cell "Color Legend" [surface, colorlegend, camera] begin
         s = surface(0..1, 0..1, rand(100, 100))
         ls = colorlegend(s[end], raw = true, camera = campixel!)
         st = Stepper(vbox(s, ls), @replace_with_a_path)

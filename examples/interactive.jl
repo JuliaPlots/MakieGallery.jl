@@ -1,5 +1,5 @@
 @block SimonDanisch [interaction, record_events] begin
-    @cell "Interaction with Mouse" [interactive, scatter, lines, marker, record] begin
+    @cell "Interaction with Mouse" [interactive, camera, scatter, lines, marker, record] begin
         using LinearAlgebra
         scene = Scene(raw = true, camera = cam2d!, resolution = (500, 500))
         r = range(0, stop = 3, length = 4)
@@ -307,7 +307,7 @@
         using StaticArrays: SVector
         using AbstractPlotting: textslider
         using Observables: on
-        
+
         """
             example by @pbouffard from JuliaPlots/Makie.jl#307
             https://github.com/pbouffard/miniature-garbanzo/
@@ -396,7 +396,7 @@
         using AbstractPlotting: textslider
         using GeometryTypes, FileIO
         using LinearAlgebra
-        
+
         """
             example by @pbouffard from JuliaPlots/Makie.jl#307
             https://github.com/pbouffard/miniature-garbanzo/
