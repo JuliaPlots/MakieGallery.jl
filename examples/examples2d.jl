@@ -398,6 +398,8 @@ end
     @cell "Line with varying colors" [lines, colors, colorlegend, camera] begin
 
         using ColorSchemes      # colormaps galore
+        
+        sc = Scene(resolution = (960 + 30, 540))
 
         t = range(0, stop=1, length=500) # time steps
 
@@ -406,7 +408,8 @@ end
         x = t .* cos.(θ) # x coords of spiral
         y = t .* sin.(θ) # y coords of spiral
 
-        p1 = lines(
+        p1 = lines!(
+            sc,
             x,
             y,
             color = t,
@@ -424,7 +427,7 @@ end
             )
             )
 
-        scene_final = vbox(p1, cm) # put the colorlegend and the plot together in a `vbox`
+        vbox(p1, cm, parent = sc) # put the colorlegend and the plot together in a `vbox`
 
     end
 
