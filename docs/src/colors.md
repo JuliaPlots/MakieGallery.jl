@@ -19,13 +19,13 @@ Colormaps are mappings of values to colors.  You can supply the coloring values 
 
 You can copy this code and substitute `cmap` with any `Colormap` to show the colormap.
 
-`Makie` supports multiple colormap libraries.  Currently, `Colors` and `ColorBrewer` are inbuilt, and `ColorSchemes` and `PerceptualColourMaps` work as well.
+`Makie` supports multiple colormap libraries.  Currently, support for colormaps provided by `PlotUtils` and `ColorBrewer` is inbuilt, meaning that any colormap symbol that works with Plots will also work with Makie.  
 
-Natively, `Makie` supports these `ColorBrewer` colormaps (see [their docs](https://github.com/timothyrenner/ColorBrewer.jl) as well):
+Many colormaps (but not all) can be reversed by appending `_r`, e.g. `:magma_r`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the schemes.
+
+Natively, `Makie` supports these colormaps:
 
 @example_database("colormaps")
-
-On top of this, you can use any `ColorSchemes` colormap as `colormap = ColorSchemes.<colormap name>.colors`.  Check out the [`ColorSchemes.jl` docs](https://juliagraphics.github.io/ColorSchemes.jl/stable/index.html) for more information!
 
 Similarly, the `PerceptualColourMaps` library of colormaps can also be used (though it requires `PyCall` and may not play well with `PackageCompiler` system images).  This library is geared more towards 'publication quality' plots, and you can see examples of its colormaps on the [repo page](https://github.com/peterkovesi/PerceptualColourMaps.jl).
 
