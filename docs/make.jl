@@ -142,6 +142,7 @@ makedocs(
             "signatures.md",
             "plot-attributes.md",
             "colors.md",
+            "theming.md",
             # "extending.md",
             "axis.md",
             "interaction.md",
