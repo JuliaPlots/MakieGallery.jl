@@ -1,6 +1,6 @@
 
 @block SimonDanisch ["3d"] begin
-    @cell "Image on Geometry (Moon)" [mesh, image] begin
+    @cell "Image on Geometry (Moon)" [mesh, image, camera] begin
         using FileIO
         moon = try
             load(download("https://svs.gsfc.nasa.gov/vis/a000000/a004600/a004675/phases.0001_print.jpg"))
@@ -10,6 +10,7 @@
         end
         scene = mesh(Sphere(Point3f0(0), 1f0), color = moon, shading = false, show_axis = false, center = false)
         update_cam!(scene, Vec3f0(-2, 2, 2), Vec3f0(0))
+        scene.center = false # prevent to recenter on display
         scene
     end
     @cell "Image on Geometry (Earth)" [mesh, image] begin
@@ -527,6 +528,7 @@
         eyepos = Vec3f0(5, 1.5, 0.5)
         lookat = Vec3f0(0)
         update_cam!(scene, eyepos, lookat)
+        scene.center = false # prevent scene from recentering on display
         l = scene[1]
         N = 150
         record(scene, @replace_with_a_path(mp4), 1:N) do i
@@ -626,20 +628,19 @@
     # end
 end
 
-@block "Anshul Singhvi"  ["3d"] begin
-    
-    @cell "Volume on black background" [3d, volume] begin
-        
+@block AnshulSinghvi ["3d"] begin
+
+    @cell "Volume on black background" ["3d", volume] begin
         r = LinRange(-3, 3, 100);  # our value range
 
         ρ(x, y, z) = exp(-(abs(x))) # function (charge density)
 
-        # create a Scene with the attribute `backgroundcolor = :black`, 
+        # create a Scene with the attribute `backgroundcolor = :black`,
         # can be any compatible color.  Useful for better contrast and not killing your eyes with a white background.
-        scene = Scene(backgroundcolor = :black) 
+        scene = Scene(backgroundcolor = :black)
 
         volume!(
-            scene, 
+            scene,
             r, r, r,          # coordinates to plot on
             ρ,                # charge density (functions as colorant)
             algorithm = :mip  # maximum-intensity-projection
@@ -648,7 +649,6 @@ end
         scene[Axis].names.textcolor = :gray # let axis labels be seen on dark background
 
         scene # show scene
-
     end
-    
+
 end
