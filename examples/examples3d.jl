@@ -652,3 +652,66 @@ end
     end
 
 end
+
+
+@block PatrickBouffard ["3d"] begin
+
+    @cell "Electrostatic repulsion" ["3d", volume] begin
+        using LinearAlgebra
+
+        clip11(x) = max(-1.0, min(1.0, x))
+
+        function redisplay(s)
+            # Needed for Makie compiled into system image
+            display(AbstractPlotting.PlotDisplay(), s);
+            return nothing # to avoid console spew
+        end
+
+        function repel(particles)
+            for i=1:length(particles)
+                ftot = Vec3f0(0)
+                mesh1 = particles[i]
+                p1 = translation(mesh1)[]
+                for j=1:length(particles)
+                    if i != j
+                        mesh2 = particles[j]
+                        p2 = translation(mesh2)[]
+                        Δσ = acos(clip11(dot(p1, p2))) # great circle distance
+                        ftot += (p1 - p2)/max(1e-3, Δσ^2)
+                    end
+                end
+                newpos = normalize(p1 + 0.001 * ftot)
+                translate!(mesh1, newpos)
+            end
+        end
+
+        function addparticle!(particles)
+            push!(particles, mesh!(Sphere(Point3f0(0), 0.05f0), color=:green, show_axis=false)[end])
+            newpos = tuple(normalize(randn(3))...)
+            translate!(particles[end], newpos)
+            ep = s.camera.eyeposition[]
+            redisplay(s)
+            update_cam!(s, ep, [0,0,0])
+        end
+
+        s = Scene(show_axis=false)
+        mesh!(s, Sphere(Point3f0(0), 1f0), color=:gray, show_axis=false)
+
+        particles = []
+
+        for i=1:10
+            addparticle!(particles)
+        end
+
+        iter = 0
+        while iter < 1000
+            global iter += 1
+            if (iter % 10) == 0
+                addparticle!(particles)
+            end
+            repel(particles)
+            sleep(0.01)
+        end
+
+
+end
