@@ -3,7 +3,7 @@ const makiegallery_dir = abspath(first(Base.DEPOT_PATH), "makiegallery")
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.1.4")
+function download_reference(version = v"0.1.5")
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
@@ -91,11 +91,11 @@ function run_comparison(
                 ref_media = sort(readdir(ref_folder))
                 test_media = sort(readdir(test_folder))
                 @testset "$folder" begin
-                    if length(ref_media) != length(test_media)
-                        @warn("recodings are missing for $folder - skipping test")
+                    if isempty(test_media)
+                        error("recodings are missing for $folder")
                     else
-                        for (ref, test) in zip(ref_media, test_media)
-                            ref = joinpath(ref_folder, ref)
+                        for test in test_media
+                            ref = joinpath(ref_folder, test)
                             test = joinpath(test_folder, test)
                             diff = compare_media(ref, test)
                             if diff >= maxdiff
