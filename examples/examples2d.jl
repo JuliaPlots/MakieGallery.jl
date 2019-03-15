@@ -27,6 +27,16 @@
         barplot(rand(10), color = rand(10))
         # barplot(rand(3), color = [:red, :blue, :green])
     end
+    @cell "poly and colormap" [poly, colormap, colorrang] begin
+        # example by @Paulms from JuliaPlots/Makie.jl#310
+        points = Point2f0[[0.0, 0.0], [0.1, 0.0], [0.1, 0.1], [0.0, 0.1]]
+        colors = [0.0 ,0.0, 0.5, 0.0]
+        scene = poly(points, color = colors, colorrange = (0.0,1.0))
+        points = Point2f0[[0.1, 0.1], [0.2, 0.1], [0.2, 0.2], [0.1, 0.2]]
+        colors = [0.5,0.5,1.0,0.3]
+        poly!(scene, points, color = colors, colorrange = (0.0,1.0))
+        scene
+    end
     @cell "quiver" [quiver, arrows, vectorfield, gradient] begin
         using ImageFiltering
         x = range(-2, stop = 2, length = 21)
@@ -385,11 +395,11 @@ end
 
 @block AnshulSinghvi ["colors"] begin
 
-    @cell "Line with varying colors" [lines, colors, colorlegend] begin
+    @cell "Line with varying colors" [lines, colors, colorlegend, camera] begin
 
         using ColorSchemes      # colormaps galore
 
-        t = range(0, stop=1, length=100) # time steps
+        t = range(0, stop=1, length=500) # time steps
 
         θ = (6π) .* t    # angles
 
@@ -401,13 +411,17 @@ end
             y,
             color = t,
             colormap = ColorSchemes.magma.colors,
-            linewidth=3)
+            linewidth=8)
 
         cm = colorlegend(
-            p1[end],           # access the plot of Scene p1
-            raw = true,        # without axes or grid
-            camera = campixel! # gives a concrete bounding box in pixels
-            # so that the `vbox` gives you the right size
+            p1[end],             # access the plot of Scene p1
+            raw = true,          # without axes or grid
+            camera = campixel!,  # gives a concrete bounding box in pixels
+                                 # so that the `vbox` gives you the right size
+            width = (            # make the colorlegend longer so it looks nicer
+                30,              # the width
+                540              # the height
+            )
             )
 
         scene_final = vbox(p1, cm) # put the colorlegend and the plot together in a `vbox`
@@ -426,5 +440,6 @@ end
         )
 
     end
+
 
 end

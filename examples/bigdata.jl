@@ -1,9 +1,9 @@
 @block SimonDanisch ["dataset_examples"] begin
-    @cell "WorldClim visualization" [visualization, dataset, bigdata] begin
+    @cell "WorldClim visualization" [visualization, dataset, bigdata, camera] begin
         # fixes for GDAL messing with LD library path and therefore using wrong curl
         # for downloads
         using FileIO, GeometryTypes, Colors, GDAL, ZipFile
-        env = ENV["LD_LIBRARY_PATH"]
+        env = get(ENV, "LD_LIBRARY_PATH", "")
         #=
         This example requires the GDAL package, from https://github.com/JuliaGeo/GDAL.jl
         For more information about GDAL, see the official documentation at: https://gdal.org/
@@ -52,6 +52,8 @@
             """
             if !isfile("$name.zip")
                 # This might fail on windows - just try again a couple of times -.-
+                # download with curl breaks if julia is in LD_LIBRARY_PATH
+                # which GDAL is putting there
                 ENV["LD_LIBRARY_PATH"] = ""
                 download("http://biogeo.ucdavis.edu/data/worldclim/v2.0/tif/base/wc2.0_10m_$name.zip", "$name.zip")
             end

@@ -89,7 +89,7 @@
         scatter!(scene, points, marker_offset = offset, color = :red)
     end
 
-    @cell "colormaps" [image, translate, colormap, colorbrewer, meta] begin
+    @cell "colormaps" [image, translate, colormap, colorbrewer, meta, camera] begin
         h = 0.0
         offset = 0.1
         scene = Scene()
@@ -119,18 +119,14 @@
     end
 
     @cell "Available markers" [annotations, markers, meta] begin
-        using GeometryTypes
-        scene = Scene()
-        cam2d!(scene)
         marker = collect(AbstractPlotting._marker_map)
         positions = Point2f0.(0, 1:length(marker))
-        scatter!(
-            scene,
+        scene = scatter(
             positions,
             marker = last.(marker),
             markersize = 0.8,
-            raw = true,
-            marker_offset = Vec2f0(0.5, -0.4)
+            marker_offset = Vec2f0(0.5, -0.4),
+            show_axis = false,
         )
         annotations!(
             scene,
@@ -140,6 +136,8 @@
             textsize = 0.4,
             raw = true
         )
+        update_cam!(scene, FRect(-2.5, 0, 2, length(marker) + 2))
+        scene
     end
 
     #TODO: this doesn't work starting on step 9
@@ -262,8 +260,7 @@
         stepper_demo()
     end
 
-    @cell "Labels" [labels, linesegments, vbox] begin
-        #cell
+    @cell "Labels" [legend, linesegments, vbox] begin
         scene = Scene(resolution = (500, 500))
         x = map([:dot, :dash, :dashdot], [2, 3, 4]) do ls, lw
             linesegments!(
@@ -291,7 +288,7 @@
         step!(st)
         st
     end
-    @cell "Color Legend" [surface, colorlegend] begin
+    @cell "Color Legend" [surface, colorlegend, camera] begin
         s = surface(0..1, 0..1, rand(100, 100))
         ls = colorlegend(s[end], raw = true, camera = campixel!)
         st = Stepper(vbox(s, ls), @replace_with_a_path)

@@ -83,3 +83,20 @@ Build status: [![][gitlab-img]][gitlab-url]
 
 ## Complex examples
 <a href="https://github.com/JuliaPlots/Makie.jl/blob/master/examples/bigdata.jl#L2"><img src="https://user-images.githubusercontent.com/1010467/48002153-fc15a680-e10a-11e8-812d-a5d717c47288.gif" width="480"/></a>
+
+## Running examples in the REPL:
+```julia
+julia> using MakieGallery
+julia> database = MakieGallery.load_database();
+julia> database[1].title # can be used e.g. for filter(x-> x.title == "...", database)
+"Tutorial simple scatter"
+julia> database[1] # pretty printing :) 
+...
+ x = rand(10)
+ y = rand(10)
+ colors = rand(10)
+ scene = scatter(x, y, color = colors)
+...
+julia> using Makie
+julia> MakieGallery.eval_example(database[1]) # run it!
+```
