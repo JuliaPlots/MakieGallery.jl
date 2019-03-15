@@ -76,6 +76,8 @@ scene = vbox(
 )
 ```
 
-You can also pass keyword attributes to it, as shown below.
+Be warned that in its current form, this will look quite small compared to the size of the plot!
+
+To fix that, you can theme it, as shown below:
 
 @example_database("Line with varying colors")
