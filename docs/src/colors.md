@@ -19,15 +19,45 @@ Colormaps are mappings of values to colors.  You can supply the coloring values 
 
 You can copy this code and substitute `cmap` with any `Colormap` to show the colormap.
 
-`Makie` supports multiple colormap libraries.  Currently, support for colormaps provided by `PlotUtils` and `ColorBrewer` is inbuilt, meaning that any colormap symbol that works with Plots will also work with Makie.  
+`Makie` supports multiple colormap libraries.  Currently, support for colormaps provided by `PlotUtils` is inbuilt, meaning that any colormap symbol that works with Plots will also work with Makie.
 
-Many colormaps (but not all) can be reversed by appending `_r`, e.g. `:magma_r`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the schemes.
+Colormaps from the `ColorSchemes` package can be used by `colormap = ColorSchemes.<name of colormap>.colors`.  Similarly, colormaps from the `PerceptualColourMaps` package (which is a superset of the `colorcet` library) can be used by `colormap = PerceptualColourMaps.cgrad("<name of colormap>")`.
 
-Natively, `Makie` supports these colormaps:
+Color gradients are arranged into color libraries. To get a list of color libraries, use the `clibraries` function. To get a list of color gradients in each library, call `cgradients(library)`. `showlibrary(library)` creates a visual representation of color schemes. To change the active library, use `clibrary(library)`. This is only necessary in the case of namespace clashes, e.g. if there are multiple `:blues`. The gradients can be reversed by appending `_r`, e.g. `:magma_r`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the colormap.
 
-@example_database("colormaps")
+PlotUtils bundles with it colormaps from many libraries (of which one can be active at a time).
 
-Similarly, the `PerceptualColourMaps` library of colormaps can also be used (though it requires `PyCall` and may not play well with `PackageCompiler` system images).  This library is geared more towards 'publication quality' plots, and you can see examples of its colormaps on the [repo page](https://github.com/peterkovesi/PerceptualColourMaps.jl).
+## Libraries
+
+### PLOTS
+
+The default library.  Created by Nathaniel J. Smith, Stefan van der Walt, and (in the case of viridis) Eric Firing. Released under CC0 license / public domain dedication. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#matplotlib).
+
+![Plots colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/Plots.png)
+
+### CMOCEAN
+
+Released under The MIT License (MIT) Copyright (c) 2015 Kristen M. Thyng. RGB values were taken from https://github.com/matplotlib/cmocean/tree/master/cmocean/rgb
+
+![cmocean colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/cmocean.png)
+
+### COLORCET
+
+Released under The MIT License (MIT) Copyright (c) 2015 Peter Kovesi. These are the perceptually correct color maps designed by Peter Kovesi and described in Peter Kovesi. Good Colour Maps: How to Design Them. arXiv:1509.03700 [cs.GR] 2015
+
+![Colorcet colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/colorcet.png)
+
+### COLORBREWER
+
+Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University. Released under the Apache License, Version 2.0. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#colorbrewer).
+
+![ColorBrewer colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/colorbrewer.png)
+
+### MISC
+
+![Miscellaneous colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/misc.png)
+
+
 
 ## Color legends
 
