@@ -1,8 +1,6 @@
 # Colors
 
-`Makie` has support for you to color your plots however you want to.
-You can manipulate the color of a plot by using the `color` keyword,
-nd change the colormap by using the `colormap` keyword.
+`Makie` has support for you to color your plots however you want to. You can manipulate the color of a plot by using the `color` keyword, and change the colormap by using the `colormap` keyword.
 
 ## Colors
 
