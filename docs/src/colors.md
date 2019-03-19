@@ -23,7 +23,7 @@ You can copy this code and substitute `cmap` with any `Colormap` to show the col
 
 Color gradients are arranged into color libraries. To get a list of color libraries, use the `clibraries` function. To get a list of color gradients in each library, call `cgradients(library)`. `showlibrary(library)` creates a visual representation of color schemes. To change the active library, use `clibrary(library)`. This is only necessary in the case of namespace clashes, e.g. if there are multiple `:blues`. The gradients can be reversed by appending `_r`, e.g. `:magma_r`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the colormap.
 
-PlotUtils bundles with it colormaps from many libraries (of which one can be active at a time).  As of the 15th of March, 2019, those are:
+PlotUtils bundles with it colormaps from many libraries.  As of the 16th of March, 2019, those are:
 
 ```julia
 :Plots    # default
@@ -32,6 +32,7 @@ PlotUtils bundles with it colormaps from many libraries (of which one can be act
 :colorcet
 ```
 
+Again, the `clibrary` function can be used to change the preferred colour library in case of namespae conflict.  For example, to prefer the use of `cmocean` colourmaps if available, you might call `clibrary(:cmocean)` before plotting.
 
 ## Libraries
 
@@ -67,7 +68,7 @@ Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University.
 
 ## Color legends
 
-To show the colormap and scaling, you can use a color legend.  Color legends can be automatically produced by the `colorlegend` function, to which a Plot object must be passed.  Its range and the colormap it shows can also be manually altered, as can many of its attributes.
+To show the colormap and its scaling, you can use a color legend.  Color legends can be automatically produced by the `colorlegend` function, to which a Plot object must be passed.  Its range and the colormap it shows can also be manually altered, as can many of its attributes.
 
 To simply produce a color legend and plot it to the left of the original plot, you can produce a colorlegend and `vbox` it.  In the example below, `p1` is the initial Scene, with only one plot.
 
