@@ -1,8 +1,6 @@
 # Colors
 
-`Makie` has support for you to color your plots however you want to.
-You can manipulate the color of a plot by using the `color` keyword,
-nd change the colormap by using the `colormap` keyword.
+`Makie` has support for you to color your plots however you want to. You can manipulate the color of a plot by using the `color` keyword, and change the colormap by using the `colormap` keyword.
 
 ## Colors
 
@@ -19,19 +17,58 @@ Colormaps are mappings of values to colors.  You can supply the coloring values 
 
 You can copy this code and substitute `cmap` with any `Colormap` to show the colormap.
 
-`Makie` supports multiple colormap libraries.  Currently, `Colors` and `ColorBrewer` are inbuilt, and `ColorSchemes` and `PerceptualColourMaps` work as well.
+`Makie` supports multiple colormap libraries.  Currently, support for colormaps provided by `PlotUtils` is inbuilt, meaning that any colormap symbol that works with Plots will also work with Makie.  Colormaps from the `ColorSchemes` package can be used by `colormap = ColorSchemes.<name of colormap>.colors`.  Similarly, colormaps from the `PerceptualColourMaps` package (which is a superset of the `colorcet` library) can be used by `colormap = PerceptualColourMaps.cgrad("<name of colormap>")`.  In principle, any Array of `RGB` values can be used as a colormap.
 
-Natively, `Makie` supports these `ColorBrewer` colormaps (see [their docs](https://github.com/timothyrenner/ColorBrewer.jl) as well):
+### Builtins
 
-@example_database("colormaps")
+Color gradients are arranged into color libraries. To get a list of color libraries, use the `clibraries` function. To get a list of color gradients in each library, call `cgradients(library)`. `showlibrary(library)` creates a visual representation of color schemes. To change the active library, use `clibrary(library)`. This is only necessary in the case of namespace clashes, e.g. if there are multiple `:blues`. The gradients can be reversed by appending `_r`, e.g. `:magma_r`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the colormap.
 
-On top of this, you can use any `ColorSchemes` colormap as `colormap = ColorSchemes.<colormap name>.colors`.  Check out the [`ColorSchemes.jl` docs](https://juliagraphics.github.io/ColorSchemes.jl/stable/index.html) for more information!
+PlotUtils bundles with it colormaps from many libraries.  As of the 16th of March, 2019, those are:
 
-Similarly, the `PerceptualColourMaps` library of colormaps can also be used (though it requires `PyCall` and may not play well with `PackageCompiler` system images).  This library is geared more towards 'publication quality' plots, and you can see examples of its colormaps on the [repo page](https://github.com/peterkovesi/PerceptualColourMaps.jl).
+```julia
+:Plots    # default
+:cmocean
+:colorbrewer
+:colorcet
+```
+
+Again, the `clibrary` function can be used to change the preferred colour library in case of namespae conflict.  For example, to prefer the use of `cmocean` colourmaps if available, you might call `clibrary(:cmocean)` before plotting.
+
+## Libraries
+
+### PLOTS
+
+The default library.  Created by Nathaniel J. Smith, Stefan van der Walt, and (in the case of viridis) Eric Firing. Released under CC0 license / public domain dedication. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#matplotlib).
+
+![Plots colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/Plots.png)
+
+### CMOCEAN
+
+Released under The MIT License (MIT) Copyright (c) 2015 Kristen M. Thyng. RGB values were taken from https://github.com/matplotlib/cmocean/tree/master/cmocean/rgb
+
+![cmocean colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/cmocean.png)
+
+### COLORCET
+
+Released under The MIT License (MIT) Copyright (c) 2015 Peter Kovesi. These are the perceptually correct color maps designed by Peter Kovesi and described in Peter Kovesi. Good Colour Maps: How to Design Them. arXiv:1509.03700 [cs.GR] 2015
+
+![Colorcet colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/colorcet.png)
+
+### COLORBREWER
+
+Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University. Released under the Apache License, Version 2.0. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#colorbrewer).
+
+![ColorBrewer colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/colorbrewer.png)
+
+### MISC
+
+![Miscellaneous colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/misc.png)
+
+
 
 ## Color legends
 
-To show the colormap and scaling, you can use a color legend.  Color legends can be automatically produced by the `colorlegend` function, to which a Plot object must be passed.  Its range and the colormap it shows can also be manually altered, as can many of its attributes.
+To show the colormap and its scaling, you can use a color legend.  Color legends can be automatically produced by the `colorlegend` function, to which a Plot object must be passed.  Its range and the colormap it shows can also be manually altered, as can many of its attributes.
 
 To simply produce a color legend and plot it to the left of the original plot, you can produce a colorlegend and `vbox` it.  In the example below, `p1` is the initial Scene, with only one plot.
 
@@ -46,6 +83,8 @@ scene = vbox(
 )
 ```
 
-You can also pass keyword attributes to it, as shown below.
+Be warned that in its current form, this will look quite small compared to the size of the plot!
+
+To fix that, you can theme it, as shown below:
 
 @example_database("Line with varying colors")
