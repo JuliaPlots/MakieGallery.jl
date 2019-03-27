@@ -120,3 +120,15 @@ And everything else works as usual:
 Other than comparing the same column split by a categorical variable, one may also compare different columns put side by side (here in a `Tuple`, `(:PetalLength, :PetalWidth)`). The attribute that styles them has to be set to `bycolumn`. Here color will distinguish `:PetalLength` versus `:PetalWidth` whereas the marker will distinguish the species.
 
 @example_database("StatsMakie", 21)
+
+## Analysis of data
+
+There are multiple options with which to analyze your data before plotting it.  These are:
+
+- density (kernel density estimation, 1D or 2D)
+- histogram (1D, 2D or even 3D!)
+- frequency (count occurrences of discrete variables, 1 or 2D)
+- linear (linear regression)
+- smooth (LOESS regression)
+
+To use these analyses, one can simply write something like `plot(density, x, y)`.  One can also pass options to the analysis, as in: `plot(density(bandwidth-0.1), x, y)`, or something analogous for other analyses.
