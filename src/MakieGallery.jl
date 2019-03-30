@@ -50,4 +50,6 @@ function load_database()
     database
 end
 
+export load_database, eval_example
+
 end
