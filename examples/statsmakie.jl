@@ -94,4 +94,36 @@
         @substep
 
     end
+
+    @cell "Analysis"  [Group, Style, scatter, plot, wireframe, statistics] begin
+
+        ## setup
+
+        using StatsMakie
+        using DataFrames, RDatasets # for data
+
+        mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
+        www = dataset("datasets", "wwwusage")     # load dataset of Web usage statistics
+        drivers = dataset("datasets", "drivers")  # load dataset of driving statistics
+        diamonds = dataset("ggplot2", "diamonds") # load dataset of diamond statistics
+
+        disallowmissing!.([mtcars, www, drivers, diamonds])  # convert columns from Union{T, Missing} to T
+        # We can use this because the dataset has no missing values.
+
+        @substep
+
+        # kde
+
+        plot(
+            density,           # the type of analysis
+            Data(mtcars),
+            :MPG,
+            Group(color = :Cyl)
+            )
+
+        @substep
+
+
+
+    end
 end
