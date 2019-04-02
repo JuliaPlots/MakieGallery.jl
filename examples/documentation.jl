@@ -89,12 +89,12 @@
         scatter!(scene, points, marker_offset = offset, color = :red)
     end
 
-    @cell "colormaps" [image, translate, colormap, colorbrewer, meta, camera] begin
+    @cell "colormaps" [image, translate, colormap, meta, camera] begin
         h = 0.0
         offset = 0.1
         scene = Scene()
         cam2d!(scene)
-        plot = map(AbstractPlotting.colorbrewer_names) do cmap
+        plot = map(AbstractPlotting.all_gradient_names) do cmap
             global h
             c = to_colormap(cmap)
             cbar = image!(
