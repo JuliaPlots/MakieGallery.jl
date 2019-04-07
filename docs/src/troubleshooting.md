@@ -54,8 +54,11 @@ ERROR: glTexImage 2D: width too large. Width: 24900
 [...]
 ```
 or fail silently:
+
 <img width="468" alt="Screen Shot 2019-04-06 at 5 50 44  37400PM" src="https://user-images.githubusercontent.com/32143268/55675737-96357280-5894-11e9-9170-1ffd21f544cc.png">
+
 Tiling the plot, as shown below, yields a correct image.
+
 @example_database("Tiled heatmap")
 
 ### 3d plots (volumes)
@@ -68,7 +71,7 @@ using Makie, GLMakie, ModernGL
 display(scatter(rand(10)))
 glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE)
 ```
-And then just split the volume:
+and then just split the volume:
 ```julia
 vol = rand(506, 720, 1440)
 ranges = (1:256, 1:256, 1:256)
