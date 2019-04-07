@@ -35,3 +35,55 @@ subscenes:
 
 then, your backend may not have built correctly.  By default, Makie will try to use GLMakie as a backend, but if it does not build correctly for whatever reason, then scenes will not be displayed.
 Ensure that your graphics card supports OpenGL; if it does not (old models, or relatively old integrated graphics cards), then you may want to consider CairoMakie.
+
+# Plotting issues
+
+## Dimension too large
+
+In general, plotting functions tend to plot whatever's given to them as a single texture.  This can lead to GL errors, or OpenGL failing silently.  To circumvent this, one can 'tile' the plots (i.e., assemble them piece-by-piece) to decrease the individual texture size.
+
+### 2d plots (heatmaps, images, etc.)
+
+```julia
+heatmap(rand(Float32, 24900, 26620))
+```
+may either fail with an error
+```julia
+   Error showing value of type Scene:
+ERROR: glTexImage 2D: width too large. Width: 24900
+[...]
+```
+or fail silently:
+<img width="468" alt="Screen Shot 2019-04-06 at 5 50 44  37400PM" src="https://user-images.githubusercontent.com/32143268/55675737-96357280-5894-11e9-9170-1ffd21f544cc.png">
+Tiling the plot, as shown below, yields a correct image.
+@example_database("Tiled heatmap")
+
+### 3d plots (volumes)
+
+The approach here is similar to that for the 2d plots, except that here there is a helpful function that gives the maximum texture size.
+You can check the maximum texture size with:
+```julia
+using Makie, GLMakie, ModernGL
+# simple plot to open a window (needs to be open for opengl)
+display(scatter(rand(10)))
+glGetIntegerv(GL_MAX_3D_TEXTURE_SIZE)
+```
+And then just split the volume:
+```julia
+vol = rand(506, 720, 1440)
+ranges = (1:256, 1:256, 1:256)
+scene = volume(ranges..., vol[ranges...])
+for i in 1:3
+    global ranges
+    ranges = ntuple(3) do j
+        s = j == i ? last(ranges[j]) : 1
+        e = j == i ? size(vol, j) : last(ranges[j])
+        s:e
+    end
+    volume!(ranges..., vol[ranges...])
+end
+scene
+```
+
+
+
