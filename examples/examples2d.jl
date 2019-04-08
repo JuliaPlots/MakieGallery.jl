@@ -443,3 +443,18 @@ end
 
 
 end
+
+@block AnshulSinghvi ["Recipes"] begin
+    
+    @cell "Arc" [arc] begin
+        
+        arc(
+            [0, 0],   # origin
+            1,        # radius
+            0,        # start angle
+            pi        # end angle
+            )
+        
+    end
+    
+end
