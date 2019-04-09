@@ -533,10 +533,26 @@ function eval_example(
     steps = split(source, "@substep", keepempty = false)
     Random.seed!(42)
     if length(steps) == 1
-        return include_string(tmpmod, source, string(uname))
+        try
+            return include_string(tmpmod, source, string(uname))
+        catch e
+            println(stderr, "Example $(entry.title) failed with source:")
+            for line in split(source, "\n")
+                println(stderr, "    ", line)
+            end
+            rethrow(e)
+        end
     else
         return map(enumerate(steps)) do (i, source)
-            include_string(tmpmod, source, string(uname, "_", i))
+            try
+                return include_string(tmpmod, source, string(uname, "_", i))
+            catch e
+                println(stderr, "Example $(entry.title) failed with source:")
+                for line in split(source, "\n")
+                    println(stderr, "    ", line)
+                end
+                rethrow(e)
+            end
         end
     end
 end
