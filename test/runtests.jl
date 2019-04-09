@@ -17,4 +17,6 @@ rm(test_record_path, force = true, recursive = true)
 mkpath(test_record_path)
 # THese examples download additional data - don't want to deal with that!
 examples = MakieGallery.record_examples(test_record_path)
+# MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
+# MakieGallery.generate_thumbnails(test_record_path)
 MakieGallery.run_comparison(test_record_path, tested_diff_path)
