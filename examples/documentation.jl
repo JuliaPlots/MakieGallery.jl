@@ -94,7 +94,7 @@
         offset = 0.1
         scene = Scene()
         cam2d!(scene)
-        plot = map(AbstractPlotting.all_gradient_names) do cmap
+        plot = map(collect(AbstractPlotting.all_gradient_names)) do cmap
             global h
             c = to_colormap(cmap)
             cbar = image!(
@@ -231,12 +231,11 @@
     end
 
     @cell "Stepper demo" [stepper, text, annotation] begin
-
         function stepper_demo()
             scene = Scene()
             pos = (50, 50)
             steps = ["Step 1", "Step 2", "Step 3"]
-            colors = AbstractPlotting.to_colormap(:Set1, length(steps))
+            colors = AbstractPlotting.ColorBrewer.palette("Set1", length(steps))
             lines!(scene, Rect(0,0,500,500), linewidth = 0.0001)
             # initialize the stepper and give it an output destination
             st = Stepper(scene, @replace_with_a_path)

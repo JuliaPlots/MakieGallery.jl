@@ -47,7 +47,7 @@
         arrows!(x, y, u, v, arrowsize = 0.05)
     end
     @cell "image" [image] begin
-        hbox(
+        vbox(
             image(AbstractPlotting.logo(), scale_plot = false),
             image(rand(100, 500), scale_plot = false),
         )
@@ -303,6 +303,15 @@
         step!(st)
         st
     end
+
+    @cell "linesegments + colors" [linesegments] begin
+        using Colors
+        linesegments(
+            [rand(Point2f0) => rand(Point2f0) for i in 1:5],
+            color = rand(RGB{Float64}, 5)
+        )
+    end
+
     @cell "Parallel Prefix Sum" [lines, scatter] begin
         # credits to [jiahao chen](https://github.com/jiahao)
 
@@ -440,21 +449,18 @@ end
         )
 
     end
-
-
 end
 
 @block AnshulSinghvi ["Recipes"] begin
-    
+
     @cell "Arc" [arc] begin
-        
-        arc(
-            [0, 0],   # origin
+        s = arc(
+            Point2f0(0, 0),   # origin
             1,        # radius
             0,        # start angle
             pi        # end angle
-            )
-        
+        )
+        s
     end
-    
+
 end
