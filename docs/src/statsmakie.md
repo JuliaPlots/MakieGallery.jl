@@ -120,3 +120,55 @@ And everything else works as usual:
 Other than comparing the same column split by a categorical variable, one may also compare different columns put side by side (here in a `Tuple`, `(:PetalLength, :PetalWidth)`). The attribute that styles them has to be set to `bycolumn`. Here color will distinguish `:PetalLength` versus `:PetalWidth` whereas the marker will distinguish the species.
 
 @example_database("StatsMakie", 21)
+
+## Analysis of data
+
+There are multiple options with which to analyze your data before plotting it.  These are:
+
+- density (kernel density estimation, 1D or 2D)
+- histogram (1D, 2D or even 3D!)
+- frequency (count occurrences of discrete variables, 1 or 2D)
+- linear (linear regression)
+- smooth (LOESS regression)
+
+To use these analyses, one can simply write something like `plot(density, x, y)`.  One can also pass options to the analysis, as in: `plot(density(bandwidth=0.1), x, y)`, or something analogous for other analyses.
+
+For example, see the initial setup below:
+
+@example_database("Analysis", 1)
+
+for which one can plot a kernel density estimation:
+
+@example_database("Analysis", 2)
+
+or a histogram:
+
+@example_database("Analysis", 3)
+
+One can also count the frequency of a discrete variable:
+
+@example_database("Analysis", 4)
+
+Fitting data using LOESS fitting is of course possible:
+
+@example_database("Analysis", 5)
+
+and, as seen earlier, fitting it with a line is possible as well.
+
+@example_database("Analysis", 6)
+
+## Statistical plot types
+
+One can use box plots and violin plots with the same interface as `StatsPlots`.  
+
+One can create a box plot:
+
+@example_database("Box plot")
+
+or a violin plot:
+
+@example_database("Violin plot")
+
+and the two can be superimposed:
+
+@example_database("Violin and box plot")

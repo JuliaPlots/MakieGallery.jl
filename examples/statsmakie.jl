@@ -94,4 +94,98 @@
         @substep
 
     end
+
+    @cell "Analysis"  [Group, Style, scatter, plot, wireframe, statistics] begin
+
+        ## setup
+
+        using StatsMakie
+        using DataFrames, RDatasets # for data
+
+        mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
+        iris = dataset("datasets", "iris")
+        # diamonds = dataset("ggplot2", "diamonds")
+
+        disallowmissing!.([mtcars, www, drivers, diamonds])  # convert columns from Union{T, Missing} to T
+        # We can use this because the dataset has no missing values.
+
+        @substep
+
+        # kde
+
+        plot(
+            density,           # the type of analysis
+            Data(mtcars),
+            :MPG,
+            Group(color = :Cyl)
+            )
+
+        @substep
+
+        # histogram
+
+        plot(
+            histogram,         # the type of analysis
+            Data(mtcars),
+            :MPG,
+            Group(color = :Cyl)
+            )
+
+        @substep
+
+        # frequency analysis
+
+        plot(
+            frequency,
+            Data(iris),
+            :Species
+        )
+
+        @substep
+
+        plot(
+            smooth,
+            rand(10)
+        )
+
+        @substep
+
+        plot(
+            linear,
+            rand(10)
+        )
+
+    end
+
+    @cell "Box plot" [boxplot, statistics] begin
+
+        using RDatasets
+
+        d = dataset("Ecdat","Fatality");
+
+        boxplot(Data(d), :Year, :Perinc)
+
+    end
+
+    @cell "Violin plot" [violin, statistics] begin
+
+        using RDatasets
+
+        d = dataset("Ecdat","Fatality");
+
+        violin(Data(d), :Year, :Perinc)
+
+    end
+
+    @cell "Violin and box plot" [boxplot, violin, statistics] begin
+
+        using RDatasets
+
+        d = dataset("Ecdat","Fatality");
+
+        p = violin(Data(d), :Year, :Perinc, color = :gray)
+
+        boxplot!(p, Data(d), :Year, :Perinc, color = :black)
+
+    end
 end
