@@ -103,9 +103,8 @@
         using DataFrames, RDatasets # for data
 
         mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
-        iris = dataset("datasets", "iris")         # load dataset of Web usage statistics
-        drivers = dataset("datasets", "drivers")  # load dataset of driving statistics
-        diamonds = dataset("ggplot2", "diamonds") # load dataset of diamond statistics
+        iris = dataset("datasets", "iris")
+        # diamonds = dataset("ggplot2", "diamonds")
 
         disallowmissing!.([mtcars, www, drivers, diamonds])  # convert columns from Union{T, Missing} to T
         # We can use this because the dataset has no missing values.
@@ -175,6 +174,18 @@
         d = dataset("Ecdat","Fatality");
 
         violin(Data(d), :Year, :Perinc)
+
+    end
+
+    @cell "Violin and box plot" [boxplot, violin, statistics] begin
+
+        using RDatasets
+
+        d = dataset("Ecdat","Fatality");
+
+        p = violin(Data(d), :Year, :Perinc, color = :gray)
+
+        boxplot!(p, Data(d), :Year, :Perinc, color = :black)
 
     end
 end
