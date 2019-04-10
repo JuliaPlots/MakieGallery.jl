@@ -657,7 +657,6 @@ end
 @block PatrickBouffard ["3d"] begin
 
     @cell "Electrostatic repulsion" ["3d", volume] begin
-        uusing Makie
         using LinearAlgebra
 
         clip11(x) = max(-1.0, min(1.0, x))

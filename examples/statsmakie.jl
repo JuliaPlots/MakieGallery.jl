@@ -101,12 +101,12 @@
 
         using StatsMakie
         using DataFrames, RDatasets # for data
+        using StatsMakie: smooth, linear
 
-        mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
+        mtcars = dataset("datasets", "mtcars")    # load dataset of car statistics
         iris = dataset("datasets", "iris")
-        # diamonds = dataset("ggplot2", "diamonds")
 
-        disallowmissing!.([mtcars, www, drivers, diamonds])  # convert columns from Union{T, Missing} to T
+        disallowmissing!.([mtcars, iris])  # convert columns from Union{T, Missing} to T
         # We can use this because the dataset has no missing values.
 
         @substep
@@ -118,7 +118,7 @@
             Data(mtcars),
             :MPG,
             Group(color = :Cyl)
-            )
+        )
 
         @substep
 
@@ -129,49 +129,43 @@
             Data(mtcars),
             :MPG,
             Group(color = :Cyl)
-            )
+        )
 
         @substep
 
         # frequency analysis
 
-        plot(
-            frequency,
-            Data(iris),
-            :Species
-        )
+        using Distributions
+        d = rand(Poisson(), 1000)
+        plot(frequency, d)
 
         @substep
 
-        plot(
-            smooth,
-            rand(10)
-        )
+        xs = 10 .* rand(100)
+        ys = sin.(xs) .+ 0.5 .* rand.()
+        scatter(xs, ys)
+        plot!(smooth, xs, ys)
 
         @substep
 
-        plot(
-            linear,
-            rand(10)
-        )
-
+        scatter(xs, ys)
+        plot!(linear, xs, ys)
     end
 
     @cell "Box plot" [boxplot, statistics] begin
 
-        using RDatasets
+        using RDatasets, StatsMakie
 
-        d = dataset("Ecdat","Fatality");
-
+        d = dataset("Ecdat","Fatality")
         boxplot(Data(d), :Year, :Perinc)
 
     end
 
     @cell "Violin plot" [violin, statistics] begin
 
-        using RDatasets
+        using RDatasets, StatsMakie
 
-        d = dataset("Ecdat","Fatality");
+        d = dataset("Ecdat", "Fatality");
 
         violin(Data(d), :Year, :Perinc)
 
@@ -179,13 +173,12 @@
 
     @cell "Violin and box plot" [boxplot, violin, statistics] begin
 
-        using RDatasets
+        using RDatasets, StatsMakie
 
         d = dataset("Ecdat","Fatality");
 
-        p = violin(Data(d), :Year, :Perinc, color = :gray)
-
-        boxplot!(p, Data(d), :Year, :Perinc, color = :black)
+        violin(d.Year, d.Perinc, color = :gray)
+        boxplot!(d.Year, d.Perinc, color = :black)
 
     end
 end
