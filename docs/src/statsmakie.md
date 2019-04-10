@@ -149,13 +149,9 @@ One can also count the frequency of a discrete variable:
 
 @example_database("Analysis", 4)
 
-Fitting data using LOESS fitting is of course possible:
+One can fit data using LOESS smooth fitting as well as linear regression:
 
 @example_database("Analysis", 5)
-
-and, as seen earlier, fitting it with a line is possible as well.
-
-@example_database("Analysis", 6)
 
 ## Statistical plot types
 
