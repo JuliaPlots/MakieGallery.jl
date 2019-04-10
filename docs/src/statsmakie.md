@@ -131,7 +131,7 @@ There are multiple options with which to analyze your data before plotting it.  
 - linear (linear regression)
 - smooth (LOESS regression)
 
-To use these analyses, one can simply write something like `plot(density, x, y)`.  One can also pass options to the analysis, as in: `plot(density(bandwidth-0.1), x, y)`, or something analogous for other analyses.
+To use these analyses, one can simply write something like `plot(density, x, y)`.  One can also pass options to the analysis, as in: `plot(density(bandwidth=0.1), x, y)`, or something analogous for other analyses.
 
 For example, see the initial setup below:
 
