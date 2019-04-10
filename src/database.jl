@@ -155,10 +155,15 @@ const NO_GROUP = 0
 unique_names = Set(Symbol[])
 function unique_name!(name, unique_names = unique_names)
     funcname = Symbol(replace(lowercase(string(name)), r"[ #$!@#$%^&*()+]" => '_'))
-    i = 1
     while isdefined(AbstractPlotting, funcname) || (funcname in unique_names)
-        funcname = Symbol("$(funcname)_$i")
-        i += 1
+        name = string(funcname)
+        m = match(r"(.*)_(\d+)$", name)
+        if m !== nothing
+            name, num = m[1], parse(Int, m[2]) + 1
+        else
+            num = 1
+        end
+        funcname = Symbol("$(name)_$(num)")
     end
     push!(unique_names, funcname)
     funcname
