@@ -691,6 +691,8 @@ end
         mesh!(s, Sphere(Point3f0(0), 1f0), color = :gray)
 
         max_particles = 5000
+        # Sadly, you currently can't resize 3D mesh particles, so we need to
+        # implement resize on our own...
         particles = Node(fill(Point3f0(NaN), max_particles))
         colors = Node(fill(RGBAf0(0, 0, 0, 0), max_particles))
         meshscatter!(s, particles, color = colors, markersize = 0.05)
