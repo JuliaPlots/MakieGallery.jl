@@ -106,12 +106,12 @@ and use `lift` on the Node to set up a pipeline to access its value. For example
 
 ```julia
 scene = Scene()
-time = Node(0.0)
-myfunc(v, t) = sin.(v, t)
+time = Node(0.1)
+myfunc(v, t) = sin.(v .* t)
 
 scene = lines!(
     scene,
-    lift(t -> f.(range(0, stop=2pi, length=50), t), time)
+    lift(t -> myfunc.(range(0, stop=2pi, length=50), t), time)
 )
 ```
 
