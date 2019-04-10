@@ -103,7 +103,7 @@
         using DataFrames, RDatasets # for data
 
         mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
-        www = dataset("datasets", "iris")     # load dataset of Web usage statistics
+        iris = dataset("datasets", "iris")         # load dataset of Web usage statistics
         drivers = dataset("datasets", "drivers")  # load dataset of driving statistics
         diamonds = dataset("ggplot2", "diamonds") # load dataset of diamond statistics
 
@@ -155,6 +155,26 @@
             linear,
             rand(10)
         )
+
+    end
+
+    @cell "Box plot" [boxplot, statistics] begin
+
+        using RDatasets
+
+        d = dataset("Ecdat","Fatality");
+
+        boxplot(Data(d), :Year, :Perinc)
+
+    end
+
+    @cell "Violin plot" [violin, statistics] begin
+
+        using RDatasets
+
+        d = dataset("Ecdat","Fatality");
+
+        violin(Data(d), :Year, :Perinc)
 
     end
 end
