@@ -104,10 +104,9 @@
 
         mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
         iris = dataset("datasets", "iris")
-        # diamonds = dataset("ggplot2", "diamonds")
 
-        disallowmissing!.([mtcars, www, drivers, diamonds])  # convert columns from Union{T, Missing} to T
-        # We can use this because the dataset has no missing values.
+        disallowmissing!(mtcars)  # convert columns from Union{T, Missing} to T
+        # We can use this because the dataset has no missing values, but for some reason is loaded as if it did.
 
         @substep
 
@@ -142,17 +141,25 @@
         )
 
         @substep
-
-        plot(
-            smooth,
-            rand(10)
+        
+        xs = collect(1.0:10.0)
+        
+        ys = rand(10)
+        
+        sc = lines(xs, ys, linewidth=3) # plot data
+        
+        plot!(
+            sc,
+            StatsMakie.linear,
+            xs, ys,
+            color = :red
         )
 
-        @substep
-
-        plot(
-            linear,
-            rand(10)
+        plot!(
+            sc,
+            StatsMakie.smooth,
+            xs, ys,
+            color = :blue
         )
 
     end
