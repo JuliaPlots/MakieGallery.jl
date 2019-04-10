@@ -103,7 +103,7 @@
         using DataFrames, RDatasets # for data
 
         mdcars = dataset("datasets", "mtcars")    # load dataset of car statistics
-        www = dataset("datasets", "wwwusage")     # load dataset of Web usage statistics
+        www = dataset("datasets", "iris")     # load dataset of Web usage statistics
         drivers = dataset("datasets", "drivers")  # load dataset of driving statistics
         diamonds = dataset("ggplot2", "diamonds") # load dataset of diamond statistics
 
@@ -123,7 +123,38 @@
 
         @substep
 
+        # histogram
 
+        plot(
+            histogram,         # the type of analysis
+            Data(mtcars),
+            :MPG,
+            Group(color = :Cyl)
+            )
+
+        @substep
+
+        # frequency analysis
+
+        plot(
+            frequency,
+            Data(iris),
+            :Species
+        )
+
+        @substep
+
+        plot(
+            smooth,
+            rand(10)
+        )
+
+        @substep
+
+        plot(
+            linear,
+            rand(10)
+        )
 
     end
 end
