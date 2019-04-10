@@ -143,7 +143,7 @@ makedocs(
             "plot-attributes.md",
             "colors.md",
             "theming.md",
-            # "extending.md",
+            "recipes.md",
             "axis.md",
             "interaction.md",
             "output.md",
