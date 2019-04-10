@@ -21,7 +21,7 @@ You can copy this code and substitute `cmap` with any `Colormap` to show the col
 
 ### Builtins
 
-Color gradients are arranged into color libraries. To get a list of color libraries, use the `clibraries` function. To get a list of color gradients in each library, call `cgradients(library)`. `showlibrary(library)` creates a visual representation of color schemes. To change the active library, use `clibrary(library)`. This is only necessary in the case of namespace clashes, e.g. if there are multiple `:blues`. The gradients can be reversed by appending `_r`, e.g. `:magma_r`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the colormap.
+Color gradients are arranged into color libraries. To get a list of color libraries, use the `clibraries` function. To get a list of color gradients in each library, call `cgradients(library)`. `showlibrary(library)` creates a visual representation of color schemes. To change the active library, use `clibrary(library)`. This is only necessary in the case of namespace clashes, e.g. if there are multiple `:blues`. The gradients can be reversed by `Reverse(:<gradient_name>)`. The `clims::NTuple{2,Number}` attribute can be used to define the data values that correspond with the ends of the colormap.
 
 PlotUtils bundles with it colormaps from many libraries.  As of the 16th of March, 2019, those are:
 
