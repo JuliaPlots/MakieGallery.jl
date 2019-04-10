@@ -161,11 +161,11 @@ and, as seen earlier, fitting it with a line is possible as well.
 
 One can use box plots and violin plots with the same interface as `StatsPlots`.  
 
-One can create a box plot
+One can create a box plot:
 
 @example_database("Box plot")
 
-or a violin plot!
+or a violin plot:
 
 @example_database("Violin plot")
 
