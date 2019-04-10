@@ -657,61 +657,55 @@ end
 @block PatrickBouffard ["3d"] begin
 
     @cell "Electrostatic repulsion" ["3d", volume] begin
+        uusing Makie
         using LinearAlgebra
 
         clip11(x) = max(-1.0, min(1.0, x))
 
-        function redisplay(s)
-            # Needed for Makie compiled into system image
-            display(AbstractPlotting.PlotDisplay(), s);
-            return nothing # to avoid console spew
-        end
-
-        function repel(particles)
-            for i=1:length(particles)
+        function repel(particles_node, N)
+            particles = particles_node[]
+            @inbounds for i in 1:N
                 ftot = Vec3f0(0)
-                mesh1 = particles[i]
-                p1 = translation(mesh1)[]
-                for j=1:length(particles)
+                p1 = particles[i]
+                for j in 1:N
                     if i != j
-                        mesh2 = particles[j]
-                        p2 = translation(mesh2)[]
+                        p2 = particles[j]
                         Δσ = acos(clip11(dot(p1, p2))) # great circle distance
                         ftot += (p1 - p2)/max(1e-3, Δσ^2)
                     end
                 end
-                newpos = normalize(p1 + 0.001 * ftot)
-                translate!(mesh1, newpos)
+                particles[i] = normalize(p1 + 0.001 * ftot)
             end
+            particles_node[] = particles
         end
 
-        function addparticle!(particles)
-            push!(particles, mesh!(Sphere(Point3f0(0), 0.05f0), color=:green, show_axis=false)[end])
-            newpos = tuple(normalize(randn(3))...)
-            translate!(particles[end], newpos)
-            ep = s.camera.eyeposition[]
-            redisplay(s)
-            update_cam!(s, ep, [0,0,0])
+        function addparticle!(particles, colors, nparticles)
+            nparticles[] = nparticles[] + 1
+            particles[][nparticles[]] = normalize(randn(Point3f0))
+            colors[][nparticles[]] = to_color(:green)
+            particles[] = particles[]
+            colors[] = colors[]
         end
 
-        s = Scene(show_axis=false)
-        mesh!(s, Sphere(Point3f0(0), 1f0), color=:gray, show_axis=false)
+        s = Scene(show_axis = false)
+        mesh!(s, Sphere(Point3f0(0), 1f0), color = :gray)
 
-        particles = []
-
+        max_particles = 5000
+        particles = Node(fill(Point3f0(NaN), max_particles))
+        colors = Node(fill(RGBAf0(0, 0, 0, 0), max_particles))
+        meshscatter!(s, particles, color = colors, markersize = 0.05)
+        nparticles = Node(0)
         for i=1:10
-            addparticle!(particles)
+            addparticle!(particles, colors, nparticles)
         end
-
-        iter = 0
-        while iter < 1000
-            global iter += 1
-            if (iter % 10) == 0
-                addparticle!(particles)
-            end
-            repel(particles)
-            sleep(0.01)
+        update_cam!(s, FRect3D(Vec3f0(0), Vec3f0(1)))
+        s.center = false # don't reset the camera by display
+        N = 1000 # N gets replaced by 100 for testing
+        record(s, @replace_with_a_path(mp4), 1:N) do iter
+            isodd(iter) && addparticle!(particles, colors, nparticles)
+            repel(particles, nparticles[])
         end
+    end
 
 
 end
