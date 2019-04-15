@@ -572,3 +572,33 @@ function eval_examples(f, tags...; start = 1, exclude_tags = nothing, kw_args...
         f(entry, result)
     end
 end
+
+
+
+"""
+    run_example(title::String)
+
+Runs an example from the database!
+See all available examples online: https://simondanisch.github.io/ReferenceImages/gallery/index.html
+Or run `available_examples()` to get an array of all available titles.
+"""
+function run_example(title::String)
+    database = MakieGallery.load_database()
+    idx = findfirst(x-> lowercase(x.title) == lowercase(title), database)
+    if idx === nothing
+        error(
+            "Example \"$title\" not found in database. Run available_examples(), to see what's available"
+        )
+    else
+        MakieGallery.eval_example(database[idx])
+    end
+end
+
+"""
+    available_examples()
+Returns an array of the titles of all available examples
+"""
+function available_examples()
+    database = MakieGallery.load_database()
+    unique(map(x-> x.title, database))
+end
