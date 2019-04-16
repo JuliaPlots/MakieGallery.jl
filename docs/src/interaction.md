@@ -95,6 +95,23 @@ This section overviews some simple and specific functions that make interaction 
 
 _coming soon..._
 
+There are three principal plot elements that you can use to make your plot interactive.  These are `Slider`, `textslider`, and `Button`.
+
+### Slider
+
+Sliders are quite simple to make.  They can be created by a call to the function `slider`, which usually takes the form:
+
+```julia
+sl = slider(range::AbstractVector, raw = true, camera = campixel!, start = somevalue)
+```
+
+which makes `sl` a Scene with only one `slider`.  The `slider` will go through `range`, and start at `somevalue`.  `range` must be a subtype of `AbstractVector`, meaning an `Array{T, 1}`, a `LinRange`, et cetera.
+
+To access the value of the `slider` as an Observable, we can simply access `sl[end][:value]`, which will return an Observable which will contain the value that the slider is on.  You can then use that `Observable` in a call to `lift`.
+
+A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which depends on them.
+
+
 ## Animation using time
 To animate a scene, you need to create a `Node`, e.g.:
 
