@@ -450,7 +450,7 @@ end
 
     end
     
-    @cell "Colorschemes" [colormaps, colors] begin
+    @cell "Colormap collection" [colormaps, colors] begin
         
         showlibrary(:Plots)
         
