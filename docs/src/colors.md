@@ -40,31 +40,28 @@ Again, the `clibrary` function can be used to change the preferred colour librar
 
 The default library.  Created by Nathaniel J. Smith, Stefan van der Walt, and (in the case of viridis) Eric Firing. Released under CC0 license / public domain dedication. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#matplotlib).
 
-![Plots colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/Plots.png)
-
+@example_database("Colormap collection", 1)
 ### CMOCEAN
 
 Released under The MIT License (MIT) Copyright (c) 2015 Kristen M. Thyng. RGB values were taken from https://github.com/matplotlib/cmocean/tree/master/cmocean/rgb
 
-![cmocean colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/cmocean.png)
+@example_database("Colormap collection", 2)
 
 ### COLORCET
 
 Released under The MIT License (MIT) Copyright (c) 2015 Peter Kovesi. These are the perceptually correct color maps designed by Peter Kovesi and described in Peter Kovesi. Good Colour Maps: How to Design Them. arXiv:1509.03700 [cs.GR] 2015
 
-![Colorcet colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/colorcet.png)
+@example_database("Colormap collection", 3)
 
 ### COLORBREWER
 
 Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University. Released under the Apache License, Version 2.0. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#colorbrewer).
 
-![ColorBrewer colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/colorbrewer.png)
+@example_database("Colormap collection", 4)
 
 ### MISC
 
-![Miscellaneous colormaps](http://docs.juliaplots.org/latest/examples/img/colorschemes/misc.png)
-
-
+@example_database("Colormap collection", 5)
 
 ## Color legends
 
