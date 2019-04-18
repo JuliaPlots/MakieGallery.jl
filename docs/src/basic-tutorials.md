@@ -45,6 +45,10 @@ Many of these examples also work in 3D,
 
 @example_database("Tutorial simple line")
 
+### Adding a title
+
+@example_database("Tutorial title")
+
 ### Adding to a scene
 
 @example_database("Tutorial adding to a scene")
