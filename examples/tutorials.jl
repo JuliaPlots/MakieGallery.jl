@@ -79,5 +79,15 @@
         data = sort(randn(100))
         barplot(data)
     end
+    
+    @cell "Tutorial title" [tutorial, title] begin
+        
+        sc = lines(rand(10))
+        
+        sc_t = title(sc, "Random lines")
+        
+        sc_t
+        
+    end
 
 end
