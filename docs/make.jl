@@ -146,6 +146,7 @@ makedocs(
             # "extending.md",
             "axis.md",
             "interaction.md",
+            "recipes.md",
             "output.md",
             # "layout.md"
         ],
@@ -166,7 +167,7 @@ if !haskey(ENV, "DOCUMENTER_KEY")
     ENV["TRAVIS_BRANCH"] = "latest"
     ENV["TRAVIS_PULL_REQUEST"] = "false"
     ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl.git"
-    ENV["TRAVIS_TAG"] = "v4"
+    ENV["TRAVIS_TAG"] = "v5"
     ENV["TRAVIS_OS_NAME"] = ""
     ENV["TRAVIS_JULIA_VERSION"] = ""
     ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)

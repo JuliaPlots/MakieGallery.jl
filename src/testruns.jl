@@ -3,7 +3,7 @@ const makiegallery_dir = abspath(first(Base.DEPOT_PATH), "makiegallery")
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.1.6")
+function download_reference(version = v"0.1.7")
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
