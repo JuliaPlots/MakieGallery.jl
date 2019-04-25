@@ -17,6 +17,7 @@ job:
       - julia -e 'using InteractiveUtils; versioninfo()'
       - julia --project -e "using Pkg;
                           Pkg.instantiate();
+                          # Always test master
                           Pkg.pkg\"add AbstractPlotting#master Makie#master GLMakie#master\";
                           Pkg.build();
                           Pkg.test(\"MakieGallery\");"
