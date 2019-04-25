@@ -14,10 +14,6 @@ job:
         - apt-get install -y ffmpeg p7zip-full
 
     script:
+      - mkdir $JULIA_DEPOT_PATH # Pkg.jl#325
       - julia -e 'using InteractiveUtils; versioninfo()'
-      - julia --project -e "using Pkg;
-                          Pkg.instantiate();
-                          Pkg.add(PackageSpec(name = \"MakieGallery\", path=ENV[\"CI_PROJECT_DIR\"]));
-                          Pkg.pkg\"add AbstractPlotting#master Makie#master GLMakie#master\";
-                          Pkg.build();
-                          Pkg.test(\"MakieGallery\");"
+      - julia --project -e "using Pkg; Pkg.pkg\"add AbstractPlotting#master StatsMakie#master Makie#master GLMakie#master; test\""
