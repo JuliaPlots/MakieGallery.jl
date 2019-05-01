@@ -723,7 +723,7 @@ end
         end
 
         u0 = [1.0; 0.0; 0.0]
-        tspan = (0.0, 30.0)
+        tspan = (0.0, 10.0)
         prob = ODEProblem(lorenz, u0, tspan)
         sol = solve(prob, Tsit5())
 
