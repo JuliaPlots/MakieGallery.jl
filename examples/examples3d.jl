@@ -710,3 +710,41 @@ end
 
 
 end
+
+
+@block SebastianM-C ["3d"] begin
+    @cell "DifferentialEquations.jl path animation" [lines, meshscatter, animated, record, diffeq] begin
+        using OrdinaryDiffEq
+
+        function lorenz(du,u,p,t)
+            du[1] = 10.0*(u[2]-u[1])
+            du[2] = u[1]*(28.0-u[3]) - u[2]
+            du[3] = u[1]*u[2] - (8/3)*u[3]
+        end
+
+        u0 = [1.0; 0.0; 0.0]
+        tspan = (0.0, 30.0)
+        prob = ODEProblem(lorenz, u0, tspan)
+        sol = solve(prob, Tsit5())
+
+        t = Node(tspan[1])
+        trajectory = lift(t->push!(trajectory[],
+            Point3f0(sol(t, idxs=[1,2,3]))), t;
+            init=[Point3f0(sol(t[], idxs=[1,2,3]))])
+        endpoint = lift(t->[Point3f0(sol(t, idxs=[1,2,3]))], t)
+
+        xm, xM = extrema(sol[1,:])
+        ym, yM = extrema(sol[2,:])
+        zm, zM = extrema(sol[3,:])
+
+        limits = FRect3D((xm,ym,zm), (xM-xm,yM-ym,zM-zm))
+
+        scene = lines(trajectory, limits=limits, markersize=0.7)
+        meshscatter!(scene, endpoint, limits=limits, markersize=0.5)
+
+        ts = range(tspan..., step=0.01)
+        record(scene, @replace_with_a_path(mp4), ts) do tᵢ
+            push!(t, tᵢ)
+        end
+    end
+end
