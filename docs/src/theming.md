@@ -18,4 +18,4 @@ Attributes(
     linewidth = 3
 )
 ```
-then Makie will with this theme.
+then Makie will start with this theme.
