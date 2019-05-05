@@ -29,7 +29,7 @@ ZipFile = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
 julia = "≥ 1.0"
 AbstractPlotting = "≥ 0.9.1"
 GeometryTypes = "≥ 0.7.2"
-ImageCore = "0.6"
+ImageCore = "0.7, 0.8"
 
 [extras]
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
