@@ -94,11 +94,13 @@ scene
 
 If `Makie` can't find your font, you can do two things:
 
-1) Check that the name matches and that the font is in one of these directories:
+1) Check that the name matches and that the font is in one of the directories in:
 
-    - `/usr/share/fonts`
-    - `joinpath(homedir(), "/.fonts")`
-    - `/usr/local/share/fonts`
+    - `using FreeTypeAbstraction; FreeTypeAbstraction.valid_fontpaths`
     
-2) Specify the path to the font; instead of `font = "Noto"`, you could write `joindir(homedir(), "Noto.ttf")` or something.
+2) You can add a custom font path via the environment variable:
+
+    - `ENV["FREETYPE_ABSTRACTION_FONT_PATH"] = "/path/to/your/fonts"`
+    
+3) Specify the path to the font; instead of `font = "Noto"`, you could write `joindir(homedir(), "Noto.ttf")` or something.
 
