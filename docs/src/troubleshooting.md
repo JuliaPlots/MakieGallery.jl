@@ -88,5 +88,17 @@ end
 scene
 ```
 
+## General issues
 
+### My font doesn't work!
+
+If `Makie` can't find your font, you can do two things:
+
+1) Check that the name matches and that the font is in one of these directories:
+
+    - `/usr/share/fonts`
+    - `joinpath(homedir(), "/.fonts")`
+    - `/usr/local/share/fonts`
+    
+2) Specify the path to the font; instead of `font = "Noto"`, you could write `joindir(homedir(), "Noto.ttf")` or something.
 
