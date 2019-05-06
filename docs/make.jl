@@ -149,6 +149,7 @@ makedocs(
             "recipes.md",
             "output.md",
             # "layout.md"
+            "troubleshooting.md
         ],
         "Developer Documentation" => [
             "why-makie.md",
