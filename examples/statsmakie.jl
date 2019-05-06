@@ -181,4 +181,13 @@
         boxplot!(d.Year, d.Perinc, color = :black)
 
     end
+
+    @cell "Errorbar" [errorbar] begin
+        using StatsMakie, Makie
+        x = [1:4;]
+        y =  [1:4;]
+        Δx = fill(0.25, 4)
+        Δy = fill(0.25, 4)
+        p = errorbar(x,y,Δx,Δy,xcolor=:green, ycolor=:red)
+    end
 end

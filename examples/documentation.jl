@@ -259,7 +259,7 @@
         stepper_demo()
     end
 
-    @cell "Labels" [legend, linesegments, vbox] begin
+    @cell "Legend" [legend, linesegments, vbox] begin
         scene = Scene(resolution = (500, 500))
         x = map([:dot, :dash, :dashdot], [2, 3, 4]) do ls, lw
             linesegments!(

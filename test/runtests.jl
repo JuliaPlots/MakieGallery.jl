@@ -15,8 +15,15 @@ rm(tested_diff_path, force = true, recursive = true)
 mkpath(tested_diff_path)
 rm(test_record_path, force = true, recursive = true)
 mkpath(test_record_path)
-# THese examples download additional data - don't want to deal with that!
+# rerecord = [
+#     "Orthographic Camera",
+#     "Violin and box plot",
+#     "Box plot"
+    # "Explicit frame rendering"
+# ]
+# filter!(x-> x.title in rerecord, database)
 examples = MakieGallery.record_examples(test_record_path)
 # MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
 # MakieGallery.generate_thumbnails(test_record_path)
+# MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))
 MakieGallery.run_comparison(test_record_path, tested_diff_path)

@@ -3,7 +3,7 @@ const makiegallery_dir = abspath(first(Base.DEPOT_PATH), "makiegallery")
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.1.7")
+function download_reference(version = v"0.1.9")
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
@@ -79,7 +79,7 @@ Compares all media recursively in two recorded folders!
 function run_comparison(
         test_record_path, test_diff_path,
         reference = MakieGallery.download_reference();
-        maxdiff = 0.03
+        maxdiff = 0.032
     )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
