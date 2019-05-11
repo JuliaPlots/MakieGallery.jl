@@ -57,7 +57,6 @@ const _TESTFILES = [
                 "tutorials.jl",
                 "short_tests.jl",
                 "layouting.jl",
-                "statsmakie.jl",
     ]
 
 """
