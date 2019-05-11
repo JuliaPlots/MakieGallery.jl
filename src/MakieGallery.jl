@@ -25,7 +25,7 @@ function event_path(entry, ending)
 end
 
 """
-Loads the example database and returns it!
+Loads the full example database and returns it!
 """
 function load_database()
     empty!(unique_names)
@@ -49,6 +49,39 @@ function load_database()
     end
     database
 end
+
+"""
+Loads a database of tests and returns it!
+"""
+function load_tests()
+    empty!(unique_names)
+    empty!(database)
+    dir = abspath(joinpath(dirname(pathof(MakieGallery)), ".."))
+    files = [
+        "$dir/examples/tutorials.jl",
+        "$dir/examples/implicits.jl",
+        "$dir/examples/short_tests.jl",
+        "$dir/examples/layouting.jl",
+        "$dir/examples/statsmakie.jl",
+    ]
+    for file in files
+        MakieGallery.eval(:(include($file)))
+    end
+    database
+end
+
+"""
+    `load_database(files::Array{String, 1})`
+
+Loads a database with the files given as a String array.  
+They must be filenames `filename.jl`, and must be located
+within `joinpath(dirname(pathof(MakieGallery)), "..")`.
+(On Linux, this would translate to `MakieGallery/examples/`).
+"""
+function load_database(files::Array{String, 1})
+    
+end
+
 
 export load_database, eval_example, available_examples, run_example
 
