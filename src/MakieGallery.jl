@@ -51,24 +51,19 @@ function load_database()
 end
 
 """
+An array of the filenames that contain tests.
+"""
+const _TESTFILES = [
+                "tutorials.jl",
+                "short_tests.jl",
+                "layouting.jl",
+                "statsmakie.jl",
+    ]
+
+"""
 Loads a database of tests and returns it!
 """
-function load_tests()
-    empty!(unique_names)
-    empty!(database)
-    dir = abspath(joinpath(dirname(pathof(MakieGallery)), ".."))
-    files = [
-        "$dir/examples/tutorials.jl",
-        "$dir/examples/implicits.jl",
-        "$dir/examples/short_tests.jl",
-        "$dir/examples/layouting.jl",
-        "$dir/examples/statsmakie.jl",
-    ]
-    for file in files
-        MakieGallery.eval(:(include($file)))
-    end
-    database
-end
+load_tests() = load_database(_TESTFILES)
 
 """
     `load_database(files::Array{String, 1})`
