@@ -79,7 +79,14 @@ within `joinpath(dirname(pathof(MakieGallery)), "..")`.
 (On Linux, this would translate to `MakieGallery/examples/`).
 """
 function load_database(files::Array{String, 1})
-    
+    empty!(unique_names)
+    empty!(database)
+    dir = abspath(joinpath(dirname(pathof(MakieGallery)), ".."))
+    nfiles = joinpath.("$dir", "examples", files)
+    for file in nfiles
+        MakieGallery.eval(:(include($file)))
+    end
+    database
 end
 
 
