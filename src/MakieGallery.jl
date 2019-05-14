@@ -25,30 +25,57 @@ function event_path(entry, ending)
 end
 
 """
-Loads the example database and returns it!
+Loads the full example database and returns it!
 """
 function load_database()
+    return load_database([
+        "tutorials.jl",
+        "examples2d.jl",
+        "examples3d.jl",
+        "interactive.jl",
+        "documentation.jl",
+        "implicits.jl",
+        "short_tests.jl",
+        "recipes.jl",
+        "bigdata.jl",
+        "layouting.jl",
+        "statsmakie.jl",
+    ])
+end
+
+
+
+"""
+    load_tests()
+Loads a database of minimal tests and returns it!
+"""
+function load_tests()
+    return load_database([
+        "tutorials.jl",
+        "short_tests.jl",
+        "layouting.jl",
+    ])
+end
+
+"""
+    `load_database(files::Array{String, 1})`
+
+Loads a database with the files given as a String array.
+They must be filenames `filename.jl`, and must be located
+within `joinpath(dirname(pathof(MakieGallery)), "..")`.
+(On Linux, this would translate to `MakieGallery/examples/`).
+"""
+function load_database(files::AbstractVector{<: AbstractString})
     empty!(unique_names)
     empty!(database)
     dir = abspath(joinpath(dirname(pathof(MakieGallery)), ".."))
-    files = [
-        "$dir/examples/tutorials.jl",
-        "$dir/examples/examples2d.jl",
-        "$dir/examples/examples3d.jl",
-        "$dir/examples/interactive.jl",
-        "$dir/examples/documentation.jl",
-        "$dir/examples/implicits.jl",
-        "$dir/examples/short_tests.jl",
-        "$dir/examples/recipes.jl",
-        "$dir/examples/bigdata.jl",
-        "$dir/examples/layouting.jl",
-        "$dir/examples/statsmakie.jl",
-    ]
-    for file in files
+    nfiles = joinpath.("$dir", "examples", files)
+    for file in nfiles
         MakieGallery.eval(:(include($file)))
     end
     database
 end
+
 
 export load_database, eval_example, available_examples, run_example
 
