@@ -4,12 +4,6 @@ using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
 
-if get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
-    
-    get!(ENV, "MAKIEGALLERY_MINIMAL", "false")  # if pull request then complete tests
-    
-end
-
 database = (get(ENV, "MAKIEGALLERY_MINIMAL", "true") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
     
 # THese examples download additional data - don't want to deal with that!
