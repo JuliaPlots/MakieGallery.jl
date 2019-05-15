@@ -7,3 +7,4 @@ src/glbackend/.cache
 test/testimages/*
 *.png
 *.jpg
+Manifest.toml
