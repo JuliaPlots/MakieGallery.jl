@@ -6,7 +6,7 @@ using Statistics
 
 if get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
     
-    get!(ENV, "MAKIEGALLERY_MINIMAL", "false") . # if pull request then complete tests
+    get!(ENV, "MAKIEGALLERY_MINIMAL", "false")  # if pull request then complete tests
     
 end
 
