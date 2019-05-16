@@ -4,7 +4,7 @@ using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
 
-database = (get(ENV, "MAKIEGALLERY_MINIMAL", "true") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
+database = (get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
     
 # THese examples download additional data - don't want to deal with that!
 # to_skip = ["WorldClim visualization", "Image on Geometry (Moon)", "Image on Geometry (Earth)"]
