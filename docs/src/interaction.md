@@ -111,6 +111,20 @@ To access the value of the `slider` as an Observable, we can simply access `sl[e
 
 A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which depends on them.
 
+### Button
+
+Buttons are clickable markers that call a function, passing to it the number of clicks so far, on each click.
+
+They are currently broken.
+
+### Textslider
+
+Textsliders are a special case of sliders, with two key diferences - they automatically `hbox` a label with the slider, and they return a 2-tuple consisting of the `Scene` of the slider, and its value as an `Observable`.  Usually, they will be called like so:
+
+```julia
+sl, ol = textslider(-1:0.01:1, "label", start = 0)
+```
+
 
 ## Animation using time
 To animate a scene, you need to create a `Node`, e.g.:
