@@ -449,6 +449,29 @@ end
         )
 
     end
+    
+    @cell "Colormap collection" [colormaps, colors] begin
+        
+        showlibrary(:Plots)
+        
+        @substep
+        
+        showlibrary(:cmocean)
+        
+        @substep
+        
+        showlibrary(:colorcet)
+        
+        @substep
+        
+        showlibrary(:colorbrewer)
+        
+        @substep
+        
+        showlibrary(:misc)
+        
+    end
+    
 end
 
 @block AnshulSinghvi ["Recipes"] begin
