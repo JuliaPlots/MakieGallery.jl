@@ -7,3 +7,8 @@ src/glbackend/.cache
 test/testimages/*
 *.png
 *.jpg
+Manifest.toml
+prec
+tmax
+prec.zip
+tmax.zip
