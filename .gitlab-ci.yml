@@ -4,7 +4,7 @@ variables:
     JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
 
 job:
-    image: "juliagpu/juliagpu/julia:v1.1-${CI_IMAGE_TAG}"
+    image: "juliagpu/julia:v1.1-${CI_IMAGE_TAG}"
     before_script:
         - apt-get -qq update
         # glfw
