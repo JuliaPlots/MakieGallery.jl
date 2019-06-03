@@ -1,7 +1,7 @@
 
 @block SimonDanisch ["2d"] begin
     @cell "Animated time series" [lines, record] begin
-        f0 = 1/2; fs = 100,
+        f0 = 1/2; fs = 100;
         winsec = 4; hopsec = 1/60
         nwin = round(Integer, winsec*fs)
         nhop = round(Integer, hopsec*fs)
@@ -24,7 +24,7 @@
             sleep(hopsec)
             frame_start += hopsec
         end
-        
+
     end
     @cell "Test heatmap + image overlap" [image, heatmap, transparency] begin
         heatmap(rand(32, 32))
@@ -474,29 +474,29 @@ end
         )
 
     end
-    
+
     @cell "Colormap collection" [colormaps, colors] begin
-        
+
         showlibrary(:Plots)
-        
+
         @substep
-        
+
         showlibrary(:cmocean)
-        
+
         @substep
-        
+
         showlibrary(:colorcet)
-        
+
         @substep
-        
+
         showlibrary(:colorbrewer)
-        
+
         @substep
-        
+
         showlibrary(:misc)
-        
+
     end
-    
+
 end
 
 @block AnshulSinghvi ["Recipes"] begin
