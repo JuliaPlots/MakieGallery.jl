@@ -713,7 +713,7 @@ end
 
 
 @block SebastianM_C ["3d"] begin
-    @cell "DifferentialEquations.jl path animation" [lines, meshscatter, animated, record, diffeq] begin
+    @cell "DifferentialEquations path animation" [lines, meshscatter, animated, record, diffeq] begin
         using OrdinaryDiffEq
         using Statistics
 

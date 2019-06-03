@@ -5,7 +5,7 @@ using Makie, AbstractPlotting
 using Statistics
 
 database = (get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
-    
+
 # THese examples download additional data - don't want to deal with that!
 # to_skip = ["WorldClim visualization", "Image on Geometry (Moon)", "Image on Geometry (Earth)"]
 # # we directly modify the database, which seems easiest for now
@@ -17,10 +17,7 @@ mkpath(tested_diff_path)
 rm(test_record_path, force = true, recursive = true)
 mkpath(test_record_path)
 # rerecord = [
-#     "Orthographic Camera",
-#     "Violin and box plot",
-#     "Box plot"
-    # "Explicit frame rendering"
+#     "DifferentialEquations path animation"
 # ]
 # filter!(x-> x.title in rerecord, database)
 examples = MakieGallery.record_examples(test_record_path)
