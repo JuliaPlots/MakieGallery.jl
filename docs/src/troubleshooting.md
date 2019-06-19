@@ -55,7 +55,7 @@ ERROR: glTexImage 2D: width too large. Width: 24900
 ```
 or fail silently:
 
-![untiled heatmap][https://user-images.githubusercontent.com/32143268/55675737-96357280-5894-11e9-9170-1ffd21f544cc.png]
+![untiled heatmap](https://user-images.githubusercontent.com/32143268/55675737-96357280-5894-11e9-9170-1ffd21f544cc.png)
 
 Tiling the plot, as shown below, yields a correct image.
 
