@@ -129,9 +129,8 @@ using Documenter, MakieGallery, Makie, AbstractPlotting
 makedocs(
     modules = [Makie, AbstractPlotting],
     doctest = false, clean = true,
-    format = :html,
+    format = Documenter.HTML(prettyurls = false),
     sitename = "Makie.jl",
-    html_prettyurls = false,
     pages = Any[
         "Home" => "index.md",
         "Basics" => [
@@ -148,8 +147,8 @@ makedocs(
             "interaction.md",
             "recipes.md",
             "output.md",
-            # "layout.md"
-            "troubleshooting.md
+            # "layout.md",
+            "troubleshooting.md"
         ],
         "Developer Documentation" => [
             "why-makie.md",
