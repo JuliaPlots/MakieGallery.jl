@@ -55,7 +55,7 @@ ERROR: glTexImage 2D: width too large. Width: 24900
 ```
 or fail silently:
 
-<img width="468" alt="Screen Shot 2019-04-06 at 5 50 44  37400PM" src="https://user-images.githubusercontent.com/32143268/55675737-96357280-5894-11e9-9170-1ffd21f544cc.png">
+![untiled heatmap][https://user-images.githubusercontent.com/32143268/55675737-96357280-5894-11e9-9170-1ffd21f544cc.png]
 
 Tiling the plot, as shown below, yields a correct image.
 
@@ -104,10 +104,9 @@ If `Makie` can't find your font, you can do two things:
 1) Check that the name matches and that the font is in one of the directories in:
 
     - `using FreeTypeAbstraction; FreeTypeAbstraction.valid_fontpaths`
-    
+
 2) You can add a custom font path via the environment variable:
 
     - `ENV["FREETYPE_ABSTRACTION_FONT_PATH"] = "/path/to/your/fonts"`
-    
-3) Specify the path to the font; instead of `font = "Noto"`, you could write `joindir(homedir(), "Noto.ttf")` or something.
 
+3) Specify the path to the font; instead of `font = "Noto"`, you could write `joindir(homedir(), "Noto.ttf")` or something.
