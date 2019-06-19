@@ -59,7 +59,14 @@ or fail silently:
 
 Tiling the plot, as shown below, yields a correct image.
 
-@example_database("Tiled heatmap")
+```julia
+sc = Scene()
+data = rand(Float32, 24900, 26620)
+heatmap!(sc, data[1:end÷2, 1:end÷2])
+heatmap!(sc, data[(end÷2 + 1):end, 1:end÷2])
+heatmap!(sc, data[1:end÷2, (end÷2 + 1):end])
+heatmap!(sc, data[(end÷2 + 1):end, (end÷2 + 1):end])
+```
 
 ### 3d plots (volumes)
 
