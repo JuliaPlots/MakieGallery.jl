@@ -153,6 +153,7 @@ makedocs(
         "Developer Documentation" => [
             "why-makie.md",
         #     "devdocs.md",
+            "abstractplotting_api.md"
         ],
     ]
 )
