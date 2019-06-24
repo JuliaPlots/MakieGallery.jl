@@ -2,11 +2,13 @@
 <img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/sd/abstract/docs/src/assets/logo.png" alt="Makie.jl" width="480">
 </div>
 
-Build status: [![][gitlab-img]][gitlab-url]
+Build status: [![][gitlab-img]][gitlab-url] [![Build Status](https://travis-ci.com/JuliaPlots/MakieGallery.jl.svg?branch=master)](https://travis-ci.com/JuliaPlots/MakieGallery.jl)
 
 [gitlab-img]: https://gitlab.com/JuliaGPU/MakieGallery-jl/badges/master/pipeline.svg
 [gitlab-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
 
+[travis-img]: https://gitlab.com/JuliaGPU/MakieGallery-jl/badges/master/pipeline.svg
+[travis-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
 
 [Gallery Generated With this Package](https://simondanisch.github.io/ReferenceImages/gallery/index.html)
 
