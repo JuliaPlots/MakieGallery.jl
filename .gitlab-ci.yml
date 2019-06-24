@@ -17,3 +17,8 @@ job:
       - mkdir $JULIA_DEPOT_PATH # Pkg.jl#325
       - julia -e 'using InteractiveUtils; versioninfo()'
       - julia --project -e "using Pkg; Pkg.pkg\"add AbstractPlotting#master StatsMakie#master Makie#master GLMakie#master; test\""
+
+    artifacts:
+        paths:
+        - test/tested_different
+        expire_in: 1 week
