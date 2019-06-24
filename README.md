@@ -100,3 +100,20 @@ julia> database[1] # pretty printing :)
 julia> using Makie
 julia> MakieGallery.eval_example(database[1]) # run it!
 ```
+
+# Developing this package
+
+## Adding an example
+
+MakieGallery hosts a lot of examples describing how to use Makie.jl.  
+To add a standalone example, find the file where it fits best, and add a new `@cell` entry 
+(or a new `@block` entry if you want to add more examples in the future).  
+If you want to add multiple examples, you probably want to add a new `@block`, or even a new file.
+
+## Building the documentation
+
+`MakieGallery` hosts documentation for Makie.jl.  
+However, this documentation requires the reference images to be downloaded in the home directory 
+(configurability via an environment variable is planned).  
+You can get the reference images from github.com/SimonDanisch/ReferenceImages - 
+it's a 340 MB repository, so you may want to shallow clone.
