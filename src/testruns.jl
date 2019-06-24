@@ -92,7 +92,7 @@ function run_comparison(
                 test_media = sort(readdir(test_folder))
                 @testset "$folder" begin
                     if isempty(test_media)
-                        error("recodings are missing for $folder")
+                        @warn("recodings are missing for $folder")
                     else
                         for test in test_media
                             ref = joinpath(ref_folder, test)
