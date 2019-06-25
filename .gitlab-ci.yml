@@ -3,7 +3,6 @@ variables:
     MODERNGL_DEBUGGING: "true"
     JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
 
-# It's broken so this is irrelevant anyway, we assume that the tests were successful
 job:
     image: "juliagpu/julia:v1.1-${CI_IMAGE_TAG}"
     before_script:
