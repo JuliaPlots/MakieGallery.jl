@@ -115,7 +115,7 @@ A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which d
 
 Buttons are clickable markers that call a function, passing to it the number of clicks so far, on each click.
 
-They are currently broken.
+They are currently a little broken if you call them with `raw = true, camera = campixel!` - there's a positioning bug that we haven't gotten around to fixing yet.
 
 ### Textslider
 
