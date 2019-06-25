@@ -34,6 +34,7 @@ function load_database()
         "examples3d.jl",
         "interactive.jl",
         "documentation.jl",
+        "diffeq.jl",
         "implicits.jl",
         "short_tests.jl",
         "recipes.jl",
