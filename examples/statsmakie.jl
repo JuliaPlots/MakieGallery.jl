@@ -183,7 +183,7 @@
     end
 
     @cell "Errorbar" [errorbar] begin
-        using StatsMakie, Makie
+        using StatsMakie
         x = [1:4;]
         y =  [1:4;]
         Δx = fill(0.25, 4)
