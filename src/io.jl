@@ -217,7 +217,8 @@ function record_examples(
         eval_examples(outputfile = output_path, start = start) do example, value
             @testset "$(example.title)" begin
                 uname = example.unique_name
-                println("running $(uname)")
+                printstyled("Running ", color = :blue, bold = true)
+                println(uname)
                 subfolder = joinpath(folder, string(uname))
                 outfolder = joinpath(subfolder, "media")
                 ispath(outfolder) || mkpath(outfolder)
