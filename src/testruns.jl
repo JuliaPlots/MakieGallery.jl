@@ -83,7 +83,11 @@ function run_comparison(
     )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
+        l = length(folders)
+        count = 1
         for folder in folders
+        @debug "Running index $count" progress=count/l
+        count += 1
             if isdir(folder)
                 media = joinpath(folder, "media")
                 ref_folder = joinpath(reference, basename(folder), "media")
