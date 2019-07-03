@@ -61,6 +61,7 @@ end
 
 In both cases, the returned value is a path pointing to the location of the recorded file.
 
+Recording a scene will by default reset its camera.  If you don't want this to happen, set `scene.center = false` before `record`.
 
 ### Example usage
 
