@@ -10,7 +10,7 @@
         frame_time = collect((0:(nwin-1)) * (1/fs))
         aframe = sin.(2*pi*f0.*(frame_start .+ frame_time))
         scene = lines(frame_start .+ frame_time, aframe)
-        display(scene)
+        center!(scene)
         lineplot = scene[end]
         fix = 0
         record(scene, @replace_with_a_path(mp4), 1:50) do i
