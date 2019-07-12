@@ -83,43 +83,45 @@ and then:
 @example_database("StatsMakie", 14)
 
 
-The default plot type is determined by the dimensionality of the input and the analysis: with two variables one would get a heatmap:
+The default plot type is determined by the dimensionality of the input and the analysis.
+A `histogram` analysis over one input variable produces a bar plot:
 
 @example_database("StatsMakie", 15)
 
-This plots is reasonably customizable in that one can pass keywords arguments to the `histogram` analysis:
+whereas with two variables one would get a heatmap:
 
 @example_database("StatsMakie", 16)
 
-
-and change the default plot type to something else:
+This plots is reasonably customizable in that one can pass keywords arguments to the `histogram` analysis:
 
 @example_database("StatsMakie", 17)
 
+and change the default plot type to something else:
+
+@example_database("StatsMakie", 18)
 
 Of course heatmap is the saner choice, but why not abuse Makie 3D capabilities?
 
 Other available analysis are `density` (to use kernel density estimation rather than binning) and `frequency` (to count occurrences of discrete variables).
 
-## What if I have data instead?
+## What if my data is in a table, such as a DataFrame?
 
-If one has data instead, it is possible to signal StatsMakie that we are working from a DataFrame (or any table actually) and it will interpret symbols as columns:
+It is possible to signal StatsMakie that we are working from a DataFrame (or any table actually) and it will interpret symbols as columns:
 
-@example_database("StatsMakie", 18)
+@example_database("StatsMakie", 19)
 
 
 And everything else works as usual:
 
-
-@example_database("StatsMakie", 19)
-
 @example_database("StatsMakie", 20)
 
-## Wide data
+@example_database("StatsMakie", 21)
+
+### Plotting multiple columns
 
 Other than comparing the same column split by a categorical variable, one may also compare different columns put side by side (here in a `Tuple`, `(:PetalLength, :PetalWidth)`). The attribute that styles them has to be set to `bycolumn`. Here color will distinguish `:PetalLength` versus `:PetalWidth` whereas the marker will distinguish the species.
 
-@example_database("StatsMakie", 21)
+@example_database("StatsMakie", 22)
 
 ## Analysis of data
 

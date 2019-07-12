@@ -212,16 +212,23 @@ function record_examples(
     end
     @info("starting from index $start")
     AbstractPlotting.set_theme!(resolution = resolution)
-    eval_examples(outputfile = output_path, start = start) do example, value
-        uname = example.unique_name
-        println("running $(uname)")
-        subfolder = joinpath(folder, string(uname))
-        outfolder = joinpath(subfolder, "media")
-        ispath(outfolder) || mkpath(outfolder)
-        save_media(example, value, outfolder)
-        push!(result, subfolder)
-        set_last_evaled!(uname)
-        AbstractPlotting.set_theme!(resolution = resolution) # reset befor next example
+
+    @testset "Full Gallery recording" begin
+        eval_examples(outputfile = output_path, start = start) do example, value
+            @testset "$(example.title)" begin
+                uname = example.unique_name
+                printstyled("Running ", color = :blue, bold = true)
+                println(uname)
+                subfolder = joinpath(folder, string(uname))
+                outfolder = joinpath(subfolder, "media")
+                ispath(outfolder) || mkpath(outfolder)
+                save_media(example, value, outfolder)
+                push!(result, subfolder)
+                set_last_evaled!(uname)
+                AbstractPlotting.set_theme!(resolution = resolution) # reset before next example
+                @test true
+            end
+        end
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"))
