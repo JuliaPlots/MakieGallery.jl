@@ -308,7 +308,7 @@ function generate_thumbnail(path, thumb_path, thumb_size = 128)
         rescale_image(path, thumb_path, thumb_size)
     elseif any(ext-> endswith(path, ext), (".gif", ".mp4", ".webm"))
         seektime = get_video_duration(path) / 2
-        run(`ffmpeg -loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
+        FFMPEG.ffmpeg_exe(`-loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
     else
         @warn("Unsupported return file format in $path")
     end

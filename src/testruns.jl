@@ -40,7 +40,7 @@ is_image_file(path) = lowercase(splitext(path)[2]) in (".png", ".jpg", ".jpeg")
 
 function extract_frames(video, frame_folder)
     path = joinpath(frame_folder, "frames%04d.jpg")
-    run(`ffmpeg -loglevel quiet -i $video -y $path`)
+    FFMPEG.ffmpeg_exe(`-loglevel quiet -i $video -y $path`)
 end
 
 function compare_media(a, b; sigma = [1,1], eps = 0.02)

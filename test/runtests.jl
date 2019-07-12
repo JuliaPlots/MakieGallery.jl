@@ -3,6 +3,7 @@ using BinaryProvider, FileIO, Random, Pkg
 using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
+AbstractPlotting.has_ffmpeg[] = true
 
 database = (get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
 
