@@ -1,3 +1,14 @@
+function tourl(path)
+    if Sys.iswindows()
+        # THere might be a nicer way?
+        # Anyways, this seems to be needed on windows
+        if !startswith(path, "http")
+            path = "file:///" * replace(path, "\\" => "/")
+        end
+    end
+    return repr(path)
+end
+
 function save_media(entry, x::Scene, path::String)
     path = joinpath(path, "image.jpg")
     save(path, x)
@@ -56,7 +67,7 @@ Returns the html to embed an image
 """
 function embed_image(path::AbstractString, alt = "")
     """
-    <img src=$(repr(path)) alt=$(repr(alt))>
+    <img src=$(tourl(path)) alt=$(repr(alt))>
     """
 end
 
@@ -69,7 +80,7 @@ Generates a html formatted string for embedding video into Documenter Markdown f
 function embed_video(path::AbstractString, alt = "")
     """
     <video controls autoplay loop muted>
-      <source src=$(repr(path)) type="video/mp4">
+      <source src=$(tourl(path)) type="video/mp4">
       Your browser does not support mp4. Please use a modern browser like Chrome or Firefox.
     </video>
     """

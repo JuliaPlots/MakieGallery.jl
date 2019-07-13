@@ -3,8 +3,6 @@ using BinaryProvider, FileIO, Random, Pkg
 using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
-AbstractPlotting.has_ffmpeg[] = true
-
 database = (get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
 
 # THese examples download additional data - don't want to deal with that!
@@ -28,7 +26,7 @@ rm(test_record_path, force = true, recursive = true)
 mkpath(test_record_path)
 
 # rerecord = [
-#     "DifferentialEquations path animation"
+#     "Robot Arm"
 # ]
 # filter!(x-> x.title in rerecord, database)
 
