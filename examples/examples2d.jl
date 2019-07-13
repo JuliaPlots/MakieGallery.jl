@@ -142,12 +142,9 @@
         data = rand(50, 100)
         p1 = heatmap(data, interpolate = true)
         p2 = heatmap(data, interpolate = false)
-        t = Theme(align = (:left, :bottom), raw = true, camera = campixel!)
-        title1 = text(t, "Interpolate = true")
-        title2 = text(t, "Interpolate = false")
         s = vbox(
-            hbox(p1, title1),
-            hbox(p2, title2),
+            title(p1, "interpolate = true"),
+            title(p2, "interpolate = false"),
         )
     end
     @cell "colored triangle" [polygon] begin
