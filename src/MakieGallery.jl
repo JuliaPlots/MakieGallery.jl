@@ -11,6 +11,7 @@ using Random
 using Documenter.Writers
 using Documenter.Writers.HTMLWriter
 using Test, Statistics
+using FFMPEG
 using BinaryProvider
 
 include("documenter_extension.jl")

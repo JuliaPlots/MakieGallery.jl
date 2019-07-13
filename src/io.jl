@@ -1,3 +1,14 @@
+function tourl(path)
+    if Sys.iswindows()
+        # THere might be a nicer way?
+        # Anyways, this seems to be needed on windows
+        if !startswith(path, "http")
+            path = "file:///" * replace(path, "\\" => "/")
+        end
+    end
+    return repr(path)
+end
+
 function save_media(entry, x::Scene, path::String)
     path = joinpath(path, "image.jpg")
     save(path, x)
@@ -56,7 +67,7 @@ Returns the html to embed an image
 """
 function embed_image(path::AbstractString, alt = "")
     """
-    <img src=$(repr(path)) alt=$(repr(alt))>
+    <img src=$(tourl(path)) alt=$(repr(alt))>
     """
 end
 
@@ -69,7 +80,7 @@ Generates a html formatted string for embedding video into Documenter Markdown f
 function embed_video(path::AbstractString, alt = "")
     """
     <video controls autoplay loop muted>
-      <source src=$(repr(path)) type="video/mp4">
+      <source src=$(tourl(path)) type="video/mp4">
       Your browser does not support mp4. Please use a modern browser like Chrome or Firefox.
     </video>
     """
@@ -308,7 +319,7 @@ function generate_thumbnail(path, thumb_path, thumb_size = 128)
         rescale_image(path, thumb_path, thumb_size)
     elseif any(ext-> endswith(path, ext), (".gif", ".mp4", ".webm"))
         seektime = get_video_duration(path) / 2
-        run(`ffmpeg -loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
+        FFMPEG.ffmpeg_exe(`-loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
     else
         @warn("Unsupported return file format in $path")
     end

@@ -1,38 +1,40 @@
-language: julia
 
+## Documentation: http://docs.travis-ci.com/user/languages/julia/
+language: julia
 os:
   - linux
-
 julia:
   - 1.2
-
-# # Uncomment the following lines to allow failures on nightly julia
-# # (tests will run but not make your overall status red)
-# matrix:
-#   allow_failures:
-#   - julia: nightly
-
+  - nightly
 notifications:
   email: false
+git:
+  depth: 99999999
 
-script: # clone the reference images, don't actually test anything - nothing will work since Travis doesn't have GPUs
-  - echo "We don't actually test anything here - nothing will work, since Travis doesn't have GPUs"
-  - julia --color=yes -e 'printstyled("TODO: ", color = 1, bold = true); print("add documentation pushing")'
+# uncomment the following lines to allow failures on nightly julia
+# (tests will run but not make your overall status red)
+matrix:
+ allow_failures:
+ - julia: nightly
 
-# after_success:
-#  - julia -e 'if VERSION >= v"0.7.0-" using Pkg end; cd(Pkg.dir("Example")); Pkg.add("Coverage"); using Coverage; Coveralls.submit(Coveralls.process_folder())';
-#  - julia -e 'if VERSION >= v"0.7.0-" using Pkg end; cd(Pkg.dir("Example")); Pkg.add("Coverage"); using Coverage; Codecov.submit(Codecov.process_folder())';
+## uncomment and modify the following lines to manually install system packages
+#addons:
+ apt: # apt-get for linux
+   packages:
+   - ffmpeg
+before_script: # homebrew for mac
+ - julia -e 'using Pkg; pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
+script:
+  - echo "No tests, we have the utmost confidence in ourselves :P"
 
-# jobs:
-#   include:
-#     - stage: "Documentation"
-#       julia: 1.0
-#       os: linux
-#       script:
-#         - pushd ~
-#         - git clone --depth=1 https://github.com/SimonDanisch/ReferenceImages
-#         - popd
-#         - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
-#                                     Pkg.develop(PackageSpec(path=pwd()))'
-#         - julia --project=docs/ docs/make.jl
-#       after_success: skip
+jobs:
+  include:
+    - stage: "Documentation"
+      julia: 1.2
+      os: linux
+      script:
+        - pushd ~; git clone https://github.com/SimonDanisch/ReferenceImages; popd
+        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
+                                    Pkg.develop(PackageSpec(path=pwd())); Pkg.pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
+        - julia --project=docs/ docs/make.jl
+      after_success: skip

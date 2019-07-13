@@ -1,19 +1,15 @@
 ```@meta
 CurrentModule = Makie
 ```
-
 ```@setup animation_tutorial
 using Makie
 ```
-
 ```@setup time_animation
 using Makie
 ```
-
 ```@setup mouse_animation
 using Makie
 ```
-
 # Interaction
 Makie offers a sophisticated referencing system to share attributes across the Scene
 in your plot. This is great for interaction, animations and saving resources -- also if the backend
@@ -24,6 +20,8 @@ Interaction, animations and more are done using `Node`s and event triggers.
 
 In this page we overview how the `Node`s pipeline works, how event-triggering works, and we give an introduction to the existing "atomic" functions for interaction.
 Examples that use interaction can be found in the Examples/`interaction` page (see [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html) as well).
+
+Have a peek at [Animation](@ref) for some more information once you're done with this.
 
 ## `Node` interaction pipeline
 ### The `Node` structure
@@ -86,7 +84,7 @@ Instead, a function was defined. However, upon doing:
 push!(x, 5.0);
 ```
 Boom! The event of the `on-do` block was triggered!
-We will be using this in the following paragraphs to establish interactiveness.
+We will be using this in the following paragraphs to establish interactivity.
 
 For more info please have a look at [`Observables`](https://juliagizmos.github.io/Observables.jl/stable/).
 
@@ -95,30 +93,32 @@ This section overviews some simple and specific functions that make interaction 
 
 _coming soon..._
 
-## Animation using time
-To animate a scene, you need to create a `Node`, e.g.:
+There are three principal plot elements that you can use to make your plot interactive.  These are `Slider`, `textslider`, and `Button`.
+
+### Slider
+
+Sliders are quite simple to make.  They can be created by a call to the function `slider`, which usually takes the form:
 
 ```julia
-time = Node(0.0)
+sl = slider(range::AbstractVector, raw = true, camera = campixel!, start = somevalue)
 ```
 
-and use `lift` on the Node to set up a pipeline to access its value. For example:
+which makes `sl` a Scene with only one `slider`.  The `slider` will go through `range`, and start at `somevalue`.  `range` must be a subtype of `AbstractVector`, meaning an `Array{T, 1}`, a `LinRange`, et cetera.
+
+To access the value of the `slider` as an Observable, we can simply access `sl[end][:value]`, which will return an Observable which will contain the value that the slider is on.  You can then use that `Observable` in a call to `lift`.
+
+A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which depends on them.
+
+### Button
+
+Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click.
+
+### Textslider
+
+Textsliders are a special case of sliders, with two key diferences - they automatically `hbox` a label with the slider, and they return a 2-tuple consisting of the `Scene` of the slider, and its value as an `Observable`.  Usually, they will be called like so:
 
 ```julia
-scene = Scene()
-time = Node(0.0)
-myfunc(v, t) = sin.(v, t)
-
-scene = lines!(
-    scene,
-    lift(t -> f.(range(0, stop=2pi, length=50), t), time)
-)
-```
-
-now, whenever the Node `time` is updated (e.g. when you `push!` to it), the plot will also be updated.
-
-```julia
-push!(time, Base.time())
+sl, ol = textslider(-1:0.01:1, "label", start = 0)
 ```
 
 

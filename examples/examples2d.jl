@@ -10,7 +10,7 @@
         frame_time = collect((0:(nwin-1)) * (1/fs))
         aframe = sin.(2*pi*f0.*(frame_start .+ frame_time))
         scene = lines(frame_start .+ frame_time, aframe)
-        display(scene)
+        center!(scene)
         lineplot = scene[end]
         fix = 0
         record(scene, @replace_with_a_path(mp4), 1:50) do i
@@ -167,12 +167,9 @@
         data = rand(50, 100)
         p1 = heatmap(data, interpolate = true)
         p2 = heatmap(data, interpolate = false)
-        t = Theme(align = (:left, :bottom), raw = true, camera = campixel!)
-        title1 = text(t, "Interpolate = true")
-        title2 = text(t, "Interpolate = false")
         s = vbox(
-            hbox(p1, title1),
-            hbox(p2, title2),
+            title(p1, "interpolate = true";  textsize = 15),
+            title(p2, "interpolate = false"; textsize = 15),
         )
     end
     @cell "colored triangle" [polygon] begin
@@ -472,6 +469,38 @@ end
            hcat(c, c), # reshape this to a matrix for the colors
            show_axis = false # don't show axes
         )
+
+    end
+
+
+    @cell "Line changing colour" [colors, lines, animation] begin
+
+        scene = lines(rand(10); linewidth=10)
+
+        record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
+               scene.plots[2][:color] = RGBf0(i/255, (255 - i)/255, 0) # animate scene
+               # `scene.plots` gives the plots of the Scene.
+               # `scene.plots[1]` is always the Axis if it exists,
+               # and `scene.plots[2]` onward are the user-defined plots.
+        end
+
+    end
+
+    @cell "Line changing colour with Observables" [colors, lines, animation, observables] begin
+
+        "'Time' - an Observable that controls the animation"
+        t = Node(0)
+
+        "The colour of the line"
+        c = lift(t) do t
+                RGBf0(t/255, (255 - t)/255, 0)
+            end
+
+        scene = lines(rand(10); linewidth=10, color = c)
+
+        record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
+            t[] = i # update `t`'s value
+        end
 
     end
 

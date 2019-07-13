@@ -1,6 +1,6 @@
 # Output
 
-Makie overloads the `FileIO` interface, so it is simple to save plots as images or videos.
+Makie overloads the `FileIO` interface, so it is simple to save Scenes as images.
 
 
 ## Static plots
@@ -33,38 +33,5 @@ step!(st)
 ```
 
 @example_database("Stepper demo")
-
-
-## Animated plots
-
-It is also possible to output animated plots as videos (note that this requires [`ffmpeg`](https://ffmpeg.org/) to be installed and properly configured on your computer (test this by running `ffmpeg -version` from a terminal window).)
-
-```@docs
-record
-```
-
-For recording of videos (either as .mp4 or .gif), you can do:
-```julia
-record(scene, "video.mp4", itr) do i
-    func(i) # or some other animation in scene
-end
-```
-
-where `itr` is an iterator and `scene` is the scene handle.
-
-It is also possible to `record` to gifs:
-```julia
-record(scene, "video.gif", itr) do i
-    func(i) # or some other animation in scene
-end
-```
-
-In both cases, the returned value is a path pointing to the location of the recorded file.
-
-Recording a scene will by default reset its camera.  If you don't want this to happen, set `scene.center = false` before `record`.
-
-### Example usage
-
-@example_database("Record Video")
 
 For more info, consult the [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html).

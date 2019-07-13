@@ -11,6 +11,10 @@ end
 
 function master_url(root, path)
     urlbase = "https://simondanisch.github.io/ReferenceImages/gallery/"
+    if Sys.iswindows()
+        path = replace(path, "\\" => "/")
+        root = replace(root, "\\" => "/")
+    end
     url = replace(
         path,
         root => urlbase
