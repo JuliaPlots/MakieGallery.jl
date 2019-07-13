@@ -24,6 +24,8 @@ matrix:
    - ffmpeg
 before_script: # homebrew for mac
  - julia -e 'using Pkg; pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
+script:
+  - echo "No tests, we have the utmost confidence in ourselves :P"
 
 jobs:
   include:
@@ -36,4 +38,3 @@ jobs:
                                     Pkg.develop(PackageSpec(path=pwd())); Pkg.pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
         - julia --project=docs/ docs/make.jl
       after_success: skip
-
