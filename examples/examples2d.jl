@@ -168,8 +168,8 @@
         p1 = heatmap(data, interpolate = true)
         p2 = heatmap(data, interpolate = false)
         s = vbox(
-            title(p1, "interpolate = true"),
-            title(p2, "interpolate = false"),
+            title(p1, "interpolate = true";  textsize = 15),
+            title(p2, "interpolate = false"; textsize = 15),
         )
     end
     @cell "colored triangle" [polygon] begin
