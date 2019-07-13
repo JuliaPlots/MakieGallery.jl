@@ -8,8 +8,10 @@ test/testimages/*
 *.png
 *.jpg
 Manifest.toml
+docs/Manifest.toml
 prec
 tmax
 prec.zip
 tmax.zip
 .DS_Store
+
