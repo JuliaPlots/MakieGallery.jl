@@ -449,6 +449,19 @@ end
         )
 
     end
+
+    @cell "Line changing colour" [colors, lines, animation] begin
+
+        scene = lines(rand(10); linewidth=10)
+
+        record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
+               scene.plots[2][:color] = RGBf0(i/255, (255 - i)/255, 0) # animate scene
+               # `scene.plots` gives the plots of the Scene.
+               # `scene.plots[1]` is always the Axis if it exists,
+               # and `scene.plots[2]` onward are the user-defined plots.
+        end
+
+    end
 end
 
 @block AnshulSinghvi ["Recipes"] begin
