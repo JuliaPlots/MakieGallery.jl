@@ -155,10 +155,15 @@ const NO_GROUP = 0
 unique_names = Set(Symbol[])
 function unique_name!(name, unique_names = unique_names)
     funcname = Symbol(replace(lowercase(string(name)), r"[ #$!@#$%^&*()+]" => '_'))
-    i = 1
     while isdefined(AbstractPlotting, funcname) || (funcname in unique_names)
-        funcname = Symbol("$(funcname)_$i")
-        i += 1
+        name = string(funcname)
+        m = match(r"(.*)_(\d+)$", name)
+        if m !== nothing
+            name, num = m[1], parse(Int, m[2]) + 1
+        else
+            num = 1
+        end
+        funcname = Symbol("$(name)_$(num)")
     end
     push!(unique_names, funcname)
     funcname
@@ -566,4 +571,34 @@ function eval_examples(f, tags...; start = 1, exclude_tags = nothing, kw_args...
         result = eval_example(entry; kw_args...)
         f(entry, result)
     end
+end
+
+
+
+"""
+    run_example(title::String)
+
+Runs an example from the database!
+See all available examples online: https://simondanisch.github.io/ReferenceImages/gallery/index.html
+Or run `available_examples()` to get an array of all available titles.
+"""
+function run_example(title::String)
+    database = MakieGallery.load_database()
+    idx = findfirst(x-> lowercase(x.title) == lowercase(title), database)
+    if idx === nothing
+        error(
+            "Example \"$title\" not found in database. Run available_examples(), to see what's available"
+        )
+    else
+        MakieGallery.eval_example(database[idx])
+    end
+end
+
+"""
+    available_examples()
+Returns an array of the titles of all available examples
+"""
+function available_examples()
+    database = MakieGallery.load_database()
+    unique(map(x-> x.title, database))
 end

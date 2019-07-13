@@ -129,9 +129,8 @@ using Documenter, MakieGallery, Makie, AbstractPlotting
 makedocs(
     modules = [Makie, AbstractPlotting],
     doctest = false, clean = true,
-    format = :html,
+    format = Documenter.HTML(prettyurls = false),
     sitename = "Makie.jl",
-    html_prettyurls = false,
     pages = Any[
         "Home" => "index.md",
         "Basics" => [
@@ -146,12 +145,15 @@ makedocs(
             # "extending.md",
             "axis.md",
             "interaction.md",
+            "recipes.md",
             "output.md",
-            # "layout.md"
+            # "layout.md",
+            "troubleshooting.md"
         ],
         "Developer Documentation" => [
             "why-makie.md",
         #     "devdocs.md",
+            "abstractplotting_api.md"
         ],
     ]
 )
@@ -166,7 +168,7 @@ if !haskey(ENV, "DOCUMENTER_KEY")
     ENV["TRAVIS_BRANCH"] = "latest"
     ENV["TRAVIS_PULL_REQUEST"] = "false"
     ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl.git"
-    ENV["TRAVIS_TAG"] = "v4"
+    ENV["TRAVIS_TAG"] = "v7"
     ENV["TRAVIS_OS_NAME"] = ""
     ENV["TRAVIS_JULIA_VERSION"] = ""
     ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)

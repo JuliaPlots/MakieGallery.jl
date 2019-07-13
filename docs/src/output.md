@@ -1,6 +1,6 @@
 # Output
 
-Makie overloads the `FileIO` interface, so it is simple to save plots as images or videos.
+Makie overloads the `FileIO` interface, so it is simple to save Scenes as images.
 
 
 ## Static plots

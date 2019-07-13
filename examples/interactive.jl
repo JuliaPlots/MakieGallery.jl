@@ -538,6 +538,7 @@
         scene.center = false
         RecordEvents(scene, @replace_with_a_path)
     end
+
 end
 
 function record_example_events()
@@ -559,4 +560,4 @@ function record_example(title = "Orbit Diagram")
     end
     AbstractPlotting.use_display[] = last
 end
-# record_example("Earth & Ships")
+# record_example("Interactive Differential Equation")

@@ -3,7 +3,7 @@ const makiegallery_dir = abspath(first(Base.DEPOT_PATH), "makiegallery")
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.1.6")
+function download_reference(version = v"0.2.2")
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
@@ -40,7 +40,7 @@ is_image_file(path) = lowercase(splitext(path)[2]) in (".png", ".jpg", ".jpeg")
 
 function extract_frames(video, frame_folder)
     path = joinpath(frame_folder, "frames%04d.jpg")
-    run(`ffmpeg -loglevel quiet -i $video -y $path`)
+    FFMPEG.ffmpeg_exe(`-loglevel quiet -i $video -y $path`)
 end
 
 function compare_media(a, b; sigma = [1,1], eps = 0.02)
@@ -79,20 +79,24 @@ Compares all media recursively in two recorded folders!
 function run_comparison(
         test_record_path, test_diff_path,
         reference = MakieGallery.download_reference();
-        maxdiff = 0.03
+        maxdiff = 0.032
     )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
+        l = length(folders)
+        count = 1
         for folder in folders
+        @debug "Running index $count" progress=count/l
+        count += 1
             if isdir(folder)
                 media = joinpath(folder, "media")
                 ref_folder = joinpath(reference, basename(folder), "media")
                 test_folder = joinpath(test_record_path, media)
                 ref_media = sort(readdir(ref_folder))
                 test_media = sort(readdir(test_folder))
-                @testset "$folder" begin
+                @testset "$(basename(folder))" begin
                     if isempty(test_media)
-                        error("recodings are missing for $folder")
+                        @warn("recodings are missing for $folder")
                     else
                         for test in test_media
                             ref = joinpath(ref_folder, test)

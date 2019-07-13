@@ -212,16 +212,23 @@ function record_examples(
     end
     @info("starting from index $start")
     AbstractPlotting.set_theme!(resolution = resolution)
-    eval_examples(outputfile = output_path, start = start) do example, value
-        uname = example.unique_name
-        println("running $(uname)")
-        subfolder = joinpath(folder, string(uname))
-        outfolder = joinpath(subfolder, "media")
-        ispath(outfolder) || mkpath(outfolder)
-        save_media(example, value, outfolder)
-        push!(result, subfolder)
-        set_last_evaled!(uname)
-        AbstractPlotting.set_theme!(resolution = resolution) # reset befor next example
+
+    @testset "Full Gallery recording" begin
+        eval_examples(outputfile = output_path, start = start) do example, value
+            @testset "$(example.title)" begin
+                uname = example.unique_name
+                printstyled("Running ", color = :blue, bold = true)
+                println(uname)
+                subfolder = joinpath(folder, string(uname))
+                outfolder = joinpath(subfolder, "media")
+                ispath(outfolder) || mkpath(outfolder)
+                save_media(example, value, outfolder)
+                push!(result, subfolder)
+                set_last_evaled!(uname)
+                AbstractPlotting.set_theme!(resolution = resolution) # reset before next example
+                @test true
+            end
+        end
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"))
@@ -236,7 +243,22 @@ Creates a Gallery in `html_out` from already recorded examples in `folder`.
 function gallery_from_recordings(
         folder::String,
         html_out::String = abspath(joinpath(pathof(MakieGallery), "..", "..", "index.html"));
-        tags = [string.(AbstractPlotting.atomic_function_symbols)..., "interaction", "record"]
+        tags = [
+            string.(AbstractPlotting.atomic_function_symbols)...,
+            "interaction",
+            "record",
+            "statsmakie",
+            "vbox",
+            "layout",
+            "legend",
+            "colorlegend",
+            "vectorfield",
+            "poly",
+            "camera",
+            "recipe",
+            "theme",
+            "annotations"
+        ]
     )
     items = map(MakieGallery.database) do example
         base_path = joinpath(folder, string(example.unique_name))
@@ -286,7 +308,7 @@ function generate_thumbnail(path, thumb_path, thumb_size = 128)
         rescale_image(path, thumb_path, thumb_size)
     elseif any(ext-> endswith(path, ext), (".gif", ".mp4", ".webm"))
         seektime = get_video_duration(path) / 2
-        run(`ffmpeg -loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
+        FFMPEG.ffmpeg_exe(`-loglevel quiet -ss $seektime -i $path -vframes 1 -vf "scale=$(thumb_size):-2" -y -f image2 $thumb_path`)
     else
         @warn("Unsupported return file format in $path")
     end

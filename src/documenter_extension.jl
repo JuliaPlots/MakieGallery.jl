@@ -172,7 +172,8 @@ function get_video_duration(path::AbstractString)
     !isfile(path) && error("input is not a file!")
     accepted_exts = ("mp4", "gif", "mkv")
     filename = basename(path)
-    !(split(filename, ".")[2] in accepted_exts) && error("accepted file types are mp4 and gif!")
+    file_ext = split(filename, ".")[2]
+    !(file_ext in accepted_exts) && error("accepted file types are mp4 and gif! Found: $file_ext")
     try
         dur = read(`ffprobe -loglevel quiet -print_format compact=print_section=0:nokey=1:escape=csv -show_entries format=duration -i "$(path)"`, String)
         dur = parse(Float32, dur)
