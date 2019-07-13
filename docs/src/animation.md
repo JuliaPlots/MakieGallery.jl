@@ -1,4 +1,4 @@
-# Animations
+# Animation
 
 `Makie.jl` has extensive support for animations; you can create arbitrary plots, and save them to:
 - `.mkv`  (the default, doesn't need to convert)
@@ -8,15 +8,11 @@
 
 This is all made possible through the use of the `ffmpeg` tool, wrapped by [`FFMPEG.jl`](https://github.com/JuliaIO/FFMPEG.jl).
 
+Have a peek at [Interaction](@ref) for some more information once you're done with this.
+
 ## A minimal example
 
-Simple animations can be simple; all you need to do is wrap your changes in the `record` function.
-
-```@docs
-record
-```
-
-In both cases, the returned value is a path pointing to the location of the recorded file.
+Simple animations are easy to make; all you need to do is wrap your changes in the `record` function.
 
 ## A simple example
 
@@ -25,6 +21,12 @@ When recording, you can make changes to any aspect of the Scene or its plots.
 A simple example is below:
 
 @example_database("Line changing colour")
+
+```@docs
+record
+```
+
+In both cases, the returned value is a path pointing to the location of the recorded file.
 
 ### Animation using time
 To animate a scene, you can also create a `Node`, e.g.:

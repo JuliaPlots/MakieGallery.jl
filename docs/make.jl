@@ -144,6 +144,7 @@ makedocs(
             "theming.md",
             # "extending.md",
             "axis.md",
+            "animation.md",
             "interaction.md",
             "recipes.md",
             "output.md",
@@ -153,7 +154,7 @@ makedocs(
         "Developer Documentation" => [
             "why-makie.md",
         #     "devdocs.md",
-            "abstractplotting_api.md"
+            "AbstractPlotting Reference" => "abstractplotting_api.md"
         ],
     ]
 )
@@ -165,17 +166,17 @@ ENV["DOCUMENTER_DEBUG"] = "true"
 if !haskey(ENV, "DOCUMENTER_KEY")
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
-    ENV["TRAVIS_BRANCH"] = "latest"
+    ENV["TRAVIS_BRANCH"] = "master"
     ENV["TRAVIS_PULL_REQUEST"] = "false"
     ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl.git"
-    ENV["TRAVIS_TAG"] = "v7"
+    ENV["TRAVIS_TAG"] = ""
     ENV["TRAVIS_OS_NAME"] = ""
     ENV["TRAVIS_JULIA_VERSION"] = ""
     ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)
     ENV["DOCUMENTER_KEY"] = readchomp(joinpath(homedir(), "documenter.key"))
 end
 
-run(`pip install --upgrade pip`)
+# run(`pip install --upgrade pip`)
 cd(@__DIR__)
 deploydocs(
     deps = Deps.pip("mkdocs", "python-markdown-math", "mkdocs-cinder"),

@@ -1,19 +1,15 @@
 ```@meta
 CurrentModule = Makie
 ```
-
 ```@setup animation_tutorial
 using Makie
 ```
-
 ```@setup time_animation
 using Makie
 ```
-
 ```@setup mouse_animation
 using Makie
 ```
-
 # Interaction
 Makie offers a sophisticated referencing system to share attributes across the Scene
 in your plot. This is great for interaction, animations and saving resources -- also if the backend
@@ -24,6 +20,8 @@ Interaction, animations and more are done using `Node`s and event triggers.
 
 In this page we overview how the `Node`s pipeline works, how event-triggering works, and we give an introduction to the existing "atomic" functions for interaction.
 Examples that use interaction can be found in the Examples/`interaction` page (see [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html) as well).
+
+Have a peek at [Animation](@ref) for some more information once you're done with this.
 
 ## `Node` interaction pipeline
 ### The `Node` structure
@@ -113,9 +111,7 @@ A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which d
 
 ### Button
 
-Buttons are clickable markers that call a function, passing to it the number of clicks so far, on each click.
-
-They are currently a little broken if you call them with `raw = true, camera = campixel!` - there's a positioning bug that we haven't gotten around to fixing yet.
+Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click.
 
 ### Textslider
 
