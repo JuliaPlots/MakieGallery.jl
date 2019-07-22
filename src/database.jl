@@ -174,7 +174,7 @@ function CellEntry(author, title, tags, file, file_range, toplevel, source, grou
     CellEntry(string(author), title, uname, tags, file, file_range, toplevel, source, groupid)
 end
 
-const plotting_backends = String["AbstractPlotting"]
+const plotting_backends = String["Makie"] # for now - we will have to fix this later to allow for different backends.
 
 """
 Prints the source of an entry in the database at `idx`.
