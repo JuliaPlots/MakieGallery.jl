@@ -134,3 +134,19 @@ end
 ```
 
 ## Interaction using the keyboard
+
+To listen to keyboard events, you can `lift` `scene.events.keyboardbuttons`, which returns an enum that can be used with some
+utility functions to implement a keyboard event handler.
+
+```
+dir = lift(scene.events.keyboardbuttons) do but
+    global last_dir
+    ispressed(but, Keyboard.left) && return 1
+    ispressed(but, Keyboard.up) && return 2
+    ispressed(but, Keyboard.right) && time[] += 1
+    ispressed(but, Keyboard.down) && return 0
+    last_dir
+end
+```
+TODO make an actual example
+TODO can we make a keyboard viewer in Makie?
