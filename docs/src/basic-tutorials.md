@@ -33,7 +33,7 @@ Below are some examples of basic plots to help you get oriented.
 
 You can put your in the plot window and scroll to zoom. Right click and drag lets you pan around the scene, and left click and drag lets you do selection zoom (in 2D plots), or orbit around the scene (in 3D plots).
 
-Many of these examples also work in 3D,
+Many of these examples also work in 3D.
 
 ### Scatter plot
 
@@ -61,10 +61,20 @@ Many of these examples also work in 3D,
 
 @example_database("Tutorial basic theming")
 
-## Saving plots or animations
+## Controlling display programatically
+
+`Scene`s will only display by default in global scope.  To make a Scene display when it's defined in a local scope,
+like a function or a module, you can call `display(scene)`, which will automatically display it in the best available
+display.  
+You can force display to the backend's preferred window by calling `display(AbstractPlotting.PlotDisplay(), scene)`.
+
+## Saving plots
 
 See the [Output](@ref) section.
 
+## Animation
+
+See the [Animation](@ref) section, as well as the [Interaction](@ref) section.
 
 ## More examples
 
