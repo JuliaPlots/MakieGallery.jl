@@ -187,6 +187,21 @@
         scene
     end
 
+    @cell "scale_plot" [scale] begin
+        t = range(0, stop=1, length=500) # time steps
+        θ = (6π) .* t    # angles
+        x = t .* cos.(θ) # x coords of spiral
+        y = t .* sin.(θ) # y coords of spiral
+        p1 = lines(
+             x,
+             y,
+             color      = t,
+             colormap   = :algae,
+             linewidth  = 8,
+             scale_plot = false
+         )
+    end
+
     @cell "Polygons" [poly, polygon, linesegments] begin
         using GeometryTypes
         scene = Scene(resolution = (500, 500))
