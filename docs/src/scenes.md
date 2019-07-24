@@ -6,7 +6,7 @@ A `Scene` is basically a container for `Plot`s and other `Scene`s.  `Scenes` hav
 
 Plots associated with a Scene can be accessed through `scene.plots`, which returns an Array of the plots associated with the `Scene`.  Note that if `scene` has no plots (if it was created by layouting, or is an empty scene), then `scene.plots` will be a _0-element array_!
 
-A Scene's subscenes (also called children) can be accessed through `scene.children`.  This will return an Array of the `Scene`'s child scenes.
+A Scene's subscenes (also called children) can be accessed through `scene.children`.  This will return an Array of the `Scene`'s child scenes.  A child scene can be created by `childscene = Scene(parentscene)`.
 
 Any `Scene` with an axis also has a `camera` associated with it; this can be accessed through `scene.camera`, and its controls through `scene.camera.cameracontrols`.  More documentation about these is in the [Cameras](@ref) section.
 
@@ -18,7 +18,7 @@ A subscene is no different than a normal Scene, except that it is linked to a "p
 
 ## Modifying the Scene
 
-Makie offers a lot of mutation functions to scale, translate and rotate your Scenes on the fly.
+Makie offers mutation functions to scale, translate and rotate your Scenes on the fly.
 
 ```@docs
 translate!
