@@ -10,15 +10,13 @@ This is all made possible through the use of the `ffmpeg` tool, wrapped by [`FFM
 
 Have a peek at [Interaction](@ref) for some more information once you're done with this.
 
-## A minimal example
+## A simple example
 
 Simple animations are easy to make; all you need to do is wrap your changes in the `record` function.
 
-## A simple example
-
 When recording, you can make changes to any aspect of the Scene or its plots.  
 
-A simple example is below:
+Below is a small example of using `record`.
 
 @example_database("Line changing colour")
 
@@ -28,7 +26,7 @@ record
 
 In both cases, the returned value is a path pointing to the location of the recorded file.
 
-### Animation using time
+## Animation using time
 To animate a scene, you can also create a `Node`, e.g.:
 
 ```julia
@@ -60,6 +58,46 @@ example to this `Observables` paradigm is below:
 A more complicated example:
 
 @example_database("Record Video")
+
+## Appending data to a plot
+
+If you're planning to append to a plot, like a `lines` or `scatter` plot (basically, anything that's point-based),
+you will want to pass an `Observable` Array of [`Point`](@ref)s to the plotting function, instead of passing `x`, `y`
+(and `z`) as separate Arrays.
+This will mean that you won't run into dimension mismatch issues (since Observables are synchronously updated).
+
+TODO add more tips here
+
+## Animating a plot "live"
+You can animate a plot in a `for` loop:
+
+```julia
+for i = 1:length(r)
+    s[:markersize] = r[i]
+    # AbstractPlotting.force_update!() is no longer needed
+    sleep(1/24)
+end
+```
+
+Similarly, for plots based on functions:
+
+```julia
+scene = Scene()
+v = range(0, stop=4pi, length=50)
+f(v, t) = sin(v + t) # some function
+s = lines!(
+    scene,
+    lift(t -> f.(v, t), time),
+)[end];
+
+for i = 1:length(v)
+    time[] = i
+    sleep(1/24)
+end
+```
+
+If you want to animate a plot while interacting with it, check out the `async_latest` function,
+and the [Interaction](@ref) section.
 
 ## More complex examples
 

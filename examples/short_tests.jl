@@ -107,6 +107,7 @@
         colormap = [(:black, 0.2), :red, :blue, :green, (:black, 0.2)],
         colorrange = (0.2, 0.8)
     )
+    @cell lines(Circle(Point2f0(0), 1f0); scale_plot = false, resolution = (800, 1000)) # currently not working, fix is in PR
 end
 
 

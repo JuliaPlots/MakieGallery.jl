@@ -138,14 +138,16 @@ makedocs(
             "statsmakie.md",
             "help_functions.md",
             "functions-overview.md",
+            "animation.md",
+            "interaction.md",
             "signatures.md",
             "plot-attributes.md",
             "colors.md",
             "theming.md",
+            "cameras.md",
+            "backends.md",
             # "extending.md",
             "axis.md",
-            "animation.md",
-            "interaction.md",
             "recipes.md",
             "output.md",
             # "layout.md",
@@ -153,7 +155,7 @@ makedocs(
         ],
         "Developer Documentation" => [
             "why-makie.md",
-        #     "devdocs.md",
+            "devdocs.md",
             "AbstractPlotting Reference" => "abstractplotting_api.md"
         ],
     ]
@@ -163,9 +165,10 @@ using Conda, Documenter
 using Base64
 # deploy
 ENV["DOCUMENTER_DEBUG"] = "true"
-if !haskey(ENV, "DOCUMENTER_KEY")
+if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") # do this only if local, otherwise let Documenter handle it
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
+    ENV["TRAVIS"] = :lolno
     ENV["TRAVIS_BRANCH"] = "master"
     ENV["TRAVIS_PULL_REQUEST"] = "false"
     ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl.git"
