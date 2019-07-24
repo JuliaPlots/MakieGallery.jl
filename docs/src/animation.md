@@ -72,19 +72,6 @@ TODO add more tips here
 You can animate a plot in a `for` loop:
 
 ```julia
-r = 1:10
-for i = 1:length(r)
-    push!(s[:markersize], r[i])
-    AbstractPlotting.force_update!()
-    sleep(1/24)
-end
-```
-
-But, if you `push!` to a plot, it doesn't necessarily get updated whenever an attribute changes, so you must call [`force_update!`](@ref).
-
-A better way to do it is to access the attribute of a plot directly using its symbol, and when you change it, the plot automatically gets updated live, so you no longer need to call `force_update!()`:
-
-```julia
 for i = 1:length(r)
     s[:markersize] = r[i]
     # AbstractPlotting.force_update!() is no longer needed
