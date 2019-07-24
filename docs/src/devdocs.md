@@ -12,7 +12,7 @@ Makie also tries to be statically compilable, but this isn't as straightforward 
 So far it seems that all kind of globals are not save for static compilation and generated functions seem to also make problems.
 I'm slowly removing problematic constructs from the dependencies and try to get static compilation as quick as possible.
 
-!!!note "The state of static compilability in Makie"
+!!! note "The state of static compilability in Makie"
     Currently, `Makie` is statically compilable.
 
 ### TODOs / Up for grabs
