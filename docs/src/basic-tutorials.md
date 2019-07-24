@@ -77,7 +77,7 @@ You can force display to the backend's preferred window by calling `display(Abst
 
 See the [Output](@ref) section.
 
-## Animation
+## Animations
 
 See the [Animation](@ref) section, as well as the [Interaction](@ref) section.
 
