@@ -15,3 +15,4 @@ atomics_examples/
 *.zip
 tmax
 prec
+Manifest.toml
