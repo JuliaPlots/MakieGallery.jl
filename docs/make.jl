@@ -36,7 +36,6 @@ open(path, "w") do io
         println(io, "```@docs")
         println(io, "$fname")
         println(io, "```\n")
-        help_attributes(io, func; extended = true)
         # add previews of all tags related to function
         for example in database
             fname in example.tags || continue
@@ -131,15 +130,37 @@ makedocs(
     doctest = false, clean = true,
     format = Documenter.HTML(prettyurls = false),
     sitename = "Makie.jl",
+    expandfirst = [
+        "basic-tutorials.md",
+        "statsmakie.md",
+        # "help_functions.md",
+        "animation.md",
+        "interaction.md",
+        "functions-overview.md",
+        "scenes.md",
+        "signatures.md",
+        "plot-attributes.md",
+        "colors.md",
+        "theming.md",
+        "cameras.md",
+        "backends.md",
+        # "extending.md",
+        "axis.md",
+        "recipes.md",
+        "output.md"
+    ],
     pages = Any[
         "Home" => "index.md",
         "Basics" => [
             "basic-tutorials.md",
             "statsmakie.md",
-            "help_functions.md",
-            "functions-overview.md",
+            # "help_functions.md",
             "animation.md",
             "interaction.md",
+            "functions-overview.md",
+        ],
+        "Documentation" => [
+            "scenes.md",
             "signatures.md",
             "plot-attributes.md",
             "colors.md",
