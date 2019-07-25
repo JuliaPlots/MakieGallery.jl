@@ -36,7 +36,6 @@ open(path, "w") do io
         println(io, "```@docs")
         println(io, "$fname")
         println(io, "```\n")
-        help_attributes(io, func; extended = true)
         # add previews of all tags related to function
         for example in database
             fname in example.tags || continue
