@@ -1,6 +1,6 @@
 # Cameras
 
-A `Camera` is simplay a viewport through which the Scene is visualized.  `Makie` offers 2D and 3D projections, and 2D plots can be projected in 3D!
+A `Camera` is simply a viewport through which the Scene is visualized.  `Makie` offers 2D and 3D projections, and 2D plots can be projected in 3D!
 
 To specify the camera you want to use for your Scene, you can set the `camera` attribute.  Currently, we offer four types of camera:
 
