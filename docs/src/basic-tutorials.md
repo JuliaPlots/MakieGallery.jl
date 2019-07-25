@@ -27,6 +27,10 @@ scene = Scene()
 
 Note that before you put anything in the scene, it will be blank!
 
+## Getting help
+
+The user-facing functions of Makie are pretty well documented, so you can usually use the help mode in the REPL, or your editor of choice.
+
 ## Basic plotting
 
 Below are some examples of basic plots to help you get oriented.

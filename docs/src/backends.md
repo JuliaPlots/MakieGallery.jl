@@ -15,6 +15,9 @@ It requires an OpenGL enabled graphics card with OpenGL version 3.3 or higher.
 
 ## WGLMakie
 
+WGLMakie is the Web-based backend, and is still experimental (though relatively feature-complete).
+Currently, installing it is not straightforward; see the [`WGLMakie.jl` README](https://github.com/JuliaPlots/WGLMakie.jl) for detailed instructions.
+
 ## CairoMakie
 
 CairoMakie uses Cairo to draw vector graphics to SVG and PDF.  

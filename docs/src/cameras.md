@@ -26,7 +26,7 @@ zoom!
 
 ## Updating the camera
 
-Often, when modifying the Scene, the camera can get "out of sync" with the Scene.  To fix this, you can call the [`update_cam!`](@ref) function on the Scene:
+Often, when modifying the Scene, the camera can get "out of sync" with the Scene.  To fix this, you can call the `update_cam!` function on the Scene:
 ```@docs
 update_cam!
 ```
