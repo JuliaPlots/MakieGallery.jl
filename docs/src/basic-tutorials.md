@@ -61,6 +61,8 @@ Many of these examples also work in 3D.
 
 @example_database("Tutorial adjusting scene limits")
 
+You can also use the convenience functions [`xlims!`](@ref), [`ylims!`](@ref) and [`zlims!`](@ref).
+
 ### Basic theming
 
 @example_database("Tutorial basic theming")
