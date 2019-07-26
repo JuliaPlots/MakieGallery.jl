@@ -55,9 +55,9 @@
         scene = lines(x, y, color = :blue)
 
         axis = scene[Axis] # get the axis object from the scene
-        axis[:grid][:linecolor] = ((:red, 0.5), (:blue, 0.5))
-        axis[:names][:textcolor] = ((:red, 1.0), (:blue, 1.0))
-        axis[:names][:axisnames] = ("x", "y = cos(x)")
+        axis.grid.linecolor = ((:red, 0.5), (:blue, 0.5))
+        axis.names.textcolor = ((:red, 1.0), (:blue, 1.0))
+        axis.names.axisnames = ("x", "y = cos(x)")
         scene
     end
 
