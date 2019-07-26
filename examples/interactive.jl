@@ -543,6 +543,57 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
+    @cell "Animation with slider control" [interaction, animation, slider] begin
+        """
+        This example is courtesy of @neuralian through the Julia Discourse.
+        https://discourse.julialang.org/t/makie-interaction-slider-with-animation/25179/10
+        """
+
+        using Colors
+        x₀ = -5.0
+        #gateState = false
+        xRange = 10.0
+        #  deflection
+        p₀(x) = x/2.0
+        # plot
+        nPts = 100.0
+        x = (x₀ .+ collect((-nPts/2.):(nPts/2.)) / nPts * xRange)
+        scene = lines(x,  p₀(x),
+                 linewidth = 4,
+                 color = :darkcyan,
+                 leg = false
+            )
+        axis = scene[Axis]
+        axis[:names][:axisnames] =  ( "x","y")
+
+        D = Node(x₀)
+        HC_handle = scatter!(lift(x->[x],  D), [2.0], marker=:circle,
+              markersize = 1., color = :red)[end]
+
+        s1 = slider(LinRange(-10.0, 0.0, 101),
+          raw = true, camera = campixel!, start = -10.0)
+        kx = s1[end][:value]
+
+        scatter!(scene, lift(x->[x; x], kx), lift(x-> [0.5; p₀(x)], kx),
+        marker = :hexagon,  color = RGBA(.5,0.,.5,.5),
+        markersize = .35, strokewidth = .01, strokecolor = :black)
+
+        S = Scene(resolution = (800, 600))
+        hbox(scene, s1; parent = S)
+        display(S)
+
+        @async while isopen(S)
+            p = p₀((10.0+kx[])/10.)
+            gateState = rand(1)[] < p
+            HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
+            push!(D, -3. + rand(1)[]/5.)
+            yield()
+        end
+
+        RecordEvents(S, @replace_with_a_path);
+
+    end
+
 end
 
 function record_example_events()
