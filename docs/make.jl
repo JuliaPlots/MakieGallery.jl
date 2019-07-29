@@ -192,6 +192,7 @@ ENV["DOCUMENTER_DEBUG"] = "true"
 if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") # do this only if local, otherwise let Documenter handle it
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
+    ENV["CI"] = "no"
     ENV["TRAVIS"] = :lolno
     ENV["TRAVIS_BRANCH"] = "master"
     ENV["TRAVIS_PULL_REQUEST"] = "false"
