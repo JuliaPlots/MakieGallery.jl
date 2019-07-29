@@ -19,7 +19,7 @@ Interaction and animations in Makie are handled by using [`Observables`](https:/
 Interaction, animations and more are done using `Node`s and event triggers.
 
 In this page we overview how the `Node`s pipeline works, how event-triggering works, and we give an introduction to the existing "atomic" functions for interaction.
-Examples that use interaction can be found in the Examples/`interaction` page (see [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html) as well).
+Examples that use interaction can be found in the Examples/`interaction` page (see [Example Gallery](http://juliaplots.org/MakieReferenceImages/gallery/index.html) as well).
 
 Have a peek at [Animation](@ref) for some more information once you're done with this.
 
@@ -133,44 +133,19 @@ pos = lift(scene.events.mouseposition) do mpos
 end
 ```
 
+## Interaction using the keyboard
 
-## Correct way to animate a plot
-You can animate a plot in a `for` loop:
+To listen to keyboard events, you can `lift` `scene.events.keyboardbuttons`, which returns an enum that can be used with some utility functions to implement a keyboard event handler.
 
-```julia
-r = 1:10
-for i = 1:length(r)
-    push!(s[:markersize], r[i])
-    AbstractPlotting.force_update!()
-    sleep(1/24)
+```
+dir = lift(scene.events.keyboardbuttons) do but
+    global last_dir
+    ispressed(but, Keyboard.left) && return 1
+    ispressed(but, Keyboard.up) && return 2
+    ispressed(but, Keyboard.right) && time[] += 1
+    ispressed(but, Keyboard.down) && return 0
+    last_dir
 end
 ```
-
-But, if you `push!` to a plot, it doesn't necessarily get updated whenever an attribute changes, so you must call `force_update!()`.
-
-A better way to do it is to access the attribute of a plot directly using its symbol, and when you change it, the plot automatically gets updated live, so you no longer need to call `force_update!()`:
-
-```julia
-for i = 1:length(r)
-    s[:markersize] = r[i]
-    # AbstractPlotting.force_update!() is no longer needed
-    sleep(1/24)
-end
-```
-
-Similarly, for plots based on functions:
-
-```julia
-scene = Scene()
-v = range(0, stop=4pi, length=50)
-f(v, t) = sin(v + t) # some function
-s = lines!(
-    scene,
-    lift(t -> f.(v, t), time),
-)[end];
-
-for i = 1:length(v)
-    push!(time, i)
-    sleep(1/24)
-end
-```
+<!--TODO make an actual example
+TODO can we make a keyboard viewer in Makie?-->

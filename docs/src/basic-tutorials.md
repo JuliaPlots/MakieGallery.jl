@@ -19,21 +19,21 @@ The first use of Makie might take a little bit of time, due to precompilation.
 
 ## Set the `Scene`
 
-The `Scene` object holds everything in a plot, and you can initialize it by doing so:
+The `Scene` object holds everything in a plot, and you can initialize it like so:
 
 ```julia
 scene = Scene()
 ```
 
-Note that before you put anything in the scene, it will be black!
+Note that before you put anything in the scene, it will be blank!
 
 ## Basic plotting
 
 Below are some examples of basic plots to help you get oriented.
 
-You can put your in the plot window and scroll to zoom. Right click and drag lets you pan around the scene, and left click and drag lets you do selection zoom (in 2D plots), or orbit around the scene (in 3D plots).
+You can put your mouse in the plot window and scroll to zoom. **Right click and drag** lets you pan around the scene, and **left click and drag** lets you do selection zoom (in 2D plots), or orbit around the scene (in 3D plots).
 
-Many of these examples also work in 3D,
+Many of these examples also work in 3D.
 
 ### Scatter plot
 
@@ -61,11 +61,26 @@ Many of these examples also work in 3D,
 
 @example_database("Tutorial basic theming")
 
-## Saving plots or animations
+### Statistical plotting
+
+`Makie` has a lot of support for statistical plots through `StatsMakie.jl`.
+See the [StatsMakie Tutorial](@ref) section for more information on this.
+
+## Controlling display programatically
+
+`Scene`s will only display by default in global scope.  To make a Scene display when it's defined in a local scope,
+like a function or a module, you can call `display(scene)`, which will automatically display it in the best available
+display.  
+You can force display to the backend's preferred window by calling `display(AbstractPlotting.PlotDisplay(), scene)`.
+
+## Saving plots
 
 See the [Output](@ref) section.
 
+## Animations
+
+See the [Animation](@ref) section, as well as the [Interaction](@ref) section.
 
 ## More examples
 
-See the [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html).
+See the [Example Gallery](http://juliaplots.org/MakieReferenceImages/gallery/index.html).

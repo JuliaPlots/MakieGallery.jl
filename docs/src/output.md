@@ -34,4 +34,4 @@ step!(st)
 
 @example_database("Stepper demo")
 
-For more info, consult the [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html).
+For more info, consult the [Example Gallery](http://juliaplots.org/MakieReferenceImages/gallery/index.html).
