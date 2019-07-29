@@ -38,3 +38,10 @@ update_cam!
 ```
 
 In general, `update!` is to be used to keep data in sync, and `update_cam!` and `update_limits!` update the camera and limits respectively (to show all the data).
+
+## Events
+
+Scenes have several pre-created event "hooks" (through Observables) that you can handle.  These can be accessed through `scene.events`, which returns an `Events` struct:
+```@docs
+Events
+```

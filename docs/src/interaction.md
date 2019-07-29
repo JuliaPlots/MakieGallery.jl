@@ -33,9 +33,11 @@ x = Node(0.0) # set up a Node, and give it a default value of 0.0
 ```
 
 The value of the `x` can be changed simply using `push!`:
-```@example animation_tutorial
-push!(x, 3.14);
-x
+```julia
+julia> x[] = 3.34;
+julia> x
+Observable{Float64} with 0 listeners. Value:
+3.34
 ```
 
 Notice that you can access the value of a `Node` by indexing it with nothing, i.e. `x[]`. However, we recommend to use the function [`to_value`](@ref) to get the value of a `Node`, because `to_value` is a general function that works with all types instead of only `Node`s. E.g.:

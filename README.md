@@ -117,5 +117,5 @@ If you want to add multiple examples, you probably want to add a new `@block`, o
 `MakieGallery` hosts documentation for Makie.jl.  
 However, this documentation requires the reference images to be downloaded in the home directory
 (configurability via an environment variable is planned).  
-You can get the reference images from https://github.com/SimonDanisch/ReferenceImages -
-it's a 340 MB repository, so you may want to shallow clone.
+You can get the reference images from https://github.com/JuliaPlots/MakieReferenceImages -
+it's a large repository, so you may want to shallow clone.
