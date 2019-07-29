@@ -3,14 +3,21 @@ using BinaryProvider, FileIO, Random, Pkg
 using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
-database = (get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
+_minimal = get(ENV, "MAKIEGALLERY_MINIMAL", "false")
+
+printstyled("Running ", bold = true, color = :blue)
+_minimal == "true"  && printstyled("short tests\n", bold = true, color = :yellow)
+_minimal == "false" && printstyled("full tests\n", bold = true, color = :green)
+
+database = (_minimal == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
 
 # THese examples download additional data - don't want to deal with that!
-# to_skip = ["WorldClim visualization", "Image on Geometry (Moon)", "Image on Geometry (Earth)"]
+to_skip = ["WorldClim visualization", "Image on Geometry (Moon)", "Image on Geometry (Earth)"]
 # # we directly modify the database, which seems easiest for now
 # filter!(entry-> !(entry.title in to_skip), database)
 
 printstyled("Creating ", color = :green, bold = true)
+
 println("recording folders")
 
 tested_diff_path = joinpath(@__DIR__, "tested_different")
@@ -37,9 +44,6 @@ examples = MakieGallery.record_examples(test_record_path)
 if length(examples) != length(database)
     @warn "Not all examples recorded"
 end
-# MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
-# MakieGallery.generate_thumbnails(test_record_path)
-# MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))
 
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")
