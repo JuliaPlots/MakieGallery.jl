@@ -174,7 +174,7 @@ function CellEntry(author, title, tags, file, file_range, toplevel, source, grou
     CellEntry(string(author), title, uname, tags, file, file_range, toplevel, source, groupid)
 end
 
-const plotting_backends = String["AbstractPlotting"]
+const plotting_backends = String["Makie"] # for now - we will have to fix this later to allow for different backends.
 
 """
 Prints the source of an entry in the database at `idx`.
@@ -579,7 +579,7 @@ end
     run_example(title::String)
 
 Runs an example from the database!
-See all available examples online: https://simondanisch.github.io/ReferenceImages/gallery/index.html
+See all available examples online: http://juliaplots.org/MakieReferenceImages/gallery/index.html
 Or run `available_examples()` to get an array of all available titles.
 """
 function run_example(title::String)

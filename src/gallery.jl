@@ -10,7 +10,7 @@ struct MediaItem
 end
 
 function master_url(root, path)
-    urlbase = "https://simondanisch.github.io/ReferenceImages/gallery/"
+    urlbase = "http://juliaplots.org/MakieReferenceImages/gallery/"
     if Sys.iswindows()
         path = replace(path, "\\" => "/")
         root = replace(root, "\\" => "/")
