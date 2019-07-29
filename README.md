@@ -10,11 +10,11 @@ Build status: [![][gitlab-img]][gitlab-url] [![Build Status](https://travis-ci.c
 [travis-img]: https://gitlab.com/JuliaGPU/MakieGallery-jl/badges/master/pipeline.svg
 [travis-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
 
-[Gallery Generated With this Package](https://simondanisch.github.io/ReferenceImages/gallery/index.html)
+[Gallery Generated With this Package](http://juliaplots.org/MakieReferenceImages/gallery/index.html)
 
 ## Examples for Makie:
 
-[![](http://makie.juliaplots.org/stable/media/thumb-3d_contour_with_2d_contour_slices.jpg)](http://makie.juliaplots.org/stable/examples-volume.html#3D-Contour-with-2D-contour-slices-1)
+![](http://makie.juliaplots.org/MakieReferenceImages/gallery/3d_contour_with_2d_contour_slices/media/thumb.jpg)]
 [![](http://makie.juliaplots.org/stable/media/thumb-animated_scatter.jpg)](http://makie.juliaplots.org/stable/examples-scatter.html#Animated-Scatter-1)
 [![](http://makie.juliaplots.org/stable/media/thumb-animated_surface_and_wireframe.jpg)](http://makie.juliaplots.org/stable/examples-surface.html#Animated-surface-and-wireframe-1)
 [![](http://makie.juliaplots.org/stable/media/thumb-arrows_3d.jpg)](http://makie.juliaplots.org/stable/examples-arrows.html#Arrows-3D-1)
@@ -92,7 +92,7 @@ julia> using MakieGallery
 julia> database = MakieGallery.load_database();
 julia> database[1].title # can be used e.g. for filter(x-> x.title == "...", database)
 "Tutorial simple scatter"
-julia> database[1] # pretty printing :) 
+julia> database[1] # pretty printing :)
 ...
  x = rand(10)
  y = rand(10)
@@ -108,14 +108,14 @@ julia> MakieGallery.eval_example(database[1]) # run it!
 ## Adding an example
 
 MakieGallery hosts a lot of examples describing how to use Makie.jl.  
-To add a standalone example, find the file where it fits best, and add a new `@cell` entry 
+To add a standalone example, find the file where it fits best, and add a new `@cell` entry
 (or a new `@block` entry if you want to add more examples in the future).  
 If you want to add multiple examples, you probably want to add a new `@block`, or even a new file.
 
 ## Building the documentation
 
 `MakieGallery` hosts documentation for Makie.jl.  
-However, this documentation requires the reference images to be downloaded in the home directory 
+However, this documentation requires the reference images to be downloaded in the home directory
 (configurability via an environment variable is planned).  
-You can get the reference images from https://github.com/SimonDanisch/ReferenceImages - 
-it's a 340 MB repository, so you may want to shallow clone.
+You can get the reference images from https://github.com/JuliaPlots/MakieReferenceImages -
+it's a large repository, so you may want to shallow clone.

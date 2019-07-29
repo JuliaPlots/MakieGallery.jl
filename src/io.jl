@@ -130,15 +130,21 @@ function preprocess!(md)
     end
     md
 end
-function md2html(md_path)
+
+function md2html(md_path; stylesheets = Vector{String}[])
     open(joinpath(dirname(md_path), "index.html"), "w") do io
         md = preprocess!(Markdown.parse_file(md_path))
+        hio = IOBuffer(write=true, read=true)
+        for sheetref in stylesheets
+            println(hio, "<link rel=\"stylesheet\" href=\"$(sheetref)\">")
+        end
         println(io, """
         <!doctype html>
         <html>
           <head>
             <meta charset="UTF-8">
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/JuliaDocs/Documenter.jl/assets/html/documenter.css">
+            $(String(take!(hio)))
           </head>
           <body>
             $(string(HTMLWriter.mdconvert(md)))
@@ -155,6 +161,13 @@ Creates a Markdown representation from an example at `mdpath`.
 `media` is a vector of media output files belonging to the example
 """
 function save_markdown(mdpath::String, example::CellEntry, media::Vector{String})
+    # src = example2source(
+    #     example,
+    #     scope_start = "",
+    #     scope_end = "",
+    #     indent = "",
+    #     outputfile = (entry, ending)-> string("output", ending)
+    # )
     src = example2source(
         example,
         scope_start = "",
@@ -171,6 +184,36 @@ function save_markdown(mdpath::String, example::CellEntry, media::Vector{String}
     end
 end
 
+"""
+    save_highlighted_markdown(path::String, example::CellEntry, media::Vector{String};
+                                highlighter = Highlights.Themes.DefaultTheme)
+Creates a Markdown representation from an example at `mdpath`.
+`media` is a vector of media output files belonging to the example
+"""
+function save_highlighted_markdown(
+                                path::String, example::CellEntry, media::Vector{String},
+                                highlighter = Highlights.Themes.DefaultTheme
+                            )
+
+    src = example2source(
+        example,
+        scope_start = "",
+        scope_end = "",
+        indent = "",
+        outputfile = (entry, ending)-> string("output", ending)
+    )
+    hio = IOBuffer(read = true, write = true)
+    highlight(hio, MIME("text/html"), src, Highlights.Lexers.JuliaLexer, highlighter)
+    html = String(take!(hio))
+    open(path, "w") do io
+        println(io, "## ", example.title, "\n")
+        println(io, "```@raw html\n$html\n```")
+        println(io, "```@raw html\n")
+        embed_media(io, media)
+        println(io, "```")
+    end
+
+end
 
 const last_evaled = Ref{Int}()
 
@@ -226,10 +269,10 @@ function record_examples(
 
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
+            printstyled("Running ", color = :blue, bold = true)
+            uname = example.unique_name
+            println(uname)
             @testset "$(example.title)" begin
-                uname = example.unique_name
-                printstyled("Running ", color = :blue, bold = true)
-                println(uname)
                 subfolder = joinpath(folder, string(uname))
                 outfolder = joinpath(subfolder, "media")
                 ispath(outfolder) || mkpath(outfolder)
@@ -249,6 +292,27 @@ function record_examples(
 end
 
 """
+    gallery_from_recordings(
+        folder::String,
+        html_out::String = abspath(joinpath(pathof(MakieGallery), "..", "..", "index.html"));
+        tags = [
+            string.(AbstractPlotting.atomic_function_symbols)...,
+            "interaction",
+            "record",
+            "statsmakie",
+            "vbox",
+            "layout",
+            "legend",
+            "colorlegend",
+            "vectorfield",
+            "poly",
+            "camera",
+            "recipe",
+            "theme",
+            "annotations"
+        ],
+        hltheme = Highlights.Themes.DefaultTheme
+    )
 Creates a Gallery in `html_out` from already recorded examples in `folder`.
 """
 function gallery_from_recordings(
@@ -269,19 +333,24 @@ function gallery_from_recordings(
             "recipe",
             "theme",
             "annotations"
-        ]
+        ],
+        hltheme = Highlights.Themes.DefaultTheme
     )
+
     items = map(MakieGallery.database) do example
         base_path = joinpath(folder, string(example.unique_name))
         media_path = joinpath(base_path, "media")
         media = master_url.(folder, joinpath.(media_path, readdir(media_path)))
         mdpath = joinpath(base_path, "index.md")
-        save_markdown(mdpath, example, media)
-        md2html(mdpath)
+        save_highlighted_markdown(mdpath, example, media, hltheme)
+        md2html(mdpath; stylesheets = [relpath(joinpath(dirname(html_out), "syntaxtheme.css"), base_path)])
         MediaItem(base_path, example)
     end
     open(html_out, "w") do io
         println(io, create_page(items, tags))
+    end
+    open(joinpath(dirname(html_out), "syntaxtheme.css"), "w") do io
+        stylesheet(io, MIME("text/css"), hltheme)
     end
 end
 

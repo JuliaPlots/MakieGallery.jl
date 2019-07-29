@@ -10,7 +10,8 @@ notifications:
   email: false
 git:
   depth: 99999999
-
+env:
+  - MAKIEGALLERY_REFIMG_PATH="./MakieReferenceImages"
 # uncomment the following lines to allow failures on nightly julia
 # (tests will run but not make your overall status red)
 matrix:
@@ -33,7 +34,7 @@ jobs:
       julia: 1.2
       os: linux
       script:
-        - pushd ~; git clone https://github.com/SimonDanisch/ReferenceImages; popd
+        - git clone https://github.com/JuliaPlots/MakieReferenceImages
         - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
                                     Pkg.develop(PackageSpec(path=pwd())); Pkg.pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
         - julia --project=docs/ docs/make.jl

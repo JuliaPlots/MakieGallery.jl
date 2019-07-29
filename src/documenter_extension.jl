@@ -74,7 +74,7 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             push!(content, src_code)
         end
         # TODO figure out a better way to not hardcode this
-        media_root = joinpath(homedir(), "ReferenceImages/gallery")
+        media_root = joinpath(REFIMGDIR, "gallery")
         # embed plot for the example
         if (embed == nothing) || isequal(embed, "plot")
             # print to buffer

@@ -10,6 +10,7 @@ using ImageFiltering  # needed for Gaussian-filtering images during resize
 using Random
 using Documenter.Writers
 using Documenter.Writers.HTMLWriter
+using Highlights
 using Test, Statistics
 using FFMPEG
 using BinaryProvider
@@ -78,6 +79,12 @@ function load_database(files::AbstractVector{<: AbstractString})
     database
 end
 
+REFIMGDIR = nothing
+
+function __init__()
+    global REFIMGDIR
+    REFIMGDIR = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), "ReferenceImages"))
+end
 
 export load_database, eval_example, available_examples, run_example
 

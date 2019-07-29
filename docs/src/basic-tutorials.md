@@ -89,4 +89,4 @@ See the [Animation](@ref) section, as well as the [Interaction](@ref) section.
 
 ## More examples
 
-See the [Example Gallery](https://simondanisch.github.io/ReferenceImages/gallery/index.html).
+See the [Example Gallery](http://juliaplots.org/MakieReferenceImages/gallery/index.html).

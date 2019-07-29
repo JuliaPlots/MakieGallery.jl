@@ -586,7 +586,7 @@
         xm, ym, zm = minimum(scene.limits[])
         contour!(scene, x, y, z, levels = 15, linewidth = 2, transformation = (:xy, zm))
         wireframe!(scene, x, y, z, overdraw = true, transparency = true, color = (:black, 0.1))
-        scene
+        center!(scene) # center the Scene on the display
     end
 
     @cell "Explicit frame rendering" [opengl, render_frame, meshscatter] begin
