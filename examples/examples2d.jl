@@ -187,6 +187,21 @@
         scene
     end
 
+    @cell "scale_plot" [scale] begin
+        t = range(0, stop=1, length=500) # time steps
+        θ = (6π) .* t    # angles
+        x = t .* cos.(θ) # x coords of spiral
+        y = t .* sin.(θ) # y coords of spiral
+        p1 = lines(
+             x,
+             y,
+             color      = t,
+             colormap   = :algae,
+             linewidth  = 8,
+             scale_plot = false
+         )
+    end
+
     @cell "Polygons" [poly, polygon, linesegments] begin
         using GeometryTypes
         scene = Scene(resolution = (500, 500))
@@ -273,21 +288,22 @@
         using DataFrames, RDatasets # do Pkg.add.(["DataFrames", "RDatasets"]) if you don't have these packages installed
         iris = dataset("datasets", "iris")
 
-        x = iris[:SepalWidth]
-        y = iris[:SepalLength]
+        x = iris[!, :SepalWidth]
+        y = iris[!, :SepalLength]
 
         scene = Scene()
         colors = [:red, :green, :blue]
         i = 1 #color incrementer
-        for sp in unique(iris[:Species])
-            idx = iris[:Species] .== sp
+        for sp in unique(iris[!, :Species])
+            idx = iris[!, :Species] .== sp
             sel = iris[idx, [:SepalWidth, :SepalLength]]
             scatter!(scene, sel[:,1], sel[:,2], color = colors[i], limits = FRect(1.5, 4.0, 3.0, 4.0))
             global i = i+1
         end
         scene
         axis = scene[Axis] # get axis
-        axis[:names][:axisnames] = ("Sepal width", "Sepal length")
+        xlabel!(scene, "Sepal width")
+        ylabel!(scene, "Sepal length")
         scene
     end
 
@@ -421,6 +437,71 @@
             s
         end
         render(A)
+    end
+
+    @cell "Cobweb plot" [lines, interaction] begin
+
+        ## setup functions
+        f(x::Real, r::Real) = r * x * (1 - x)
+        function cobweb(
+            xᵢ::Real,
+            curve_f::Function,
+            r::Real;
+            nstep::Real = 30
+            )::Vector{Point2f0} # col 1 is x, col 2 is y
+
+            a = zeros(nstep*2, 2)
+            a[1, 1] = xᵢ
+            x = xᵢ
+            y = curve_f(x, r)
+            ret = similar(Vector{Point2f0}, nstep*2)
+
+            for i ∈ 2:2:nstep*2-2
+                a[i, 1] = x
+                a[i, 2] = y
+                x = y
+                y = curve_f(x, r)
+                a[i+1, 1] = x
+                a[i+1, 2] = x
+                ret[i] = Point2f0(a[i, 1], a[i, 2])
+                ret[i+1] = Point2f0(a[i+1, 1], a[i+1, 2])
+            end
+
+            return ret
+
+            end
+
+        xᵢ = 0.1
+        rᵢ = 2.8
+        xr = 0:0.001:1
+        ## setup sliders
+        sx, x = textslider(0:0.01:1, "xᵢ", start = xᵢ)
+        sr, r = textslider(0:0.01:4, "r", start = rᵢ)
+        ## setup lifts
+        fs = Makie.lift(r -> f.(xr, r), r)
+        cw = Makie.lift((x, r) -> cobweb(x, f, r), x, r)
+        ## setup plots
+        sc = lines(               # plot x=y, the bisector line
+            xr,                   # xs
+            xr,                   # ys
+            linestyle = :dash,    # style of line
+            linewidth = 3,        # width of line
+            color = :blue         # colour of line
+            )
+
+        sc[Axis][:names][:axisnames] = ("x(t)", "x(t+1)") # set axis names
+
+        lines!(sc, xr, fs) # plot the curve
+
+        lines!(sc, cw) # plot the cobweb
+
+        final = vbox(sc, hbox(sx, sr))
+
+        record(final, @replace_with_a_path(mp4), range(0.01, stop = 5, length = 100)) do i
+            r[] = i
+        end
+
+
     end
 end
 
