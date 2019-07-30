@@ -71,6 +71,30 @@
         u, v = ImageFiltering.imgradients(z, KernelFactors.ando3)
         arrows!(x, y, u, v, arrowsize = 0.05)
     end
+    @cell "Arrows on hemisphere" [arrows, quiver, mesh] begin
+        # This example is courtesy of Mark Junge, (Github @Nyrox).
+        scene = mesh(Sphere(Point3f0(0), 0.9f0), transparency=true, alpha=0.05)
+
+        function cosine_weighted_sample_hemisphere()
+            θ = acos(sqrt(rand()))
+            ϕ = 2π * rand()
+
+            Point3f0(sin(θ)cos(ϕ), cos(θ), sin(θ)sin(ϕ))
+        end
+
+        N = 100
+
+        dirs = [generator() for i in 1:N]
+
+        arrows!(
+            scene,
+            fill(Point3f0(0), N),
+            dirs,
+            arrowcolor=:red,
+            arrowsize=0.1,
+            linecolor=:red
+        )
+    end
     @cell "image" [image] begin
         vbox(
             image(AbstractPlotting.logo(), scale_plot = false),
