@@ -82,7 +82,7 @@
     end
 
     @cell "Marker offset" [scatter, marker_offset] begin
-        scene = Scene(@resolution)
+        scene = Scene()
         points = Point2f0[(0,0), (1,1), (2,2)]
         offset = rand(Point2f0, 3)./5
         scatter!(scene, points)

@@ -553,6 +553,13 @@ end
 
     end
 
+    @cell "timeseries" [timeseries, lines, animation] begin
+        signal = Node(1.0)
+        scene = timeseries(signal, history = 10)
+        record(scene, @replace_with_a_path(mp4), 1:20; framerate = 60) do i
+            signal[] = rand()
+        end
+    end
 
     @cell "Line changing colour" [colors, lines, animation] begin
 
@@ -605,6 +612,22 @@ end
 
         showlibrary(:misc)
 
+    end
+    @cell "streamplot" [arrows, lines, streamplot] begin
+        struct FitzhughNagumo{T}
+            ϵ::T
+            s::T
+            γ::T
+            β::T
+        end
+
+        P = FitzhughNagumo(0.1, 0.0, 1.5, 0.8)
+        f(x, P::FitzhughNagumo) = Point2f0(
+            (x[1]-x[2]-x[1]^3+P.s)/P.ϵ,
+            P.γ*x[1]-x[2] + P.β
+        )
+        f(x) = f(x, P)
+        streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
     end
 
 end

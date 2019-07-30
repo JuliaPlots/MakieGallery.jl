@@ -44,7 +44,6 @@ end
 @block AnshulSinghvi ["interactive"]  begin
 
     @cell "Interactive Differential Equation" [lines, slider, animated, record, diffeq, interactive] begin
-
         using DifferentialEquations, ParameterizedFunctions
         import AbstractPlotting: textslider
         lorenz = @ode_def Lorenz begin           # define the system
@@ -89,11 +88,21 @@ end
             )  # change to fit the dimensionality - maybe even return 2 arrays, or a set of `Point2`s...
         end
         parent = Scene(resolution = (1000, 500))
-        
-        three = lines(data, linewidth = 1, transparency = true, color = ("#fe4a49", 0.6))
 
-        meshscatter!(three, data, markersize = 0.1, color = :gray)
+        three = lines(
+            data, linewidth = 2,
+            transparency = true, color = ("#fe4a49", 0.4),
+            show_axis = false
+        )
 
+        scatter!(
+            three, data, markersize = 0.3, color = (:white, 0.3),
+            strokecolor = :black, strokewidth = 1
+        )
+        on(data) do x
+            # center camera etc
+            update!(three)
+        end
         scene = vbox(hbox(sσ, sρ, sβ, st, sr), three, parent = parent)
 
         RecordEvents(scene, @replace_with_a_path)

@@ -26,6 +26,7 @@
     end
 
     @cell "Orthographic Camera" [meshscatter, cameracontrols, update_cam] begin
+
         using GeometryTypes
         x = Vec3f0(0); baselen = 0.2f0; dirlen = 1f0
         # create an array of differently colored boxes in the direction of the 3 axes
@@ -38,14 +39,14 @@
         scene = mesh(merge(meshes))
         center!(scene)
         cam = cameracontrols(scene)
-        dir = scene.limits[].widths ./ 2.
+        dir = widths(scene_limits(scene)) ./ 2.
         dir_scaled = Vec3f0(
-            dir[1] * scene.transformation.scale[][1],
-            0.0,
-            dir[3] * scene.transformation.scale[][2],
+         dir[1] * scene.transformation.scale[][1],
+         0.0,
+         dir[3] * scene.transformation.scale[][2],
         )
         cam.upvector[] = (0.0, 0.0, 1.0)
-        cam.lookat[] = scene.limits[].origin + dir_scaled
+        cam.lookat[] = minimum(scene_limits(scene)) + dir_scaled
         cam.eyeposition[] = (cam.lookat[][1], cam.lookat[][2] + 6.3, cam.lookat[][3])
         cam.projectiontype[] = AbstractPlotting.Orthographic
         update_cam!(scene, cam)
@@ -180,7 +181,7 @@
         scene = Scene()
         # c[4] == fourth argument of the above plotting command
         c = contour!(scene, x, x, x, test, levels = 6, alpha = 0.3, transparency = true)[end]
-        xm, ym, zm = minimum(scene.limits[])
+        xm, ym, zm = minimum(scene_limits(scene))
         contour!(scene, x, x, map(v-> v[1, :, :], c[4]), transformation = (:xy, zm), linewidth = 2)
         heatmap!(scene, x, x, map(v-> v[:, 1, :], c[4]), transformation = (:xz, ym))
         contour!(scene, x, x, map(v-> v[:, :, 1], c[4]), fillrange = true, transformation = (:yz, xm))
@@ -583,7 +584,7 @@
         y = x
         z = (-x .* exp.(-x .^ 2 .- (y') .^ 2)) .* 4
         scene = surface(x, y, z)
-        xm, ym, zm = minimum(scene.limits[])
+        xm, ym, zm = minimum(scene_limits(scene))
         contour!(scene, x, y, z, levels = 15, linewidth = 2, transformation = (:xy, zm))
         wireframe!(scene, x, y, z, overdraw = true, transparency = true, color = (:black, 0.1))
         center!(scene) # center the Scene on the display
