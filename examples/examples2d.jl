@@ -444,10 +444,10 @@
         ## setup functions
         f(x::Real, r::Real) = r * x * (1 - x)
         function cobweb(
-            xᵢ::Real,
-            curve_f::Function,
-            r::Real;
-            nstep::Real = 30
+                xᵢ::Real,
+                curve_f::Function,
+                r::Real;
+                nstep::Real = 30
             )::Vector{Point2f0} # col 1 is x, col 2 is y
 
             a = zeros(nstep*2, 2)
@@ -469,7 +469,7 @@
 
             return ret
 
-            end
+        end
 
         xᵢ = 0.1
         rᵢ = 2.8
@@ -478,8 +478,8 @@
         sx, x = textslider(0:0.01:1, "xᵢ", start = xᵢ)
         sr, r = textslider(0:0.01:4, "r", start = rᵢ)
         ## setup lifts
-        fs = Makie.lift(r -> f.(xr, r), r)
-        cw = Makie.lift((x, r) -> cobweb(x, f, r), x, r)
+        fs = lift(r -> f.(xr, r), r)
+        cw = lift((x, r) -> cobweb(x, f, r), x, r)
         ## setup plots
         sc = lines(               # plot x=y, the bisector line
             xr,                   # xs
@@ -487,7 +487,7 @@
             linestyle = :dash,    # style of line
             linewidth = 3,        # width of line
             color = :blue         # colour of line
-            )
+        )
 
         sc[Axis][:names][:axisnames] = ("x(t)", "x(t+1)") # set axis names
 
@@ -495,7 +495,7 @@
 
         lines!(sc, cw) # plot the cobweb
 
-        final = vbox(sc, hbox(sx, sr))
+        final = hbox(sc, vbox(sx, sr))
 
         record(final, @replace_with_a_path(mp4), range(0.01, stop = 5, length = 100)) do i
             r[] = i
