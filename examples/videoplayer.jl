@@ -263,8 +263,13 @@
             println(io, "file '$fname'")
         end
 
-        run(`ffmpeg -y -safe 0 -f concat -i timecodes.txt -segment_time_metadata 1 -vf setdar=dar=1/$dar -vsync vfr -copyts testvideo.mp4`)
+        path = @replace_with_a_path(mp4)
 
-        run(`ffmpeg -y -f concat -i timecodes.txt -vf setdar=dar=1/$dar -vsync 0 testvideo.mp4`)
+        ffmpeg_exe(`-y -safe 0 -f concat -i timecodes.txt -segment_time_metadata 1 -vf setdar=dar=1/$dar -vsync vfr -copyts $path`)
+
+        ffmpeg_exe(`-y -f concat -i timecodes.txt -vf setdar=dar=1/$dar -vsync 0 $path`)
+
+        # cleanup
+        rm.([@sprintf "%03i.png" i for i in 1:w])
     end
 end
