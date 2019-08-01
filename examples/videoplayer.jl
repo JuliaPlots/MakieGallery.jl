@@ -118,14 +118,12 @@
         slidersteps = range(0, duration, length = 100)
         steplen = duration / 100.0
 
-        slider_h = slider!(
-                    rsc(),
-                    slidersteps,                    # the values you can slide to
-                    start = 0,                      # default starting point
-                    valueprinter = _ -> "slide me"  # no value should be printed by
-                                                    # the slider, so we print this instead.
-                )
-
+        slider_h = slider!(Scene(camera = campixel!, raw=true, backgroundcolor=:black, textcolor=:white),
+                           0:10,                    # the values you can slide to
+                           start = 0,                      # default starting point
+                           valueprinter = _ -> "slide me", # no value should be printed by
+                                                           # the slider, so we print this instead.
+                       textcolor=:white)
         # We now create a callback to the slider's value changing, which can happen when
         # the user slides it, or its value is programatically set.
 
