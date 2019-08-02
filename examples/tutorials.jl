@@ -94,10 +94,12 @@
     @cell "Tutorial plot transformation" [tutorial, transformation] begin
         data = rand(10)
 
-        sc = Scene(resolution = (400, 400), show_axis = false)
+        sc = Scene(resolution = (400, 400))
 
         lineplot = lines!(sc, data)[end]    # gets the last defined plot for the Scene
         scatplot = scatter!(sc, data)[end]  # same thing but the last defined plot is scatter
+
+        sc
 
         @substep
 

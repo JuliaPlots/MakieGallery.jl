@@ -554,10 +554,10 @@ end
     end
 
     @cell "timeseries" [timeseries, lines, animation] begin
-        signal = Node(1.0)
-        scene = timeseries(signal, history = 10)
-        record(scene, @replace_with_a_path(mp4), 1:20; framerate = 60) do i
-            signal[] = rand()
+        signal = Node(0.0)
+        scene = timeseries(signal, history = 30)
+        record(scene, @replace_with_a_path(mp4), LinRange(0, 10π, 240); framerate = 24) do i
+            signal[] = sin(i)
         end
     end
 
