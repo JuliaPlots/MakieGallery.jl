@@ -615,6 +615,23 @@
         GLMakie.destroy!(screen)
         scene
     end
+    @cell "Streamplot 3D" [streamplot] begin
+        struct FitzhughNagumo{T}
+            ϵ::T
+            s::T
+            γ::T
+            β::T
+        end
+
+        P = FitzhughNagumo(0.1, 0.0, 1.5, 0.8)
+        f(x, P::FitzhughNagumo) = Point3f0(
+            (x[1]-x[2]-x[1]^3+P.s)/P.ϵ,
+            P.γ*x[2]-x[2] + P.β,
+            P.γ*x[1]-x[3] - P.β,
+        )
+        f(x) = f(x, P)
+        streamplot(f, -1.5..1.5, -1.5..1.5, -1.5..1.5, colormap = :magma, gridsize = (10, 10), arrow_size = 0.06)
+    end
     # @cell "2D text in 3D" [text, annotations] begin
     # TODO this has a world age problem!?!??
         # using GeometryTypes
