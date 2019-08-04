@@ -11,6 +11,9 @@ theme and define a custom plotting function.
 Type recipes are really simple and just overload the argument conversion
 pipeline, converting from one type to another, plottable type.
 
+!!! warning
+    `convert_arguments` must always return a Tuple.
+
 An example is:
 ```julia
 convert_arguments(x::Circle) = (decompose(Point2f, x),)
