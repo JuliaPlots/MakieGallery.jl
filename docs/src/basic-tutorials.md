@@ -39,7 +39,7 @@ You can put your mouse in the plot window and scroll to zoom. **Right click and 
 
 Many of these examples also work in 3D.
 
-It is worth noting initally that if you run a Makie.jl example and nothing shows up, you likely need to do ```display(scene)``` to render the example on screen.
+It is worth noting initally that if you run a Makie.jl example and nothing shows up, you likely need to do `display(scene)` to render the example on screen.
 
 ### Scatter plot
 
