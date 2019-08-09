@@ -113,7 +113,15 @@ A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which d
 
 ### Button
 
-Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click.
+Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click. A simple exmaple is as follows: 
+
+```julia
+b1 = button("Test Button")
+lift(b1[end].clicks) do clicks
+    println("Button was clicked!")
+    #Your function goes here
+end
+```
 
 ### Textslider
 
