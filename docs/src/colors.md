@@ -59,6 +59,9 @@ Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University.
 
 @example_database("Colormap collection", 4)
 
+!!! note
+    Due to the font in the image above, it may be difficult to tell that the yellow-orange-brown gradient, `YlOrBr`, is not `YIOrBr` - the second character is an `l`, not an `I`.
+
 ### MISC
 
 @example_database("Colormap collection", 5)
