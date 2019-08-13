@@ -59,6 +59,8 @@ Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University.
 
 @example_database("Colormap collection", 4)
 
+__Note:__ Due to the font in the image above, it may be difficult to tell that `YlOrBr` is `YLORBR` in all caps. 
+
 ### MISC
 
 @example_database("Colormap collection", 5)
