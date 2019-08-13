@@ -39,6 +39,8 @@ You can put your mouse in the plot window and scroll to zoom. **Right click and 
 
 Many of these examples also work in 3D.
 
+It is worth noting initally that if you run a Makie.jl example and nothing shows up, you likely need to do `display(scene)` to render the example on screen.
+
 ### Scatter plot
 
 @example_database("Tutorial simple scatter")
@@ -72,7 +74,7 @@ You can also use the convenience functions [`xlims!`](@ref), [`ylims!`](@ref) an
 `Makie` has a lot of support for statistical plots through `StatsMakie.jl`.
 See the [StatsMakie Tutorial](@ref) section for more information on this.
 
-## Controlling display programatically
+## Controlling display programmatically
 
 `Scene`s will only display by default in global scope.  To make a Scene display when it's defined in a local scope,
 like a function or a module, you can call `display(scene)`, which will automatically display it in the best available
