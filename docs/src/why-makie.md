@@ -5,6 +5,11 @@
 It can also be seen as a prototype for a new design of [`Plots.jl`](https://github.com/JuliaPlots/Plots.jl),
 since it will implement a very similar interface and incorporate a lot of the ideas.
 
+What makes up the Makie Ecosystem? `Makie.jl` is the metapackage for a rich ecosystem, which consists of [`GLMakie.jl`](https://github.com/JuliaPlots/GLMakie.jl), [`CairoMakie.jl`](https://github.com/JuliaPlots/CairoMakie.jl) and [`WGLMakie.jl`](https://github.com/JuliaPlots/WGLMakie.jl) (the backends); [`AbstractPlotting.jl`](https://github.com/JuliaPlots/AbstractPlotting.jl) (the bulk of the package); and [`StatsMakie.jl`](https://github.com/JuliaPlots/StatsMakie.jl) (statistical plotting support, as in `StatsPlots.jl`).  
+
+Examples, and test infrastructure, are hosted at [`MakieGallery.jl`](https://github.com/JuliaPlots/MakieGallery.jl)
+
+
 A fresh start instead of the already available `GLVisualize` backend for `Plots.jl` was needed for the following reasons:
 
 1) `Plots.jl` was written to create static plots without any interaction. This is deeply reflected in the internal design
