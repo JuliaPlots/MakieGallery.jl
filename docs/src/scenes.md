@@ -10,6 +10,8 @@ A Scene's subscenes (also called children) can be accessed through `scene.childr
 
 Any `Scene` with an axis also has a `camera` associated with it; this can be accessed through `scene.camera`, and its controls through `scene.camera.cameracontrols`.  More documentation about these is in the [Cameras](@ref) section.
 
+`Scene`'s also have configurable size/resolution. You can set the size in pixels by doing `Scene(resolution = (500, 500))`.
+
 ## Subscenes
 
 A subscene is no different than a normal Scene, except that it is linked to a "parent" Scene.  It inherits the transformations of the parent Scene, but can then be transformed independently of it.
