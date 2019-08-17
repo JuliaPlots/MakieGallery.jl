@@ -14,7 +14,7 @@ See the [Tutorial](@ref).
 
 ## I'm an expert!
 
-Head straight to the [Plotting functions overview](@ref).
+Head straight to the [Plotting functions overview](http://makie.juliaplots.org/dev/functions-overview.html).
 
 ## The Ecosystem:
 
