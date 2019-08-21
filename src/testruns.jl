@@ -86,7 +86,7 @@ function run_comparison(
         l = length(folders)
         count = 1
         for folder in folders
-            @info "Running index $count" progress=count/l
+            @debug "Running index $count" progress=count/l
             count += 1
             if isdir(folder) && isdir(joinpath(reference, basename(folder)))
                 media = joinpath(folder, "media")
