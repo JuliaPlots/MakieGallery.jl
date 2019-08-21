@@ -44,6 +44,7 @@ slow_examples = [
 ]
 # # we directly modify the database, which seems easiest for now
 # filter!(entry-> !(entry.title in slow_examples), database)
+# filter!(entry-> entry.title=="Tutorial plot transformation", database)
 
 printstyled("Creating ", color = :green, bold = true)
 
@@ -72,7 +73,7 @@ end
 # MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
 # MakieGallery.generate_thumbnails(test_record_path)
 # MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))
-
+#
 
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")

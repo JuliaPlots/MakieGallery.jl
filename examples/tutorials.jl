@@ -83,9 +83,9 @@
 
     @cell "Tutorial title" [tutorial, title] begin
 
-        sc = lines(rand(10))
+        scene = lines(rand(10))
 
-        sc_t = title(sc, "Random lines")
+        sc_t = title(scene, "Random lines")
 
         sc_t
 
@@ -94,24 +94,20 @@
     @cell "Tutorial plot transformation" [tutorial, transformation] begin
         data = rand(10)
 
-        sc = Scene(resolution = (400, 400))
-
-        lineplot = lines!(sc, data)[end]    # gets the last defined plot for the Scene
-        scatplot = scatter!(sc, data)[end]  # same thing but the last defined plot is scatter
-
-        sc
-
-        @substep
+        scene = Scene()
+        st = Stepper(scene, @replace_with_a_path)
+        lineplot = lines!(scene, data)[end]    # gets the last defined plot for the Scene
+        scatplot = scatter!(scene, data)[end]  # same thing but the last defined plot is scatter
+        step!(st)
 
         rotate!(lineplot, 0.025π) # only the lines are rotated, not the scatter
-
-        sc
-
+        step!(st)
+        st
     end
 
     # @cell "Tutorial markersizes" [tutorial, markersize, scatter] begin
     #
-    #     sc = scatter(rand(10); markersize = 10px)
+    #     scene = scatter(rand(10); markersize = 10px)
     #
     # end
 
