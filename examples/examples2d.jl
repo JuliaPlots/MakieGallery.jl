@@ -84,7 +84,7 @@
 
         N = 100
 
-        dirs = [generator() for i in 1:N]
+        dirs = [cosine_weighted_sample_hemisphere() for i in 1:N]
 
         arrows!(
             scene,

@@ -5,7 +5,7 @@ using Base.Threads
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.2.3")
+function download_reference(version = v"0.2.4")
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
@@ -34,8 +34,6 @@ function download_reference(version = v"0.2.3")
     end
     refpath
 end
-
-
 
 
 is_image_file(path) = lowercase(splitext(path)[2]) in (".png", ".jpg", ".jpeg")

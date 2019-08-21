@@ -36,7 +36,6 @@
         b2 = button(t, "marker")
         msize = slider(t, 0.1:0.01:0.5)
         on(b1[end][:clicks]) do c
-            @show typeof(p1.color)
             p1.color = rand(RGBAf0)
         end
         markers = ('π', '😹', '⚃', '◑', '▼')
@@ -585,20 +584,82 @@
 
         S = Scene(resolution = (800, 600))
         hbox(scene, s1; parent = S)
-        display(S)
-
-        @async while isopen(S)
-            p = p₀((10.0+kx[])/10.)
-            gateState = rand(1)[] < p
-            HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
-            push!(D, -3. + rand(1)[]/5.)
-            yield()
+        @async begin
+            while !isopen(S) # wait for screen to be open
+                sleep(0.01)
+            end
+            while isopen(S)
+                p = p₀((10.0+kx[])/10.)
+                gateState = rand(1)[] < p
+                HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
+                push!(D, -3. + rand(1)[]/5.)
+                sleep(0.001)
+            end
         end
-
         RecordEvents(S, @replace_with_a_path);
-
     end
 
+    @cell "Volume slider" [heatmap, contour, transform] begin
+        using Observables
+        scene3d = Scene()
+        rs = LinRange.(0, (6, 4, 10), 150)
+        slider_t = slider(LinRange(0.1, 3, 100))
+        # This actually needs to be pretty fast... Lucky for us, we use Julia :)
+        function make_volume!(rs, val, result = zeros(Float32, length.(rs)), r = rand(Float32, size(result)) .* 0.1)
+            @simd for idx in CartesianIndices(result)
+                @inbounds begin
+                    x, y, z = getindex.(rs, Tuple(idx))
+                    result[idx] = cos(x/val) * sin(y + r[idx]) + sqrt(z*val)
+                end
+            end
+            return result, r
+        end
+
+        vol_tmp, r_tmp = make_volume!(rs, 0.4);
+        volume = lift(Observables.async_latest(slider_t[end][:value])) do val
+            v, r = make_volume!(rs, val, vol_tmp, r_tmp);
+            return v
+        end
+
+        linesegments!(scene3d, FRect3D(minimum.(rs), maximum.(rs)))
+        planes = (:yz, :xz, :xy)
+        sliders = ntuple(3) do i
+            idx_s = slider(1:size(volume[], i), start = size(volume[], i) ÷ 2)
+            idx = idx_s[end][:value]
+            plane = planes[i]
+            indices = ntuple(3) do j
+                planes[j] == plane ? 1 : (:)
+            end
+            ridx = Iterators.filter((1, 2, 3)) do j
+                planes[j] != plane
+            end
+            heatm = heatmap!(
+                scene3d, getindex.((rs,), ridx)..., volume[][indices...],
+                interpolate = true, raw = true
+            )[end]
+            function transform_planes(idx, vol)
+                transform!(heatm, (plane, rs[i][idx]))
+                indices = ntuple(3) do j
+                    planes[j] == plane ? idx : (:)
+                end
+                if checkbounds(Bool, vol, indices...)
+                    heatm[3][] = view(vol, indices...)
+                end
+            end
+            onany(transform_planes, idx, volume)
+            transform_planes(idx[], volume[])
+            idx_s
+        end
+        center!(scene3d)
+        scene = vbox(
+            hbox(slider_t, sliders...),
+            hbox(
+                scene3d,
+                contour(volume, alpha = 0.1, levels = 10)
+            )
+        )
+        RecordEvents(scene, @replace_with_a_path)
+    end
 end
 
 function record_example_events()
@@ -620,4 +681,4 @@ function record_example(title = "Orbit Diagram")
     end
     AbstractPlotting.use_display[] = last
 end
-# record_example("Robot Arm")
+# record_example("Volume slider")
