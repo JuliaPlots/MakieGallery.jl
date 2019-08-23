@@ -54,26 +54,3 @@ deploydocs:
     paths:
       - docs/build
     expire_in: 2 days
-
-deployrefimages:
-  stage: refimages
-  when: manual
-  dependencies:
-    - gallerytest
-  variables:
-    MAKIEGALLERY_REFIMG_PATH: "$CI_PROJECT_DIR/MakieReferenceImages"
-  before_script:
-    - git clone https://github.com/JuliaPlots/MakieReferenceImages
-    - pushd ReferenceImages;
-            git checkout gitlab-new;
-            git push --set-upstream origin;
-        popd
-    - julia --project -e 'using Pkg;
-                        Pkg.add([PackageSpec(path=pwd());
-                                 [PackageSpec(name=pkg)
-                                  for pkg in split(get(ENV,"CI_ADD_PKGS",""))];
-                                 [PackageSpec(name=pkg; rev="master")
-                                  for pkg in split(get(ENV,"CI_DEV_PKGS",""))]]);'
-  script:
-    - julia --project test/upgrade_recordings.jl
-    - cd MakieReferenceImages; git checkout gitlab-build; git commit -am "Build based on $CI_COMMIT_SHORT_SHA"; git push --set-upstream origin; popd
