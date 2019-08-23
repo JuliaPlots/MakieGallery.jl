@@ -1,5 +1,5 @@
 @block SimonDanisch ["dataset_examples"] begin
-    @cell "WorldClim visualization" [visualization, dataset, bigdata, camera] begin
+    @cell "WorldClim visualization" [visualization, dataset, bigdata, camera, download] begin
         # fixes for GDAL messing with LD library path and therefore using wrong curl
         # for downloads
         using FileIO, GeometryTypes, Colors, GDAL, ZipFile

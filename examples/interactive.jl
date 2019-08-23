@@ -399,7 +399,7 @@
         RecordEvents(parent, @replace_with_a_path)
     end
 
-    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox] begin
+    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox, download] begin
 
         using AbstractPlotting: textslider
         using GeometryTypes, FileIO

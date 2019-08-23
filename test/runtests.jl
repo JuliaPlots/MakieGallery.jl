@@ -10,7 +10,6 @@ _minimal == "true"  && printstyled("short tests\n", bold = true, color = :yellow
 _minimal == "false" && printstyled("full tests\n", bold = true, color = :green)
 
 database = (_minimal == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
-
 # We have lots of redundant examples, so no need to test all of them every time
 # (We should before a tag + deploy docs though)
 # Since there is no super good way to trim the examples, I just measured
@@ -44,7 +43,7 @@ slow_examples = [
 ]
 # # we directly modify the database, which seems easiest for now
 # filter!(entry-> !(entry.title in slow_examples), database)
-# filter!(entry-> entry.title=="Tutorial plot transformation", database)
+filter!(entry-> !("download" in entry.tags), database)
 
 printstyled("Creating ", color = :green, bold = true)
 

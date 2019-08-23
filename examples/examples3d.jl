@@ -1,6 +1,6 @@
 
 @block SimonDanisch ["3d"] begin
-    @cell "Image on Geometry (Moon)" [mesh, image, camera] begin
+    @cell "Image on Geometry (Moon)" [mesh, image, camera, download] begin
         using FileIO
         moon = try
             load(download("https://svs.gsfc.nasa.gov/vis/a000000/a004600/a004675/phases.0001_print.jpg"))
@@ -13,7 +13,7 @@
         scene.center = false # prevent to recenter on display
         scene
     end
-    @cell "Image on Geometry (Earth)" [mesh, image] begin
+    @cell "Image on Geometry (Earth)" [mesh, image, download] begin
         using FileIO, Colors
         earth = try
             load(download("https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/bluemarble-2048.png"))
