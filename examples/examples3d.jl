@@ -605,14 +605,11 @@
             end
         end
         scene = meshscatter(rand(Point3f0, 10^4) .* 20f0)
-        display(scene)
+        screen = AbstractPlotting.backend_display(GLMakie.GLBackend(), scene)
         meshplot = scene[end]
         buff = rand(Point3f0, 10^4) .* 20f0;
-        screen = GLMakie.global_gl_screen();
-        @time update_loop(meshplot, buff, screen)
+        update_loop(meshplot, buff, screen)
         GLMakie.opengl_renderloop[] = GLMakie.renderloop # restore previous loop
-        # when done:
-        GLMakie.destroy!(screen)
         scene
     end
     @cell "Streamplot 3D" [streamplot] begin
