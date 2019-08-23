@@ -46,12 +46,8 @@ deploydocs:
       # glfw
       - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
   script:
-    - julia --project=docs/ -e 'using Pkg;
-                            Pkg.add([PackageSpec(path=pwd());
-                                     [PackageSpec(name=pkg)
-                                      for pkg in split(get(ENV,"CI_ADD_PKGS",""))];
-                                     [PackageSpec(name=pkg; rev="master")
-                                      for pkg in split(get(ENV,"CI_DEV_PKGS",""))]]);'
+    - julia --project=docs/ -e "using Pkg;
+                            pkg\"add $CI_DEV_PKGS $CI_ADD_PKGS\""
     - julia --project=docs/ -e 'using Pkg; Pkg.add(PackageSpec(url = "https://github.com/asinghvi17/Documenter.jl", rev = "as/generic-ci"))'
     - julia --project=docs/ docs/make.jl
   artifacts:
