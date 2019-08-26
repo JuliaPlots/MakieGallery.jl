@@ -2,10 +2,14 @@ const makiegallery_dir = dirname(dirname(@__DIR__))
 
 using Base.Threads
 
+const current_ref_version = v"0.2.4"
+function ref_image_dir(version = current_ref_version)
+    return download_reference(version)
+end
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = v"0.2.4")
+function download_reference(version = current_ref_version)
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
@@ -29,8 +33,6 @@ function download_reference(version = v"0.2.4")
         if !isdir(refpath)
             error("Something went wrong while downloading reference images. Plots can't be compared to references")
         end
-    else
-        @info "using reference images for version $version (already downloaded)"
     end
     refpath
 end

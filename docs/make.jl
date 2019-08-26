@@ -2,7 +2,7 @@ using Documenter, AbstractPlotting
 using Markdown, Pkg, Random, FileIO
 using MakieGallery
 import AbstractPlotting: _help, to_string, to_func, to_type
-using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table
+using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table, download_reference
 using MakieGallery: @cell, @block, @substep
 
 cd(@__DIR__)
@@ -12,7 +12,7 @@ pathroot = normpath(@__DIR__, "..")
 docspath = joinpath(pathroot, "docs")
 srcpath = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
-mediapath = download_reference(version = v"0.2.4")
+mediapath = download_reference()
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file

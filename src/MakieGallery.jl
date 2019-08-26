@@ -79,12 +79,6 @@ function load_database(files::AbstractVector{<: AbstractString})
     database
 end
 
-REFIMGDIR = nothing
-
-function __init__()
-    global REFIMGDIR
-    REFIMGDIR = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), "ReferenceImages"))
-end
 
 export load_database, eval_example, available_examples, run_example
 
