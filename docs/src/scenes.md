@@ -6,6 +6,10 @@ A `Scene` is basically a container for `Plot`s and other `Scene`s.  `Scenes` hav
 
 Plots associated with a Scene can be accessed through `scene.plots`, which returns an Array of the plots associated with the `Scene`.  Note that if `scene` has no plots (if it was created by layouting, or is an empty scene), then `scene.plots` will be a _0-element array_!
 
+If a scene is not explicitly declared prior to one of the `plot!` commands being called, a `Scene` will be created by default as follows:  `lines(args...) = lines!(Scene(), args...)`.
+
+In this example, `lines` becomes the parent of all of the following `plot!` commands since it was called prior to a `Scene` being explicitly created.
+
 A Scene's subscenes (also called children) can be accessed through `scene.children`.  This will return an Array of the `Scene`'s child scenes.  A child scene can be created by `childscene = Scene(parentscene)`.
 
 Any `Scene` with an axis also has a `camera` associated with it; this can be accessed through `scene.camera`, and its controls through `scene.camera.cameracontrols`.  More documentation about these is in the [Cameras](@ref) section.
