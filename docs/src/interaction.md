@@ -1,5 +1,5 @@
 ```@meta
-CurrentModule = Makie
+CurrentModule = AbstractPlotting
 ```
 ```@setup animation_tutorial
 using Makie
@@ -113,7 +113,7 @@ A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which d
 
 ### Button
 
-Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click. A simple exmaple is as follows: 
+Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click. A simple exmaple is as follows:
 
 ```julia
 b1 = button("Test Button")
