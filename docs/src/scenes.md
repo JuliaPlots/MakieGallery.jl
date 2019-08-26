@@ -16,6 +16,10 @@ A subscene is no different than a normal Scene, except that it is linked to a "p
 
 <!--TODO add universe example here-->
 
+## Current Scene
+
+Knowing what Scene you are working with at any given moment is paramount as you work with more complex Makie implimentations containing multiple Scenes. You can check your current scene by doing `AbstractPlotting.current_scene()` which will return the current active scene (the last scene that got created). 
+
 ## Modifying the Scene
 
 Makie offers mutation functions to scale, translate and rotate your Scenes on the fly.
