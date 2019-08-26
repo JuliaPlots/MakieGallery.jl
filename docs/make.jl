@@ -12,7 +12,7 @@ pathroot = normpath(@__DIR__, "..")
 docspath = joinpath(pathroot, "docs")
 srcpath = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
-mediapath = joinpath(MakieGallery.REFIMGDIR, "gallery")
+mediapath = download_reference(version = v"0.2.4")
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file

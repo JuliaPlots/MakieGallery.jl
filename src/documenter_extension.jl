@@ -80,6 +80,9 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             # print to buffer
             str = sprint() do io
                 mpath = joinpath(media_root, uname, "media")
+                if !isdir(mpath)
+                    error("Can't find referenced example $(uname), with title: $(entry.title), with database query: $(capture)")
+                end
                 files = readdir(mpath)
                 if subidx !== nothing
                     idx = findfirst(files) do file
