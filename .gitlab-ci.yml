@@ -45,7 +45,8 @@ deploydocs:
       - apt-get install -y p7zip-full
   script:
     - mkdir $JULIA_DEPOT_PATH # Pkg.jl#325
-    - julia --project -e 'using Pkg;pkg"add $CI_DEV_PKGS"'
+    - julia --project -e "using Pkg;
+                          pkg\"add $CI_DEV_PKGS\""
     - julia --project -e 'using Pkg;Pkg.add(PackageSpec(url = "https://github.com/asinghvi17/Documenter.jl", rev = "as/generic-ci"))'
     - julia --project docs/make.jl
   artifacts:
