@@ -1,15 +1,3 @@
-```@meta
-CurrentModule = AbstractPlotting
-```
-```@setup animation_tutorial
-using Makie
-```
-```@setup time_animation
-using Makie
-```
-```@setup mouse_animation
-using Makie
-```
 # Interaction
 Makie offers a sophisticated referencing system to share attributes across the Scene
 in your plot. This is great for interaction, animations and saving resources -- also if the backend

@@ -14,6 +14,8 @@ using Highlights
 using Test, Statistics
 using FFMPEG
 using BinaryProvider
+using FixedPointNumbers, Colors, ColorTypes
+
 
 include("documenter_extension.jl")
 include("database.jl")
