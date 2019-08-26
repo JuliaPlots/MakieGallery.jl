@@ -5,37 +5,17 @@ os:
   - linux
 julia:
   - 1.2
-  - nightly
 notifications:
   email: false
 git:
   depth: 99999999
 env:
-  - MAKIEGALLERY_REFIMG_PATH="./MakieReferenceImages"
 # uncomment the following lines to allow failures on nightly julia
 # (tests will run but not make your overall status red)
-matrix:
- allow_failures:
- - julia: nightly
 
 ## uncomment and modify the following lines to manually install system packages
 #addons:
- apt: # apt-get for linux
-   packages:
-   - ffmpeg
-before_script: # homebrew for mac
- - julia -e 'using Pkg; pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
 script:
-  - echo "No tests, we have the utmost confidence in ourselves :P"
-
-jobs:
-  include:
-    - stage: "Documentation"
-      julia: 1.2
-      os: linux
-      script:
-        - git clone https://github.com/JuliaPlots/MakieReferenceImages
-        - julia --project=docs/ -e 'using Pkg; Pkg.instantiate();
-                                    Pkg.develop(PackageSpec(path=pwd())); Pkg.pkg"add AbstractPlotting#master GLMakie#master StatsMakie#master"'
-        - julia --project=docs/ docs/make.jl
-      after_success: skip
+  # we only use this to deploy docs
+  - julia --project -e 'using Pkg; Pkg.instantiate();Pkg.pkg"add Documenter Conda AbstractPlotting#master"'
+  - julia --project docs/make.jl

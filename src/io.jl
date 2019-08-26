@@ -247,10 +247,10 @@ start record with `resume = true`, to start at the last example that errored.
 function record_examples(
         folder = "";
         resolution = (500, 500), resume::Union{Bool, Integer} = false,
-        generate_thumbnail = false
+        generate_thumbnail = false, display = false
     )
     last = AbstractPlotting.use_display[]
-    AbstractPlotting.inline!(true)
+    AbstractPlotting.inline!(!display)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end

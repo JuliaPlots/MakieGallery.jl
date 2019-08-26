@@ -1,6 +1,6 @@
 
 @block SimonDanisch ["3d"] begin
-    @cell "Image on Geometry (Moon)" [mesh, image, camera] begin
+    @cell "Image on Geometry (Moon)" [mesh, image, camera, download] begin
         using FileIO
         moon = try
             load(download("https://svs.gsfc.nasa.gov/vis/a000000/a004600/a004675/phases.0001_print.jpg"))
@@ -13,7 +13,7 @@
         scene.center = false # prevent to recenter on display
         scene
     end
-    @cell "Image on Geometry (Earth)" [mesh, image] begin
+    @cell "Image on Geometry (Earth)" [mesh, image, download] begin
         using FileIO, Colors
         earth = try
             load(download("https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/bluemarble-2048.png"))
@@ -26,6 +26,7 @@
     end
 
     @cell "Orthographic Camera" [meshscatter, cameracontrols, update_cam] begin
+
         using GeometryTypes
         x = Vec3f0(0); baselen = 0.2f0; dirlen = 1f0
         # create an array of differently colored boxes in the direction of the 3 axes
@@ -38,14 +39,14 @@
         scene = mesh(merge(meshes))
         center!(scene)
         cam = cameracontrols(scene)
-        dir = scene.limits[].widths ./ 2.
+        dir = widths(scene_limits(scene)) ./ 2.
         dir_scaled = Vec3f0(
-            dir[1] * scene.transformation.scale[][1],
-            0.0,
-            dir[3] * scene.transformation.scale[][2],
+         dir[1] * scene.transformation.scale[][1],
+         0.0,
+         dir[3] * scene.transformation.scale[][2],
         )
         cam.upvector[] = (0.0, 0.0, 1.0)
-        cam.lookat[] = scene.limits[].origin + dir_scaled
+        cam.lookat[] = minimum(scene_limits(scene)) + dir_scaled
         cam.eyeposition[] = (cam.lookat[][1], cam.lookat[][2] + 6.3, cam.lookat[][3])
         cam.projectiontype[] = AbstractPlotting.Orthographic
         update_cam!(scene, cam)
@@ -180,7 +181,7 @@
         scene = Scene()
         # c[4] == fourth argument of the above plotting command
         c = contour!(scene, x, x, x, test, levels = 6, alpha = 0.3, transparency = true)[end]
-        xm, ym, zm = minimum(scene.limits[])
+        xm, ym, zm = minimum(scene_limits(scene))
         contour!(scene, x, x, map(v-> v[1, :, :], c[4]), transformation = (:xy, zm), linewidth = 2)
         heatmap!(scene, x, x, map(v-> v[:, 1, :], c[4]), transformation = (:xz, ym))
         contour!(scene, x, x, map(v-> v[:, :, 1], c[4]), fillrange = true, transformation = (:yz, xm))
@@ -583,7 +584,7 @@
         y = x
         z = (-x .* exp.(-x .^ 2 .- (y') .^ 2)) .* 4
         scene = surface(x, y, z)
-        xm, ym, zm = minimum(scene.limits[])
+        xm, ym, zm = minimum(scene_limits(scene))
         contour!(scene, x, y, z, levels = 15, linewidth = 2, transformation = (:xy, zm))
         wireframe!(scene, x, y, z, overdraw = true, transparency = true, color = (:black, 0.1))
         center!(scene) # center the Scene on the display
@@ -604,16 +605,31 @@
             end
         end
         scene = meshscatter(rand(Point3f0, 10^4) .* 20f0)
-        display(scene)
+        screen = AbstractPlotting.backend_display(GLMakie.GLBackend(), scene)
         meshplot = scene[end]
         buff = rand(Point3f0, 10^4) .* 20f0;
-        screen = GLMakie.global_gl_screen();
-        @time update_loop(meshplot, buff, screen)
+        update_loop(meshplot, buff, screen)
         GLMakie.opengl_renderloop[] = GLMakie.renderloop # restore previous loop
-        # when done:
-        GLMakie.destroy!(screen)
         scene
     end
+    @cell "Streamplot 3D" [streamplot] begin
+        struct FitzhughNagumo{T}
+            ϵ::T
+            s::T
+            γ::T
+            β::T
+        end
+
+        P = FitzhughNagumo(0.1, 0.0, 1.5, 0.8)
+        f(x, P::FitzhughNagumo) = Point3f0(
+            (x[1]-x[2]-x[1]^3+P.s)/P.ϵ,
+            P.γ*x[2]-x[2] + P.β,
+            P.γ*x[1]-x[3] - P.β,
+        )
+        f(x) = f(x, P)
+        streamplot(f, -1.5..1.5, -1.5..1.5, -1.5..1.5, colormap = :magma, gridsize = (10, 10), arrow_size = 0.06)
+    end
+
     # @cell "2D text in 3D" [text, annotations] begin
     # TODO this has a world age problem!?!??
         # using GeometryTypes

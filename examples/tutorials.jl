@@ -46,6 +46,7 @@
         limits = FRect(-5, -10, 20, 30)
 
         scene = lines(x, y, color = :blue, limits = limits)
+
     end
 
     @cell "Tutorial basic theming" [tutorial, scene, limits] begin
@@ -79,15 +80,35 @@
         data = sort(randn(100))
         barplot(data)
     end
-    
+
     @cell "Tutorial title" [tutorial, title] begin
-        
-        sc = lines(rand(10))
-        
-        sc_t = title(sc, "Random lines")
-        
+
+        scene = lines(rand(10))
+
+        sc_t = title(scene, "Random lines")
+
         sc_t
-        
+
     end
+
+    @cell "Tutorial plot transformation" [tutorial, transformation] begin
+        data = rand(10)
+
+        scene = Scene()
+        st = Stepper(scene, @replace_with_a_path)
+        lineplot = lines!(scene, data)[end]    # gets the last defined plot for the Scene
+        scatplot = scatter!(scene, data)[end]  # same thing but the last defined plot is scatter
+        step!(st)
+
+        rotate!(lineplot, 0.025π) # only the lines are rotated, not the scatter
+        step!(st)
+        st
+    end
+
+    # @cell "Tutorial markersizes" [tutorial, markersize, scatter] begin
+    #
+    #     scene = scatter(rand(10); markersize = 10px)
+    #
+    # end
 
 end

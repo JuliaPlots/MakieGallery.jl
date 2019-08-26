@@ -84,7 +84,7 @@
 
         N = 100
 
-        dirs = [generator() for i in 1:N]
+        dirs = [cosine_weighted_sample_hemisphere() for i in 1:N]
 
         arrows!(
             scene,
@@ -468,10 +468,10 @@
         ## setup functions
         f(x::Real, r::Real) = r * x * (1 - x)
         function cobweb(
-            xᵢ::Real,
-            curve_f::Function,
-            r::Real;
-            nstep::Real = 30
+                xᵢ::Real,
+                curve_f::Function,
+                r::Real;
+                nstep::Real = 30
             )::Vector{Point2f0} # col 1 is x, col 2 is y
 
             a = zeros(nstep*2, 2)
@@ -493,7 +493,7 @@
 
             return ret
 
-            end
+        end
 
         xᵢ = 0.1
         rᵢ = 2.8
@@ -502,8 +502,8 @@
         sx, x = textslider(0:0.01:1, "xᵢ", start = xᵢ)
         sr, r = textslider(0:0.01:4, "r", start = rᵢ)
         ## setup lifts
-        fs = Makie.lift(r -> f.(xr, r), r)
-        cw = Makie.lift((x, r) -> cobweb(x, f, r), x, r)
+        fs = lift(r -> f.(xr, r), r)
+        cw = lift((x, r) -> cobweb(x, f, r), x, r)
         ## setup plots
         sc = lines(               # plot x=y, the bisector line
             xr,                   # xs
@@ -511,7 +511,7 @@
             linestyle = :dash,    # style of line
             linewidth = 3,        # width of line
             color = :blue         # colour of line
-            )
+        )
 
         sc[Axis][:names][:axisnames] = ("x(t)", "x(t+1)") # set axis names
 
@@ -519,7 +519,7 @@
 
         lines!(sc, cw) # plot the cobweb
 
-        final = vbox(sc, hbox(sx, sr))
+        final = hbox(sc, vbox(sx, sr))
 
         record(final, @replace_with_a_path(mp4), range(0.01, stop = 5, length = 100)) do i
             r[] = i
@@ -577,6 +577,13 @@ end
 
     end
 
+    @cell "timeseries" [timeseries, lines, animation] begin
+        signal = Node(0.0)
+        scene = timeseries(signal, history = 30)
+        record(scene, @replace_with_a_path(mp4), LinRange(0, 10π, 240); framerate = 24) do i
+            signal[] = sin(i)
+        end
+    end
 
     @cell "Line changing colour" [colors, lines, animation] begin
 
@@ -630,6 +637,22 @@ end
         showlibrary(:misc)
 
     end
+    @cell "streamplot" [arrows, lines, streamplot] begin
+        struct FitzhughNagumo{T}
+            ϵ::T
+            s::T
+            γ::T
+            β::T
+        end
+
+        P = FitzhughNagumo(0.1, 0.0, 1.5, 0.8)
+        f(x, P::FitzhughNagumo) = Point2f0(
+            (x[1]-x[2]-x[1]^3+P.s)/P.ϵ,
+            P.γ*x[1]-x[2] + P.β
+        )
+        f(x) = f(x, P)
+        streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
+    end
 
 end
 
@@ -645,4 +668,42 @@ end
         s
     end
 
+end
+
+@block AnshulSinghvi ["Transformations"] begin
+    @cell "Transforming lines" [transformation, lines] begin
+        N = 7 # number of colours in default palette
+        sc = Scene()
+
+        xs = 0:9        # data
+        ys = zeros(10)
+
+        for i in 1:N    # plot lines
+            lines!(sc,
+                xs, ys;
+                color = AbstractPlotting.default_palettes.color[][i],
+                limits = FRect((0, 0), (10, 10)),
+                linewidth = 5
+            ) # plot lines with colors
+        end
+
+        center!(sc)
+
+        @substep
+
+        for (i, rot) in enumerate(LinRange(0, π/2, N))
+            rotate!(sc.plots[i+1], rot)
+            arc!(sc,
+                Point2f0(0),
+                (8 - i),
+                pi/2,
+                (pi/2-rot);
+                color = sc.plots[i+1].color,
+                linewidth = 5,
+                linestyle = :dash
+            )
+        end
+
+        center!(sc)
+    end
 end

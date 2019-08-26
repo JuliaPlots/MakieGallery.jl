@@ -2,7 +2,7 @@
     @cell "Interaction with Mouse" [interactive, camera, scatter, lines, marker, record] begin
         using LinearAlgebra
         scene = Scene(raw = true, camera = cam2d!, resolution = (500, 500))
-        r = range(0, stop = 3, length = 4)
+        r = LinRange(0, 3, 4)
         the_time = Node(time())
         last_open = false
         @async while true
@@ -12,7 +12,7 @@
             # as long as the scene isn't displayed
             last_open && !isopen(scene) && break
             last_open = isopen(scene)
-            sleep(1/25)
+            sleep(1/30)
         end
         pos = lift(scene.events.mouseposition, the_time) do mpos, t
             map(LinRange(0, 2pi, 60)) do i
@@ -28,7 +28,7 @@
             scene,
             pos, markersize = 0.1f0,
             marker = :star5,
-            color = p1[:color],
+            color = p1.color,
         )[end]
         center!(scene)
         t = Theme(raw = true, camera = campixel!)
@@ -36,14 +36,14 @@
         b2 = button(t, "marker")
         msize = slider(t, 0.1:0.01:0.5)
         on(b1[end][:clicks]) do c
-            p1[:color] = rand(RGBAf0)
+            p1.color = rand(RGBAf0)
         end
         markers = ('π', '😹', '⚃', '◑', '▼')
         on(b2[end][:clicks]) do c
-            p2[:marker] = markers[rand(1:5)]
+            p2.marker = markers[rand(1:5)]
         end
         on(msize[end][:value]) do val
-            p2[:markersize] = val
+            p2.markersize = val
         end
         RecordEvents(hbox(
             vbox(b1, b2, msize),
@@ -309,19 +309,18 @@
         using Observables: on
 
         """
-            example by @pbouffard from JuliaPlots/Makie.jl#307
-            https://github.com/pbouffard/miniature-garbanzo/
+          example by @pbouffard from JuliaPlots/Makie.jl#307
+          https://github.com/pbouffard/miniature-garbanzo/
         """
-
         function triad!(scene, len; translation = (0f0,0f0,0f0), show_axis = false)
             ret = linesegments!(
                 scene, [
-                    Point3f0(0,0,0) => Point3f0(len,0,0),
-                    Point3f0(0,0,0) => Point3f0(0,len,0),
-                    Point3f0(0,0,0) => Point3f0(0,0,len)
+                    Point3f0(0) => Point3f0(len, 0, 0),
+                    Point3f0(0) => Point3f0(0, len, 0),
+                    Point3f0(0) => Point3f0(0, 0, len)
                 ],
                 color = [:red, :green, :blue],
-                linewidth = 3, show_axis = false, center = false
+                linewidth = 3
             )[end]
             translate!(ret, translation)
             return ret
@@ -336,20 +335,21 @@
             offset::Vec3f0
         end
 
-        s = Scene(show_axis = false)
-
         function Joint(s::Scene)
             newscene = Scene(s)
             triad = triad!(newscene, 1)
             Joint(newscene, triad, 0f0, (0, 1, 0), (0, 0, 0))
         end
 
-        function Joint(j::Joint; offset::Point3f0=(0,0,0), axis=(0, 1, 0), angle=0)
+        function Joint(
+                j::Joint;
+                offset::Point3f0 = (0, 0, 0), axis = (0, 1, 0), angle = 0.0
+            )
             jnew = Joint(j.scene)
             translate!(jnew.scene, j.offset)
             linesegments!(
-                jnew.scene, [Point3f0(0) => offset], linewidth=4,
-                color=:magenta, show_axis = false, center = false
+                jnew.scene, [Point3f0(0) => offset], linewidth = 4,
+                color = :magenta
             )
             jnew.axis = axis
             jnew.offset = offset
@@ -366,21 +366,24 @@
 
         joints = Vector{Joint}()
         links = Float32[5, 5]
-        #triad!(s, 10; show_axis=true)
-
+        s = Scene(center = false, show_axis = false)
         push!(joints, Joint(s))
         joints[1].axis = (0,0,1) # first joint is yaw
         joints[1].offset = (0, 0, 1)
-        push!(joints, Joint(joints[end]; offset=Point3f0(3,0,0), axis=(0,1,0), angle=-pi/4)) # Pitch
-        push!(joints, Joint(joints[end]; offset=Point3f0(3,0,0), axis=(0,1,0), angle=pi/2)) # Pitch
-        push!(joints, Joint(joints[end]; offset=Point3f0(1,0,0), axis=(0,1,0), angle=-pi/4)) # Pitch
-        push!(joints, Joint(joints[end]; offset=Point3f0(1,0,0), axis=(0,0,1))) # Yaw
-        push!(joints, Joint(joints[end]; offset=Point3f0(0,0,0), axis=(1,0,0))) # Roll
+        push!(joints, Joint(joints[end]; offset = Point3f0(3,0,0), axis = (0,1,0), angle = -pi/4)) # Pitch
+        push!(joints, Joint(joints[end]; offset = Point3f0(3,0,0), axis = (0,1,0), angle = pi/2)) # Pitch
+        push!(joints, Joint(joints[end]; offset = Point3f0(1,0,0), axis = (0,1,0), angle = -pi/4)) # Pitch
+        push!(joints, Joint(joints[end]; offset = Point3f0(1,0,0), axis = (0,0,1))) # Yaw
+        push!(joints, Joint(joints[end]; offset = Point3f0(0,0,0), axis = (1,0,0))) # Roll
 
         sliders = []
         vals = []
         for i = 1:length(joints)
-            slider, val = textslider(-180.0:1.0:180.0, "Joint $(i)", start=rad2deg(joints[i].angle))
+            slider, val = textslider(
+                -180.0:1.0:180.0,
+                "Joint $(i)",
+                start = rad2deg(joints[i].angle)
+            )
             push!(sliders, slider)
             push!(vals, val)
             on(val) do x
@@ -389,13 +392,14 @@
         end
 
         # Add sphere to end effector:
-        mesh!(joints[end].scene, Sphere(Point3f0(0.5, 0, 0), 0.25f0), color=:cyan, raw = true)
-        update_cam!(s, Float32[7.0, 4.0, 6.0], Float32[6.0, 2.5, 4.5])
-
-        RecordEvents(vbox(hbox(sliders...), s, parent = Scene(resolution = (1000, 500))), @replace_with_a_path)
+        mesh!(joints[end].scene, Sphere(Point3f0(0.5, 0, 0), 0.25f0), color = :cyan)
+        update_cam!(s, Vec3f0(7.0, 4.0, 6.0), Vec3f0(6.0, 2.5, 4.5))
+        parent = Scene(resolution = (1000, 500))
+        vbox(hbox(sliders...), s, parent = parent)
+        RecordEvents(parent, @replace_with_a_path)
     end
 
-    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox] begin
+    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox, download] begin
 
         using AbstractPlotting: textslider
         using GeometryTypes, FileIO
@@ -580,20 +584,82 @@
 
         S = Scene(resolution = (800, 600))
         hbox(scene, s1; parent = S)
-        display(S)
-
-        @async while isopen(S)
-            p = p₀((10.0+kx[])/10.)
-            gateState = rand(1)[] < p
-            HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
-            push!(D, -3. + rand(1)[]/5.)
-            yield()
+        @async begin
+            while !isopen(S) # wait for screen to be open
+                sleep(0.01)
+            end
+            while isopen(S)
+                p = p₀((10.0+kx[])/10.)
+                gateState = rand(1)[] < p
+                HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
+                push!(D, -3. + rand(1)[]/5.)
+                sleep(0.001)
+            end
         end
-
         RecordEvents(S, @replace_with_a_path);
-
     end
 
+    @cell "Volume slider" [heatmap, contour, transform] begin
+        using Observables
+        scene3d = Scene()
+        rs = LinRange.(0, (6, 4, 10), 150)
+        slider_t = slider(LinRange(0.1, 3, 100))
+        # This actually needs to be pretty fast... Lucky for us, we use Julia :)
+        function make_volume!(rs, val, result = zeros(Float32, length.(rs)), r = rand(Float32, size(result)) .* 0.1)
+            @simd for idx in CartesianIndices(result)
+                @inbounds begin
+                    x, y, z = getindex.(rs, Tuple(idx))
+                    result[idx] = cos(x/val) * sin(y + r[idx]) + sqrt(z*val)
+                end
+            end
+            return result, r
+        end
+
+        vol_tmp, r_tmp = make_volume!(rs, 0.4);
+        volume = lift(Observables.async_latest(slider_t[end][:value])) do val
+            v, r = make_volume!(rs, val, vol_tmp, r_tmp);
+            return v
+        end
+
+        linesegments!(scene3d, FRect3D(minimum.(rs), maximum.(rs)))
+        planes = (:yz, :xz, :xy)
+        sliders = ntuple(3) do i
+            idx_s = slider(1:size(volume[], i), start = size(volume[], i) ÷ 2)
+            idx = idx_s[end][:value]
+            plane = planes[i]
+            indices = ntuple(3) do j
+                planes[j] == plane ? 1 : (:)
+            end
+            ridx = Iterators.filter((1, 2, 3)) do j
+                planes[j] != plane
+            end
+            heatm = heatmap!(
+                scene3d, getindex.((rs,), ridx)..., volume[][indices...],
+                interpolate = true, raw = true
+            )[end]
+            function transform_planes(idx, vol)
+                transform!(heatm, (plane, rs[i][idx]))
+                indices = ntuple(3) do j
+                    planes[j] == plane ? idx : (:)
+                end
+                if checkbounds(Bool, vol, indices...)
+                    heatm[3][] = view(vol, indices...)
+                end
+            end
+            onany(transform_planes, idx, volume)
+            transform_planes(idx[], volume[])
+            idx_s
+        end
+        center!(scene3d)
+        scene = vbox(
+            hbox(slider_t, sliders...),
+            hbox(
+                scene3d,
+                contour(volume, alpha = 0.1, levels = 10)
+            )
+        )
+        RecordEvents(scene, @replace_with_a_path)
+    end
 end
 
 function record_example_events()
@@ -615,4 +681,4 @@ function record_example(title = "Orbit Diagram")
     end
     AbstractPlotting.use_display[] = last
 end
-# record_example("Robot Arm")
+# record_example("Volume slider")

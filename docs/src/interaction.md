@@ -1,15 +1,3 @@
-```@meta
-CurrentModule = Makie
-```
-```@setup animation_tutorial
-using Makie
-```
-```@setup time_animation
-using Makie
-```
-```@setup mouse_animation
-using Makie
-```
 # Interaction
 Makie offers a sophisticated referencing system to share attributes across the Scene
 in your plot. This is great for interaction, animations and saving resources -- also if the backend
@@ -113,7 +101,7 @@ A common way to use `slider`s is to `hbox` or `vbox` them with the Scene which d
 
 ### Button
 
-Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click. A simple exmaple is as follows: 
+Buttons are clickable markers that can call a function on click, passing to it the number of clicks so far, on each click. A simple exmaple is as follows:
 
 ```julia
 b1 = button("Test Button")

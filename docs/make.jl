@@ -1,8 +1,8 @@
 using Documenter, AbstractPlotting
 using Markdown, Pkg, Random, FileIO
-using MakieGallery, Makie
+using MakieGallery
 import AbstractPlotting: _help, to_string, to_func, to_type
-using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table
+using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table, download_reference
 using MakieGallery: @cell, @block, @substep
 
 cd(@__DIR__)
@@ -12,7 +12,7 @@ pathroot = normpath(@__DIR__, "..")
 docspath = joinpath(pathroot, "docs")
 srcpath = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
-mediapath = joinpath(MakieGallery.REFIMGDIR, "gallery")
+mediapath = download_reference()
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file
@@ -123,10 +123,9 @@ end
 # build docs with Documenter
 @info("Running `makedocs` with Documenter.")
 
-using Documenter, MakieGallery, Makie, AbstractPlotting
 
 makedocs(
-    modules = [Makie, AbstractPlotting],
+    modules = [AbstractPlotting],
     doctest = false, clean = true,
     format = Documenter.HTML(prettyurls = false),
     sitename = "Makie.jl",
