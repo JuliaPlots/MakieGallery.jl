@@ -6,8 +6,6 @@ Hi! Welcome to [`Makie`](https://github.com/JuliaPlots/Makie.jl/), a high-perfor
  <iframe src="http://juliaplots.org/MakieReferenceImages/gallery/index.html" height="1000" width="100%" frameborder="0"></iframe>
 ```
 
-For more examples, see the [Example Gallery](http://juliaplots.org/MakieReferenceImages/gallery/index.html).
-
 ## Installation & tutorial
 
 See the [Tutorial](@ref).
