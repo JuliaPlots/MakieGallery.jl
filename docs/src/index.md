@@ -23,4 +23,4 @@ What makes up the Makie Ecosystem? `Makie.jl` is the metapackage for a rich ecos
 If you run into any issues or have questions that you cannot solve on your own by using the help mode in the REPL, here are your options: 
 
 1) Open an issue on this repo or the main [Makie.jl repo](https://github.com/JuliaPlots/Makie.jl). 
-2) Join the [Julia Slack](http://julialang.slack.com) and look for the `#makie` channel.
+2) Join the [Julia Slack](https://slackinvite.julialang.org) and look for the `#makie` channel.
