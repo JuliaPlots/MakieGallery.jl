@@ -17,7 +17,7 @@ I'm slowly removing problematic constructs from the dependencies and try to get 
 
 ### TODOs / Up for grabs
 
-Check out https://github.com/JuliaPlots/projects/1 for planned features and additions to Makie, as well as backlogged documentation issues.
+Check out [this project](https://github.com/orgs/JuliaPlots/projects/1) for planned features and additions to Makie, as well as backlogged documentation issues.
 
 ### Cameras
 
