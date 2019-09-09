@@ -20,7 +20,7 @@ using PackageCompiler
 
 ### The 'safe' method
 
-Using PackageCompiler is inherently risky, but the chances of it messing up your Julia install if you don't `force` are minimal.  The safe method outlined here will create a new system image in `PackageCompiler`'sdirectory, which you can use with Julia by calling `julia --sysimage path/to/sysimg.so`.  You can also alias this command to something like `juliam` for ease of access.
+Using PackageCompiler is inherently risky. However, the chance of it messing up your Julia install, if you don't `force`(see below), is minimal.  The safe method outlined here will create a new system image in `PackageCompiler`'s directory, which you can use with Julia by calling `julia --sysimage path/to/sysimg.so`.  You can also alias this command to something like `juliam` for ease of access.
 
 ```julia
 nso, cso = PackageCompiler.compile_incremental(:Makie, :AbstractPlotting, force = false) # can take around ~20 minutes
