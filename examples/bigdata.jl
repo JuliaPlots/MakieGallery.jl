@@ -9,7 +9,7 @@
         For more information about GDAL, see the official documentation at: https://gdal.org/
         =#
         # register GDAL drivers
-        GDAL.allregister()
+        GDAL.gdalallregister()
 
         # function to check if a file is a .tif file
         istiff(x) = endswith(x, ".tif")
