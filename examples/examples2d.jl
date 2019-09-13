@@ -689,7 +689,7 @@ end
 
         center!(sc)
 
-        @substep
+        @stepper
 
         for (i, rot) in enumerate(LinRange(0, π/2, N))
             rotate!(sc.plots[i+1], rot)
