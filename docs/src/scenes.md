@@ -28,9 +28,11 @@ A subscene is no different than a normal Scene, except that it is linked to a "p
 
 Knowing what Scene you are working with at any given moment is paramount as you work with more complex Makie implimentations containing multiple Scenes. You can check your current scene by doing `AbstractPlotting.current_scene()` which will return the current active scene (the last scene that got created). 
 
-## Modifying the Scene
+## Modifying / Transforming the Scene
 
-Makie offers mutation functions to scale, translate and rotate your Scenes on the fly.
+Plots, Scenes and Subscenes are all Transformable, meaning that Transformations can be applied to transform them.
+
+Makie offers three main convenience functions (scale, translate and rotate) for transformation:
 
 ```@docs
 translate!
