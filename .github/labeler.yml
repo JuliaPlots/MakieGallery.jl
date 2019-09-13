@@ -1,6 +1,2 @@
 documentation:
 - "**/*.md"
-
-CI/CD:
-- "**/*.yml"
-- ".github/workflows/**/*"
