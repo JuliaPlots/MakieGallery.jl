@@ -3,13 +3,13 @@
 Below is a quick tutorial to help get you started. Note that we assume you have [Julia](https://julialang.org/) installed and configured already.
 
 ## Getting Makie
-
+Enter the package manager by typing `]` into the Repl. You should see `pkg>`.
 ```julia
 add Makie
 ```
 
-## Getting latest version of Makie
-
+## Getting the latest version of Makie
+Run the following commands in the package manager:
 ```Julia
 add Makie#master AbstractPlotting#master GLMakie#master
 test Makie
@@ -29,7 +29,7 @@ Note that before you put anything in the scene, it will be blank!
 
 ## Getting help
 
-The user-facing functions of Makie are pretty well documented, so you can usually use the help mode in the REPL, or your editor of choice.
+The user-facing functions of Makie are pretty well documented, so you can usually use the help mode in the REPL, or your editor of choice. If you countinue to have issues, see [Getting Help](@ref).
 
 ## Basic plotting
 
