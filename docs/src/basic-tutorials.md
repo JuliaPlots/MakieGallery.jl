@@ -29,7 +29,7 @@ Note that before you put anything in the scene, it will be blank!
 
 ## Getting help
 
-The user-facing functions of Makie are pretty well documented, so you can usually use the help mode in the REPL, or your editor of choice. If you countinue to have issues, see [Getting Help](http://makie.juliaplots.org/dev/index.html#Getting-Help:-1).
+The user-facing functions of Makie are pretty well documented, so you can usually use the help mode in the REPL, or your editor of choice. If you countinue to have issues, see [Getting Help](@tbreloff ).
 
 ## Basic plotting
 
