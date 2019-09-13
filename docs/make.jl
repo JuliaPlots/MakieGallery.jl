@@ -22,7 +22,7 @@ srcdocpath = joinpath(srcpath, "src-functions.md")
 
 plotting_functions = (
     AbstractPlotting.atomic_functions..., contour, arrows,
-    barplot, poly, band, slider, vbox
+    barplot, poly, band, slider, vbox, hbox
 )
 
 open(path, "w") do io
