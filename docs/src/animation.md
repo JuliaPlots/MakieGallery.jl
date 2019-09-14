@@ -1,4 +1,4 @@
-# Animation
+# Animation 
 
 `Makie.jl` has extensive support for animations; you can create arbitrary plots, and save them to:
 - `.mkv`  (the default, doesn't need to convert)
