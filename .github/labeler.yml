@@ -1,5 +1,6 @@
 documentation:
 - "**/*.md"
+#I think this needs a direct filepath to work! 
 CI:
 - "**/*.yml"
 - ".github/workflows/**/*"
