@@ -527,6 +527,31 @@
 
 
     end
+
+    @cell "Streamplot animation" ["streamplot", "animation"] begin
+
+        v(x::Point2{T}, t) where T = Point2{T}(one(T) * x[2] * t, 4 * x[1])
+
+        sf = Node(Base.Fix2(v, 0e0))
+
+        title_str = Node("t = 0.00")
+
+        sp = streamplot(
+                sf,
+                -2..2, -2..2;
+                linewidth = 2,
+                padding = (0, 0),
+                arrow_size = 0.09,
+                colormap =:magma
+            )
+
+        sc = title(sp, title_str)
+
+        record(sc, @replace_with_a_path(mp4), LinRange(0, 20, 5*30)) do i
+          sf[] = Base.Fix2(v, i)
+          title_str[] = "t = $(round(i; sigdigits = 2))"
+       end
+    end
 end
 
 @block AnshulSinghvi ["colors"] begin

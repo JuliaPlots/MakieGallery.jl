@@ -1,5 +1,11 @@
 # Devdocs
 
+## Testing
+
+The main repo to test is MakieGallery; all other test scripts are based off MakieGallery.  
+There are several environment variables which govern the behaviour of the test suite.
+- `MAKIEGALLERY_MINIMAL` to control whether only short tests or all examples are run
+- `MAKIEGALLERY_FAST` to control whether the time-consuming examples run or not
 
 ## Logistical issues
 

@@ -30,12 +30,12 @@
 
         # function to read the raster data from the GeoTIFF
         function loadf0(x)
-            img = GDAL.open(x, GDAL.GA_ReadOnly)
-            band = GDAL.getrasterband(img, 1)
-            xsize = GDAL.getrasterbandxsize(band)
-            ysize = GDAL.getrasterbandysize(band)
+            img = GDAL.gdalopen(x, GDAL.GA_ReadOnly)
+            band = GDAL.gdalgetrasterband(img, 1)
+            xsize = GDAL.gdalgetrasterbandxsize(band)
+            ysize = GDAL.gdalgetrasterbandysize(band)
             data = Array{Float32}(undef, xsize, ysize)
-            GDAL.rasterio(band, GDAL.GF_Read, 0, 0, xsize, ysize, data, xsize, ysize, GDAL.GDT_Float32, 0, 0)
+            GDAL.gdalrasterio(band, GDAL.GF_Read, 0, 0, xsize, ysize, data, xsize, ysize, GDAL.GDT_Float32, 0, 0)
             data'
         end
 
