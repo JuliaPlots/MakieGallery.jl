@@ -68,13 +68,6 @@ else
     println("slow examples")
 end
 
-exclude = (
-    "Cobweb plot",         # has some weird scaling issue on CI
-    "Colormap collection", # has one size different, is also vulnerable to upstream updates.
-)
-
-filter!(entry-> !(entry.title in exclude), database)
-
 # Download is broken on CI
 if get(ENV, "CI", "false") == "true"
     printstyled("CI detected\n"; bold = true, color = :yellow)
@@ -113,4 +106,11 @@ end
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")
 
-MakieGallery.run_comparison(test_record_path, tested_diff_path)
+MakieGallery.run_comparison(
+                    test_record_path, 
+                    tested_diff_path;
+                    exclude = (
+                          "Cobweb plot",         # has some weird scaling issue on CI
+                          "Colormap collection", # has one size different, is also vulnerable to upstream updates.
+                      )
+            )
