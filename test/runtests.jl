@@ -3,13 +3,29 @@ using FileIO, Random, Pkg
 using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
+
+# Environment variables for configuration:
+# - MAKIEGALLERY_MINIMAL to control whether only short tests or all examples are run
+# - MAKIEGALLERY_FAST to control whether the time-consuming examples run or not
+
 _minimal = get(ENV, "MAKIEGALLERY_MINIMAL", "false")
 
 printstyled("Running ", bold = true, color = :blue)
-_minimal == "true"  && printstyled("short tests\n", bold = true, color = :yellow)
-_minimal == "false" && printstyled("full tests\n", bold = true, color = :green)
+database  = if _minimal == "true"
+                printstyled("short tests\n", bold = true, color = :yellow)
+                MakieGallery.load_tests()
+            elseif _minimal == "false"
+                printstyled("full tests\n", bold = true, color = :green)
+                MakieGallery.load_database()
+            else
+                printstyled("full tests\n", bold = true, color = :red)
+                @warn("""
+                ENV["MAKIEGALLERY_MINIMAL"] = "$_minimal" not one of "true" or "false".
+                Assuming true!
+                """)
+                MakieGallery.load_database()
+            end
 
-database = (_minimal == "true") ? MakieGallery.load_tests() : MakieGallery.load_database()
 # We have lots of redundant examples, so no need to test all of them every time
 # (We should before a tag + deploy docs though)
 # Since there is no super good way to trim the examples, I just measured
@@ -41,16 +57,30 @@ slow_examples = [
     "Image on Geometry (Moon)",
     "Image on Geometry (Earth)",
 ]
+
 # # we directly modify the database, which seems easiest for now
-# filter!(entry-> !(entry.title in slow_examples), database)
+if get(ENV, "MAKIEGALLERY_FAST", "false") == "true"
+    printstyled("Filtering "; color = :light_cyan, bold = true)
+    println("slow examples")
+    filter!(entry-> !(entry.title in slow_examples), database)
+else
+    printstyled("Running "; color = :light_cyan, bold = true)
+    println("slow examples")
+end
 
 exclude = (
-    "Cobweb plot", # has some weird scaling issue on CI
-    "Colormap collection", # has one size different...
+    "Cobweb plot",         # has some weird scaling issue on CI
+    "Colormap collection", # has one size different, is also vulnerable to upstream updates.
 )
 
+filter!(entry-> !(entry.title in exclude), database)
+
 # Download is broken on CI
-filter!(entry-> !("download" in entry.tags) && !(entry.title in exclude), database)
+if get(ENV, "CI", "false") == "true"
+    printstyled("CI detected\n"; bold = true, color = :yellow)
+    println("Filtering out examples which download")
+    filter!(entry-> !("download" in entry.tags), database)
+end
 
 printstyled("Creating ", color = :green, bold = true)
 
@@ -79,7 +109,6 @@ end
 # MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
 # MakieGallery.generate_thumbnails(test_record_path)
 # MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))
-#
 
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")

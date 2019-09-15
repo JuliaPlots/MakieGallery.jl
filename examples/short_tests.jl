@@ -108,6 +108,11 @@
         colorrange = (0.2, 0.8)
     )
     @cell lines(Circle(Point2f0(0), 1f0); scale_plot = false, resolution = (800, 1000)) # currently not working, fix is in PR
+
+    @cell begin
+        v(x::Point2{T}) where T = Point2{T}(x[2], 4*x[1])
+        streamplot(v, -2..2, -2..2)
+    end
 end
 
 
