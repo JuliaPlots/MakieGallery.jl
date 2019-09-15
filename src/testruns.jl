@@ -1,13 +1,15 @@
 const makiegallery_dir = dirname(dirname(@__DIR__))
 
-using Base.Threads
-
 const current_ref_version = v"0.2.4"
+
 function ref_image_dir(version = current_ref_version)
     return download_reference(version)
 end
+
 """
-Downloads the reference images from ReferenceImages for a specific version
+    download_reference(version = current_ref_version)
+
+Downloads the reference images from ReferenceImages for a specific version.
 """
 function download_reference(version = current_ref_version)
     download_dir = joinpath(makiegallery_dir, "testimages")
@@ -76,15 +78,25 @@ function compare_media(a, b; sigma = [1,1], eps = 0.02)
 end
 
 """
+    run_comparison(
+        test_record_path, test_diff_path,
+        reference = MakieGallery.download_reference();
+        maxdiff = 0.032,
+        exclude = []
+    )
 Compares all media recursively in two recorded folders!
+Pass an Array of Strings (the UIDs of the examples) to the 
+`exclude` kwarg to not test those.
 """
 function run_comparison(
         test_record_path, test_diff_path,
         reference = MakieGallery.download_reference();
         maxdiff = 0.032
+        exclude = []
     )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
+        filter!(x -> !(x in exclude), folders) 
         l = length(folders)
         count = 1
         for folder in folders
