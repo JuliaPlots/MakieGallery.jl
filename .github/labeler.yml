@@ -3,3 +3,7 @@ documentation:
 CI:
 - "**/*.yml"
 - ".github/workflows/**/*"
+examples:
+- "examples/*"
+internals:
+- "src/*"
