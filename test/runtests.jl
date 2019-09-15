@@ -110,7 +110,7 @@ MakieGallery.run_comparison(
                     test_record_path, 
                     tested_diff_path;
                     exclude = (
-                          "Cobweb plot",         # has some weird scaling issue on CI
-                          "Colormap collection", # has one size different, is also vulnerable to upstream updates.
+                          "cobweb_plot",         # has some weird scaling issue on CI
+                          "colormap_collection", # has one size different, is also vulnerable to upstream updates.
                       )
             )
