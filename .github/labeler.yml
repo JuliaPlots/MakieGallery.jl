@@ -1,9 +1,11 @@
-documentation:
-- "**/*.md"
+documentation: "**/*.md"
+
 CI:
 - "**/*.yml"
 - ".github/workflows/**/*"
-examples:
-- "examples/*"
-internals:
-- "src/*"
+
+examples: "examples/*"
+
+internals: "src/*"
+
+tests: "test/*"
