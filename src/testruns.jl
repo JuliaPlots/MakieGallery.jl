@@ -91,7 +91,7 @@ Pass an Array of Strings (the UIDs of the examples) to the
 function run_comparison(
         test_record_path, test_diff_path,
         reference = MakieGallery.download_reference();
-        maxdiff = 0.032
+        maxdiff = 0.032,
         exclude = []
     )
     @testset "Reference Image Tests" begin
