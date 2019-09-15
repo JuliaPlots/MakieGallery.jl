@@ -30,4 +30,6 @@ gallerytest:
     paths:
       - test/tested_different
       - test/test_recordings
+      - Project.toml
+      - Manifest.toml
     expire_in: 4 days
