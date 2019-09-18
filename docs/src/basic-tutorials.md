@@ -59,6 +59,10 @@ It is worth noting initally that if you run a Makie.jl example and nothing shows
 
 @example_database("Tutorial adding to a scene")
 
+### Removing from a scene
+
+@example_database("Tutorial removing from a scene")
+
 ### Adjusting scene limits
 
 @example_database("Tutorial adjusting scene limits")
