@@ -35,6 +35,29 @@
         lines!(scene, x, y2, color = :black)
         scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
     end
+    
+    @cell "Tutorial removing from a scene" [tutorial, line, scene, markers] begin
+        x = range(0, stop = 2pi, length = 80)
+        f1(x) = sin.(x)
+        f2(x) = exp.(-x) .* cos.(2pi*x)
+        y1 = f1(x)
+        y2 = f2(x)
+
+        scene = lines(x, y1, color = :blue)
+        scatter!(scene, x, y1, color = :red, markersize = 0.1)
+
+        lines!(scene, x, y2, color = :black)
+        scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
+        # initialize the stepper and give it an output destination
+        st = Stepper(scene, @replace_with_a_path)
+        step!(st)
+
+        pop!(scene.plots)
+        step!(st)
+
+        pop!(scene.plots)
+        step!(st)
+    end
 
     @cell "Tutorial adjusting scene limits" [tutorial, scene, limits] begin
         x = range(0, stop = 10, length = 40)
