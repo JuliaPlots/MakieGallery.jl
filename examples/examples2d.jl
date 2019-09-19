@@ -699,6 +699,7 @@ end
     @cell "Transforming lines" [transformation, lines] begin
         N = 7 # number of colours in default palette
         sc = Scene()
+        st = Stepper(sc, @replace_with_a_path)
 
         xs = 0:9        # data
         ys = zeros(10)
@@ -714,7 +715,7 @@ end
 
         center!(sc)
 
-        @substep
+        step!(st)
 
         for (i, rot) in enumerate(LinRange(0, π/2, N))
             rotate!(sc.plots[i+1], rot)
@@ -729,6 +730,6 @@ end
             )
         end
 
-        center!(sc)
+        step!(st)
     end
 end
