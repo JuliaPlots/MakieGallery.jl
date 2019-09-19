@@ -48,16 +48,15 @@
 
         lines!(scene, x, y2, color = :black)
         scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
+        # initialize the stepper and give it an output destination
+        st = Stepper(scene, "popping_demo")
+        step!(st)
 
-        display(scene)
-
-        sleep(10)
         pop!(scene.plots)
-        display(scene)
+        step!(st)
 
-        sleep(10)
         pop!(scene.plots)
-        display(scene)
+        step!(st)
     end
 
     @cell "Tutorial adjusting scene limits" [tutorial, scene, limits] begin
