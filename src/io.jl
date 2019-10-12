@@ -37,11 +37,9 @@ end
 function save_media(entry, results::AbstractVector, path::String)
     paths = String[]
     for (i, res) in enumerate(results)
-        if res isa Scene
-            img = joinpath(path, "image$i.jpg")
-            save(img, res)
-            push!(paths, img)
-        end
+        newpath = joinpath(path, "result$i.jpg")
+        save_media(entry, res, newpath)
+        push!(paths, newpath)
     end
     paths
 end
