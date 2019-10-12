@@ -699,7 +699,7 @@ end
     @cell "Transforming lines" [transformation, lines] begin
         N = 7 # number of colours in default palette
         sc = Scene()
-        st = Stepper(sc. @replace_with_a_path)
+        st = Stepper(sc, @replace_with_a_path)
 
         xs = 0:9        # data
         ys = zeros(10)
