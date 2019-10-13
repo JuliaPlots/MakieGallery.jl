@@ -336,7 +336,7 @@ function flatten2block(args::Vector)
 end
 
 
-function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid = NO_GROUP)
+function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid = NO_GROUP, toplevel = "")
     filter!(x-> !is_linenumber(x), cell.args)
     if !(length(cell.args) in (2, 4, 5))
         error(
@@ -362,7 +362,7 @@ function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid
         error("Title need to be a string. Found: $(title) with type: $(typeof(title))")
     end
 
-    toplevel = ""; file = pfile; startend = lastline:lastline;
+    file = pfile; startend = lastline:lastline;
     if Meta.isexpr(cblock, :block)
         file, startend = find_startend(cblock.args)
         toplevel, source = extract_source(file, startend)
@@ -419,10 +419,13 @@ macro block(author, tags, block)
     parent_tags = extract_tags(tags)
     cells = args[findall(is_cell, args)]
     noncells = args[findall(x-> !is_cell(x), args)]
-    setup = join(globaly_shared_code, "\n")
+
+    noncell_str = join(noncells, "; ")
+
+    setup = join(globaly_shared_code, "; ")
 
     for cell in cells
-        cell_entry = extract_cell(cell, author, parent_tags, setup, pfile, 1)
+        cell_entry = extract_cell(cell, author, parent_tags, setup, pfile, 1, NO_GROUP, noncell_str)
         push!(database, cell_entry)
         # push a list of all tags to tags_list
         push!(tags_list, collect(String, cell_entry.tags)...)
@@ -537,6 +540,7 @@ function eval_example(
     push!(module_cache, tmpmod)
     steps = split(source, "@substep", keepempty = false)
     Random.seed!(42)
+    include
     if length(steps) == 1
         try
             return include_string(tmpmod, source, string(uname))

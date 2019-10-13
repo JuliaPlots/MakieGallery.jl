@@ -88,6 +88,6 @@ function MakieGallery.load_database(files::AbstractVector{<: AbstractString})
 end
 
 
-export load_database, eval_example, available_examples, run_example|
+export load_database, eval_example, available_examples, run_example
 
-end
+end # module
