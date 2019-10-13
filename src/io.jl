@@ -9,6 +9,12 @@ function tourl(path)
     return repr(path)
 end
 
+
+# NOTE: `save_media` is the function you want to overload
+# if you want to create a Gallery with custom types.
+# Simply overloading the function should do the trick
+# and MakieGallery will take care of the rest.
+
 function save_media(entry, x::Scene, path::String)
     path = joinpath(path, "image.jpg")
     save(path, x)
@@ -37,13 +43,23 @@ end
 function save_media(entry, results::AbstractVector, path::String)
     paths = String[]
     for (i, res) in enumerate(results)
-        newpath = joinpath(path, "result$i.jpg")
-        save_media(entry, res, newpath)
-        push!(paths, newpath)
+        img = joinpath(path, "image$i.jpg")
+        save(img, res)
+        push!(paths, img)
     end
     paths
 end
 
+# TODO: Figure out the issue which prevents this generic method from working
+# function save_media(entry, results::AbstractVector, path::String)
+#     paths = String[]
+#     for (i, res) in enumerate(results)
+#         newpath = joinpath(path, "item$i")
+#         save_media(entry, res, newpath)
+#         push!(paths, newpath)
+#     end
+#     paths
+# end
 
 function save_media(example, events::RecordEvents, path::String)
     # the path is fixed at record time to be stored relative to the example
@@ -94,7 +110,7 @@ function embed_media(path::String, alt = "")
     elseif ext == ".mp4"
         return embed_video(path, alt)
     else
-        error("Unknown media extension: $ext")
+        error("Unknown media extension: $ext with path: $path")
     end
 end
 
@@ -236,6 +252,8 @@ function set_last_evaled!(unique_name::Symbol)
     last_evaled[] = idx - 1 # minus one, because record_example will start at idx + 1
 end
 
+setresolution!(res) = AbstractPlotting.set_theme!(resolution = res)
+
 """
     record_examples(folder = ""; resolution = (500, 500), resume = false)
 
@@ -247,8 +265,8 @@ function record_examples(
         resolution = (500, 500), resume::Union{Bool, Integer} = false,
         generate_thumbnail = false, display = false
     )
-    last = AbstractPlotting.use_display[]
-    AbstractPlotting.inline!(!display)
+    # last = AbstractPlotting.use_display[]
+    # AbstractPlotting.inline!(!display)
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end
@@ -263,7 +281,7 @@ function record_examples(
         1
     end
     @info("starting from index $start")
-    AbstractPlotting.set_theme!(resolution = resolution)
+    setresolution!(resolution)
 
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
@@ -277,7 +295,7 @@ function record_examples(
                 save_media(example, value, outfolder)
                 push!(result, subfolder)
                 set_last_evaled!(uname)
-                AbstractPlotting.set_theme!(resolution = resolution) # reset before next example
+                setresolution!(resolution) # reset before next example
                 @test true
             end
         end
@@ -285,7 +303,7 @@ function record_examples(
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"))
     generate_thumbnail && generate_thumbnails(folder)
-    AbstractPlotting.use_display[] = last
+    # AbstractPlotting.use_display[] = last
     result
 end
 
