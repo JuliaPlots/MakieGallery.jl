@@ -93,6 +93,11 @@ end
 Returns the html to embed an image
 """
 function embed_image(path::AbstractString, alt = "")
+    if splitext(path)[2] == "pdf"
+        return """
+            <iframe src=$(tourl(path))></iframe>
+        """
+    end
     """
     <img src=$(tourl(path)) alt=$(repr(alt))>
     """
@@ -118,7 +123,7 @@ Embeds the most common media types as html
 """
 function embed_media(path::String, alt = "")
     file, ext = splitext(path)
-    if ext in (".png", ".jpg", ".jpeg", ".JPEG", ".JPG", ".gif")
+    if ext in (".png", ".jpg", ".jpeg", ".JPEG", ".JPG", ".gif", ".pdf", ".svg")
         return embed_image(path, alt)
     elseif ext == ".mp4"
         return embed_video(path, alt)
@@ -219,7 +224,8 @@ Creates a Markdown representation from an example at `mdpath`.
 """
 function save_highlighted_markdown(
                                 path::String, example::CellEntry, media::Vector{String},
-                                highlighter = Highlights.Themes.DefaultTheme
+                                highlighter = Highlights.Themes.DefaultTheme;
+                                print_toplevel = true
                             )
 
     src = example2source(
@@ -227,7 +233,8 @@ function save_highlighted_markdown(
         scope_start = "",
         scope_end = "",
         indent = "",
-        outputfile = (entry, ending)-> string("output", ending)
+        outputfile = (entry, ending)-> string("output", ending),
+        print_toplevel = print_toplevel
     )
     hio = IOBuffer(read = true, write = true)
     highlight(hio, MIME("text/html"), src, Highlights.Lexers.JuliaLexer, highlighter)
@@ -371,7 +378,8 @@ function gallery_from_recordings(
             "theme",
             "annotations"
         ],
-        hltheme = Highlights.Themes.DefaultTheme
+        hltheme = Highlights.Themes.DefaultTheme,
+        print_toplevel = true
     )
 
     items = map(MakieGallery.database) do example
@@ -379,7 +387,7 @@ function gallery_from_recordings(
         media_path = joinpath(base_path, "media")
         media = master_url.(folder, joinpath.(media_path, readdir(media_path)))
         mdpath = joinpath(base_path, "index.md")
-        save_highlighted_markdown(mdpath, example, media, hltheme)
+        save_highlighted_markdown(mdpath, example, media, hltheme; print_toplevel = print_toplevel)
         md2html(mdpath; stylesheets = [relpath(joinpath(dirname(html_out), "syntaxtheme.css"), base_path)])
         MediaItem(base_path, example)
     end
