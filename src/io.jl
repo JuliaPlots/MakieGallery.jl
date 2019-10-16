@@ -10,6 +10,19 @@ function tourl(path)
 end
 
 
+const preeval_hook = Ref{Function}(_ -> 1)
+
+const preeval_cache = Ref{Any}(nothing)
+
+const posteval_hook = Ref{Function}(_ -> 1)
+
+# For Makie:
+# preeval_hook[] = _ -> begin preeval_cache[] = AbstractPlotting.use_display[]; global display; AbstractPlotting.inline!(!display) end
+# posteval_hook[] = _ -> AbstractPlotting.use_display[] = last
+
+# For Plots:
+# preeval_hook[] = _ -> begin global display; default(show = display) end
+
 # NOTE: `save_media` is the function you want to overload
 # if you want to create a Gallery with custom types.
 # Simply overloading the function should do the trick
@@ -252,7 +265,8 @@ function set_last_evaled!(unique_name::Symbol)
     last_evaled[] = idx - 1 # minus one, because record_example will start at idx + 1
 end
 
-setresolution!(res) = AbstractPlotting.set_theme!(resolution = res)
+backend_reset_theme!(; kwargs...) = AbstractPlotting.set_theme!(; kwargs...)
+# for Plots: default(; kwargs...)
 
 """
     record_examples(folder = ""; resolution = (500, 500), resume = false)
@@ -263,10 +277,12 @@ start record with `resume = true`, to start at the last example that errored.
 function record_examples(
         folder = "";
         resolution = (500, 500), resume::Union{Bool, Integer} = false,
-        generate_thumbnail = false, display = false
+        generate_thumbnail = false, display = false,
+        display_output_toplevel = true
     )
-    # last = AbstractPlotting.use_display[]
-    # AbstractPlotting.inline!(!display)
+
+    preeval_hook[](display)
+
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end
@@ -281,7 +297,7 @@ function record_examples(
         1
     end
     @info("starting from index $start")
-    setresolution!(resolution)
+    backend_reset_theme!(resolution = resolution)
 
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
@@ -289,21 +305,26 @@ function record_examples(
             uname = example.unique_name
             println(uname)
             @testset "$(example.title)" begin
-                subfolder = joinpath(folder, string(uname))
-                outfolder = joinpath(subfolder, "media")
-                ispath(outfolder) || mkpath(outfolder)
-                save_media(example, value, outfolder)
-                push!(result, subfolder)
-                set_last_evaled!(uname)
-                setresolution!(resolution) # reset before next example
-                @test true
+                try
+                    subfolder = joinpath(folder, string(uname))
+                    outfolder = joinpath(subfolder, "media")
+                    ispath(outfolder) || mkpath(outfolder)
+                    save_media(example, value, outfolder)
+                    push!(result, subfolder)
+                    set_last_evaled!(uname)
+                    backend_reset_theme!(resolution = resolution) # reset before next example
+                    @test true
+                catch e
+                    @warn "Error thrown when evaluating $(example.title)" exception=e
+                    @test false
+                end
             end
         end
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
-    gallery_from_recordings(folder, joinpath(folder, "index.html"))
+    gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
     generate_thumbnail && generate_thumbnails(folder)
-    # AbstractPlotting.use_display[] = last
+    posteval_hook[](display)
     result
 end
 
