@@ -52,13 +52,13 @@ end
 # ==========================================================
 # Print source code given database index
 
-function _print_source(io::IO, idx::Int; style = "source", example_counter = NaN)
+function _print_source(io::IO, idx::Int; style = "source", example_counter = NaN, print_toplevel = true)
     style = style == "source" ? "```" : (style == "julia") ? "```julia" : "```@$style"
     print(io, style)
     if example_counter != NaN
         println(io, " ", example_counter)
     end
-    print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
+    print(io, print_toplevel && isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
     for line in split(database[idx].source, "\n")
         line = replace(line, "@resolution" => "resolution = (500, 500)")
         println(io, line)
@@ -82,9 +82,9 @@ Print source code of database (hard coded internally) at given index `idx`.
 * some explanation text
 * ```example 2 # continuation of the same example - more code to be evaluated
 """
-function print_source(io::IO, idx::Int; style = "source", example_counter = NaN)
+function print_source(io::IO, idx::Int; style = "source", example_counter = NaN, print_toplevel = "false")
     str = sprint() do io
-        _print_source(io, idx; style = style, example_counter = example_counter)
+        _print_source(io, idx; style = style, example_counter = example_counter, print_toplevel = print_toplevel)
     end
     Markdown.parse(str)
 end
@@ -187,11 +187,13 @@ function print_code(
         indent = " "^4,
         replace_nframes = false,
         resolution = (entry)-> "resolution = (500, 500)",
-        outputfile = (entry, ending)-> string(entry.unique_name, ending)
+        outputfile = (entry, ending)-> string(entry.unique_name, ending),
+        print_toplevel = true
     )
 
     println(io, "using ", join(plotting_backends, ", "))
-    println(io, entry.toplevel)
+    print_toplevel && println(io, entry.toplevel)
+    print_toplevel || println(io, "\n# Some setup code has been omitted for clarity.\n")
     print(io, scope_start)
     for line in split(entry.source, "\n")
         line = replace(line, "@resolution" => resolution(entry))
