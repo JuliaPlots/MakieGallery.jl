@@ -421,8 +421,9 @@ macro block(author, tags, block)
     parent_tags = extract_tags(tags)
     cells = args[findall(is_cell, args)]
     noncells = args[findall(x-> !is_cell(x), args)]
-
-    noncell_str = join(noncells, "; ")
+    filter!(x -> !(x isa LineNumberNode), noncells)
+    SyntaxTree.linefilter!.(noncells)
+    noncell_str = join(noncells, "\n") #|> Meta.parse |> MacroTools.prettify |> x -> join(x.args, "; ")
 
     setup = join(globaly_shared_code, "; ")
 
