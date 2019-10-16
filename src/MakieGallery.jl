@@ -15,7 +15,7 @@ using Test, Statistics
 using FFMPEG
 using BinaryProvider
 using FixedPointNumbers, Colors, ColorTypes
-
+using SyntaxTree # for prettification of code, removing linenumbernodes
 
 include("documenter_extension.jl")
 include("database.jl")
@@ -47,8 +47,6 @@ function load_database()
         "statsmakie.jl",
     ])
 end
-
-
 
 """
     load_tests()
