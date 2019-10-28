@@ -8,10 +8,11 @@ using Statistics
 # - MAKIEGALLERY_MINIMAL to control whether only short tests or all examples are run
 # - MAKIEGALLERY_FAST to control whether the time-consuming examples run or not
 
-_minimal = get(ENV, "MAKIEGALLERY_MINIMAL", "false")
+_minimal = get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true" ? true : false
+_resume  = get(ENV, "MAKIEGALLERY_RESUME",  "false") == "true" ? true : false
 
 printstyled("Running ", bold = true, color = :blue)
-database  = if _minimal == "true"
+database  = if _minimal
                 printstyled("short tests\n", bold = true, color = :yellow)
                 MakieGallery.load_tests()
             elseif _minimal == "false"
@@ -82,26 +83,29 @@ if get(ENV, "CI", "false") == "true"
     filter!(entry-> !("download" in entry.tags), database)
 end
 
-printstyled("Creating ", color = :green, bold = true)
-
-println("recording folders")
-
 tested_diff_path = joinpath(@__DIR__, "tested_different")
 test_record_path = joinpath(@__DIR__, "test_recordings")
 
 println("Diff path  : $tested_diff_path")
 println("Record path: $test_record_path")
 
-rm(tested_diff_path, force = true, recursive = true)
-mkpath(tested_diff_path)
+if !_minimal
 
-rm(test_record_path, force = true, recursive = true)
-mkpath(test_record_path)
+    printstyled("Creating ", color = :green, bold = true)
 
+    println("recording folders")
+
+    rm(tested_diff_path, force = true, recursive = true)
+    mkpath(tested_diff_path)
+
+    rm(test_record_path, force = true, recursive = true)
+    mkpath(test_record_path)
+
+end
 
 printstyled("Recording ", color = :green, bold = true)
 println("examples")
-examples = MakieGallery.record_examples(test_record_path)
+examples = MakieGallery.record_examples(test_record_path; resume = _resume)
 if length(examples) != length(database)
     @warn "Not all examples recorded"
 end
