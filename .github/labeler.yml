@@ -1,4 +1,5 @@
-documentation: "**/*.md"
+documentation: 
+- "**/*.md"
 
 CI:
 - "**/*.yml"
