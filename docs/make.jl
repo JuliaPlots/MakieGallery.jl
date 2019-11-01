@@ -101,6 +101,18 @@ open(path, "w") do io
         print_table(io, v)
         println(io)
     end
+
+    # Examples on the bottom of the page
+    println(io, """
+
+    ### Examples
+
+    @example_database("Unicode Marker")
+
+    @example_database("Axis + Surface")
+
+    @example_database("Axis theming")
+    """)
 end
 
 # automatically generate an overview of the function signatures, using a source md file
@@ -201,6 +213,37 @@ if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") # do this only if local,
     ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)
     ENV["DOCUMENTER_KEY"] = readchomp(joinpath(homedir(), "documenter.key"))
 end
+
+# This feature courtesy of @fredrikekre in https://github.com/fredrikekre/Literate.jl/pull/75/
+if get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
+        @info "Pushing preview docs."
+        PR = match(r"refs\/pull\/(\d+)\/merge", ENV["GITHUB_REF"]).captures[1]
+        # Overwrite Documenter's function for generating the versions.js file
+        foreach(Base.delete_method, methods(Documenter.Writers.HTMLWriter.generate_version_file))
+    Documenter.Writers.HTMLWriter.generate_version_file(_, _) = nothing
+    # Overwrite necessary environment variables to trick Documenter to deploy
+    ENV["GITHUB_EVENT_NAME"] = "push"
+    ENV["GITHUB_REF"] = "refs/heads/master"
+    deploydocs(
+        devurl = "preview-PR$(PR)",
+        repo = "github.com/fredrikekre/Literate.jl.git",
+    )
+    # Add a comment on the PR with a link to the preview
+    # TODO: URL available from JSON.parsefile(ENV["GITHUB..."])["pull_request"]["comments_url"]
+    msg = "Documentation built successfully, a preview can be found here: https://fredrikekre.github.io/Literate.jl/preview-PR$(PR)"
+    cmd = `curl -X POST`
+    push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
+    push!(cmd.exec, "-H", "Content-Type: application/json")
+    push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
+    push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
+    try
+        success(cmd)
+    catch e
+        @warn "Curl errored when pushing comment!" exception=e
+    end
+    exit(0)
+end
+
 
 # run(`pip install --upgrade pip`)
 cd(@__DIR__)
