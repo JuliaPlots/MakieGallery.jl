@@ -5,13 +5,18 @@ using Makie, AbstractPlotting
 using Statistics
 
 # Environment variables for configuration:
-# - MAKIEGALLERY_MINIMAL to control whether only short tests or all examples are run
-# - MAKIEGALLERY_FAST to control whether the time-consuming examples run or not
+# - `MAKIEGALLERY_MINIMAL` to control whether only short tests or all examples are run.
+# - `MAKIEGALLERY_RESUME` to resume recording from the last example.
+# - `MAKIEGALLERY_FAST` to control whether the time-consuming examples run or not.
+# - `MAKIEGALLERY_REFIMG_DIR` to control where reference images are taken from.
 
-_minimal = get(ENV, "MAKIEGALLERY_MINIMAL", "false")
+_minimal = get(ENV, "MAKIEGALLERY_MINIMAL", "false") == "true"
+_resume  = get(ENV, "MAKIEGALLERY_RESUME",  "false") == "true"
+_fast    = get(ENV, "MAKIEGALLERY_FAST",    "false") == "true"
+refdir   = get(ENV, "MAKIEGALLERY_REFIMG_DIR", MakieGallery.download_reference());
 
 printstyled("Running ", bold = true, color = :blue)
-database  = if _minimal == "true"
+database  = if _minimal
                 printstyled("short tests\n", bold = true, color = :yellow)
                 MakieGallery.load_tests()
             elseif _minimal == "false"
@@ -25,6 +30,11 @@ database  = if _minimal == "true"
                 """)
                 MakieGallery.load_database()
             end
+
+# Setup MakieGallery's pre-eval and post-eval hooks
+
+MakieGallery.preeval_hook[]  = _ -> begin preeval_cache[] = AbstractPlotting.use_display[]; global display; AbstractPlotting.inline!(!display) end
+MakieGallery.posteval_hook[] = _ -> AbstractPlotting.use_display[] = last
 
 # We have lots of redundant examples, so no need to test all of them every time
 # (We should before a tag + deploy docs though)
@@ -59,7 +69,7 @@ slow_examples = [
 ]
 
 # # we directly modify the database, which seems easiest for now
-if get(ENV, "MAKIEGALLERY_FAST", "false") == "true"
+if _fast
     printstyled("Filtering "; color = :light_cyan, bold = true)
     println("slow examples")
     filter!(entry-> !(entry.title in slow_examples), database)
@@ -68,12 +78,14 @@ else
     println("slow examples")
 end
 
-exclude = (
-    "Cobweb plot",         # has some weird scaling issue on CI
-    "Colormap collection", # has one size different, is also vulnerable to upstream updates.
-)
+if haskey(ENV, "CI")
+    exclude = (
+        "Cobweb plot",         # has some weird scaling issue on CI
+        "Colormap collection", # has one size different, is also vulnerable to upstream updates.
+    )
 
-filter!(entry-> !(entry.title in exclude), database)
+    filter!(entry-> !(entry.title in exclude), database)
+end
 
 # Download is broken on CI
 if get(ENV, "CI", "false") == "true"
@@ -82,26 +94,31 @@ if get(ENV, "CI", "false") == "true"
     filter!(entry-> !("download" in entry.tags), database)
 end
 
-printstyled("Creating ", color = :green, bold = true)
-
-println("recording folders")
-
 tested_diff_path = joinpath(@__DIR__, "tested_different")
 test_record_path = joinpath(@__DIR__, "test_recordings")
 
 println("Diff path  : $tested_diff_path")
 println("Record path: $test_record_path")
 
-rm(tested_diff_path, force = true, recursive = true)
-mkpath(tested_diff_path)
+# If we are not recording minimally,
+# then we remove the recording folders on the path
+if !_minimal
 
-rm(test_record_path, force = true, recursive = true)
-mkpath(test_record_path)
+    printstyled("Creating ", color = :green, bold = true)
 
+    println("recording folders")
+
+    rm(tested_diff_path, force = true, recursive = true)
+    mkpath(tested_diff_path)
+
+    rm(test_record_path, force = true, recursive = true)
+    mkpath(test_record_path)
+
+end
 
 printstyled("Recording ", color = :green, bold = true)
 println("examples")
-examples = MakieGallery.record_examples(test_record_path)
+examples = MakieGallery.record_examples(test_record_path; resume = _resume)
 if length(examples) != length(database)
     @warn "Not all examples recorded"
 end
@@ -113,4 +130,4 @@ end
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")
 
-MakieGallery.run_comparison(test_record_path, tested_diff_path)
+MakieGallery.run_comparison(test_record_path, tested_diff_path; reference = refdir)
