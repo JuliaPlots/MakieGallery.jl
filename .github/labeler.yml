@@ -9,4 +9,5 @@ examples: "examples/*"
 internals: 
 - "src/*"
 
-tests: "test/*"
+tests: 
+- "test/*"
