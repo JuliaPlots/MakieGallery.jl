@@ -5,7 +5,8 @@ CI:
 - "**/*.yml"
 - ".github/workflows/**/*"
 
-examples: "examples/*"
+examples: 
+- "examples/*"
 
 internals: 
 - "src/*"
