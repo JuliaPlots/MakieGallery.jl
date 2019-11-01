@@ -5,6 +5,19 @@ import AbstractPlotting: _help, to_string, to_func, to_type
 using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table, download_reference
 using MakieGallery: @cell, @block, @substep
 
+function isPR()
+    if haskey(ENV, "CI")
+        if haskey(ENV, "GITHUB_WORKFLOW")
+            @info "Github Actions detected"
+            @show get(ENV, "GITHUB_EVENT_NAME", nothing)
+            return get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
+        elseif haskey(ENV, "TRAVIS")
+            return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
+        end
+    end
+    return false
+end
+
 cd(@__DIR__)
 database = MakieGallery.load_database()
 
@@ -12,7 +25,10 @@ pathroot = normpath(@__DIR__, "..")
 docspath = joinpath(pathroot, "docs")
 srcpath = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
-mediapath = download_reference()
+@show isPR()
+
+mediapath = isPR() ? download_reference("master") : download_reference()
+
 
 # =============================================
 # automatically generate an overview of the atomic functions, using a source md file
@@ -222,18 +238,6 @@ end
 # Set up for pushing preview docs from PRs #
 ############################################
 
-function isPR()
-    if haskey(ENV, "CI")
-        if haskey(ENV, "GITHUB_WORKFLOW")
-            return get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
-        elseif haskey(ENV, "TRAVIS")
-            return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
-        end
-    end
-    return false
-end
-
-# This feature courtesy of @fredrikekre in https://github.com/fredrikekre/Literate.jl/pull/75/
 if isPR()
         @info "Pushing preview docs."
         PR = match(r"refs\/pull\/(\d+)\/merge", ENV["GITHUB_REF"]).captures[1]
