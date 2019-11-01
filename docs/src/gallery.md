@@ -6,6 +6,19 @@ Docs are built using [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl)
 The raw markdown files from which documentation is generated are located in `docs/src`, but all the pages are not there; some, like `Plotting functions overview`, are generated during documentation build.  
 Those markdown pages have a `src-` prefix.
 
+## Tests
+
+MakieGallery contains the test suite for the Makie ecosystem; this can be accessed by running `Pkg.test("MakieGallery")`.
+
+The test suite can be configured by setting some environment variables:
+
+- `MAKIEGALLERY_MINIMAL` to control whether only short tests or all examples are run.  Defaults to `"false"`.
+- `MAKIEGALLERY_RESUME` to resume recording from the last example.  Defaults to `"false"`.
+- `MAKIEGALLERY_FAST` to control whether the time-consuming examples run or not.  Defaults to `"false"`.
+- `MAKIEGALLERY_REFIMG_DIR` to control where reference images are taken from.  Defaults to using the default version downloaded by MakieGallery, or downloading that if not present.
+
+## Structure
+
 Examples live in the `examples` directory, and are organized into several Julia files.
 Each file is structured into several `@block`s which contain `@cell`s.  Each cell contains one example; the syntax is generally:
 ```julia
