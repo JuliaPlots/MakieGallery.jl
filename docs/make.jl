@@ -198,9 +198,13 @@ makedocs(
 
 using Conda, Documenter
 using Base64
-# deploy
+
+# deploy the docs
+
 ENV["DOCUMENTER_DEBUG"] = "true"
-if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") # do this only if local, otherwise let Documenter handle it
+
+# do this only if local, otherwise let Documenter handle it
+if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI")
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
     ENV["CI"] = "no"
@@ -215,8 +219,23 @@ if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") # do this only if local,
     ENV["DOCUMENTER_KEY"] = readchomp(joinpath(homedir(), "documenter.key"))
 end
 
+############################################
+# Set up for pushing preview docs from PRs #
+############################################
+
+function isPR()
+    if haskey(ENV, "CI")
+        if haskey(ENV, "GITHUB_WORKFLOW")
+            return get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
+        elseif haskey(ENV, "TRAVIS")
+            return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
+        end
+    end
+    return false
+end
+
 # This feature courtesy of @fredrikekre in https://github.com/fredrikekre/Literate.jl/pull/75/
-if get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
+if isPR()
         @info "Pushing preview docs."
         PR = match(r"refs\/pull\/(\d+)\/merge", ENV["GITHUB_REF"]).captures[1]
         # Overwrite Documenter's function for generating the versions.js file
