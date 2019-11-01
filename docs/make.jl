@@ -7,13 +7,14 @@ using MakieGallery: @cell, @block, @substep
 
 function isPR()
     if haskey(ENV, "CI")
-        if haskey(ENV, "GITHUB_WORKFLOW")
-            @info "Github Actions detected"
-            @show get(ENV, "GITHUB_EVENT_NAME", nothing)
-            return get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
-        elseif haskey(ENV, "TRAVIS")
+        if haskey(ENV, "TRAVIS")
             return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
         end
+    end
+    if haskey(ENV, "GITHUB_TOKEN")
+        @info "Github Actions detected"
+        @show get(ENV, "GITHUB_EVENT_NAME", nothing)
+        return get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
     end
     return false
 end
