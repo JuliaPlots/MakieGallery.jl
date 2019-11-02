@@ -1,5 +1,5 @@
 using Documenter, AbstractPlotting
-using Markdown, Pkg, Random, FileIO
+using Markdown, Pkg, Random, FileIO, JSON, HTTP
 using MakieGallery
 import AbstractPlotting: _help, to_string, to_func, to_type
 using MakieGallery: eval_examples, generate_thumbnail, master_url, print_table, download_reference
@@ -239,14 +239,22 @@ end
 ############################################
 
 if isPR()
-        @info "Pushing preview docs."
-        @show get(ENV, "GITHUB_REF", "lolno")
-        @show get(ENV, "GITHUB_EVENT_PATH", "lolno")
-        print(read(ENV["GITHUB_EVENT_PATH"], String))
-        PR = match(r"refs\/pull\/(\d+)\/merge", ENV["GITHUB_REF"]).captures[1]
-        # Overwrite Documenter's function for generating the versions.js file
-        foreach(Base.delete_method, methods(Documenter.Writers.HTMLWriter.generate_version_file))
+
+    @info "Pushing preview docs."
+    r = HTTP.get(
+        "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/commits/$(ENV["GITHUB_SHA"])/pulls",
+        [
+            "Accept" => "application/vnd.github.groot-preview+json",
+            "User-Agent" => "GitHub-jl"
+        ]
+        )
+
+    url = JSON.parse(String(r.body))[1]["html_url"]
+    PR = splitpath(url)[end]
+    # Overwrite Documenter's function for generating the versions.js file
+    foreach(Base.delete_method, methods(Documenter.Writers.HTMLWriter.generate_version_file))
     Documenter.Writers.HTMLWriter.generate_version_file(_, _) = nothing
+
     # Overwrite necessary environment variables to trick Documenter to deploy
     ENV["GITHUB_EVENT_NAME"] = "push"
     ENV["GITHUB_REF"] = "refs/heads/master"
@@ -254,8 +262,8 @@ if isPR()
         devurl = "preview-PR$(PR)",
         repo = "github.com/JuliaPlots/MakieGallery.jl.git",
     )
+
     # Add a comment on the PR with a link to the preview
-    # TODO: URL available from JSON.parsefile(ENV["GITHUB..."])["pull_request"]["comments_url"]
     msg = "Documentation built successfully, a preview can be found here: https://makie.juliaplots.org/preview-PR$(PR)"
     cmd = `curl -X POST`
     push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
