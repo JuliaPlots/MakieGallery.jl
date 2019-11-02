@@ -13,11 +13,12 @@ function isPR()
     end
     if haskey(ENV, "GITHUB_TOKEN")
         @info "Github Actions detected"
-        @show get(ENV, "GITHUB_EVENT_NAME", nothing)
-        return get(ENV, "GITHUB_EVENT_NAME", nothing) == "pull_request"
+        return read(pipeline(`git branch --show-current`), String) != "master"
     end
     return false
 end
+
+isPR() && (MakieGallery.current_ref_version[] = "master")
 
 cd(@__DIR__)
 database = MakieGallery.load_database()
@@ -26,9 +27,7 @@ pathroot = normpath(@__DIR__, "..")
 docspath = joinpath(pathroot, "docs")
 srcpath = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
-@show isPR()
-
-mediapath = isPR() ? download_reference("master") : download_reference()
+mediapath = download_reference()
 
 
 # =============================================
@@ -220,7 +219,7 @@ using Base64
 ENV["DOCUMENTER_DEBUG"] = "true"
 
 # do this only if local, otherwise let Documenter handle it
-if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI")
+if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") && !haskey(ENV, "GITHUB_TOKEN")
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
     ENV["CI"] = "no"
@@ -241,6 +240,9 @@ end
 
 if isPR()
         @info "Pushing preview docs."
+        @show get(ENV, "GITHUB_REF", "lolno")
+        @show get(ENV, "GITHUB_EVENT_PATH", "lolno")
+        print(read(ENV["GITHUB_EVENT_PATH"], String))
         PR = match(r"refs\/pull\/(\d+)\/merge", ENV["GITHUB_REF"]).captures[1]
         # Overwrite Documenter's function for generating the versions.js file
         foreach(Base.delete_method, methods(Documenter.Writers.HTMLWriter.generate_version_file))
@@ -250,11 +252,11 @@ if isPR()
     ENV["GITHUB_REF"] = "refs/heads/master"
     deploydocs(
         devurl = "preview-PR$(PR)",
-        repo = "github.com/fredrikekre/Literate.jl.git",
+        repo = "github.com/JuliaPlots/MakieGallery.jl.git",
     )
     # Add a comment on the PR with a link to the preview
     # TODO: URL available from JSON.parsefile(ENV["GITHUB..."])["pull_request"]["comments_url"]
-    msg = "Documentation built successfully, a preview can be found here: https://fredrikekre.github.io/Literate.jl/preview-PR$(PR)"
+    msg = "Documentation built successfully, a preview can be found here: https://makie.juliaplots.org/preview-PR$(PR)"
     cmd = `curl -X POST`
     push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
     push!(cmd.exec, "-H", "Content-Type: application/json")
@@ -272,6 +274,6 @@ end
 # run(`pip install --upgrade pip`)
 cd(@__DIR__)
 deploydocs(
-    deps = Deps.pip("mkdocs", "python-markdown-math", "mkdocs-cinder"),
+    # deps = Deps.pip("mkdocs", "python-markdown-math", "mkdocs-cinder"),
     repo = "github.com/JuliaPlots/MakieGallery.jl.git",
 )

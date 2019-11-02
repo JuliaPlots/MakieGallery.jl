@@ -16,8 +16,13 @@ Have a peek at [Animation](@ref) for some more information once you're done with
 A `Node` is a Julia structure that allows its value to be updated interactively. This means that anything that uses a `Node` could have its behavior updated interactively, as we will showcase in this page.
 
 Let's start by creating a `Node`:
-```@example animation_tutorial
+```julia
 x = Node(0.0) # set up a Node, and give it a default value of 0.0
+```
+
+```
+Observable{Float64} with 0 listeners. Value:
+0
 ```
 
 The value of the `x` can be changed simply using `push!`:
@@ -29,27 +34,41 @@ Observable{Float64} with 0 listeners. Value:
 ```
 
 Notice that you can access the value of a `Node` by indexing it with nothing, i.e. `x[]`. However, we recommend to use the function [`to_value`](@ref) to get the value of a `Node`, because `to_value` is a general function that works with all types instead of only `Node`s. E.g.:
-```@example animation_tutorial
+```julia
 to_value(x)
+```
+
+```
+3.34
 ```
 
 ### `Node`s depending on other `Node`s
 
 You can create a node depending on another node using [`lift`](@ref):
 
-```@example animation_tutorial
+```julia
 f(a) = a^2
 y = lift(a -> f(a), x)
+```
+
+```
+Observable{Float64} with 0 listeners. Value:
+11.1556
 ```
 
 Now, for every value of the `Node` `x`, the derived `Node` `y` will hold the value `f(x)`. Updating the value of `x` _will also update_ the value of `y`!
 
 For example:
-```@example animation_tutorial
-push!(x, 10.0)
+```julia
+x[] = 10.0
 for i in (x, y)
     println(to_value(i))
 end
+```
+
+```
+10.0
+100.0
 ```
 
 That is to say, the `Node` `y` maps the function `f` (which is `a -> a^2` in this case) on `x` whenever the `Node` `x` is updated, and updates the corresponding value in `y`.
@@ -63,16 +82,26 @@ and `Node` is just an alias for `Observables.Observable`. This allows decoupling
 Often it is the case that you want an event to be triggered each time a `Node` has its value updated.
 This is done using the `on-do` block from `Observables`.
 For example, the following code block "triggers" whenever `x`'s value is changed:
-```@example animation_tutorial
+```julia
 on(x) do val
     println("x just got the value $val")
 end
 ```
+
+```
+#29 (generic function with 1 method)
+```
+
 As you can see, at we have run this block in Julia, but nothing happened yet.
 Instead, a function was defined. However, upon doing:
-```@example animation_tutorial
+```julia
 push!(x, 5.0);
 ```
+
+```
+x just got the value 5.0
+```
+
 Boom! The event of the `on-do` block was triggered!
 We will be using this in the following paragraphs to establish interactivity.
 
@@ -135,7 +164,7 @@ end
 
 To listen to keyboard events, you can `lift` `scene.events.keyboardbuttons`, which returns an enum that can be used with some utility functions to implement a keyboard event handler.
 
-```
+```julia
 dir = lift(scene.events.keyboardbuttons) do but
     global last_dir
     ispressed(but, Keyboard.left) && return 1
