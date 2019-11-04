@@ -2,10 +2,6 @@
 
 Hi! Welcome to [`Makie`](https://github.com/JuliaPlots/Makie.jl/), a high-performance, extendable, and multi-platform plotting package for [Julia](https://julialang.org/).
 
-```@raw html
- <iframe src="http://juliaplots.org/MakieReferenceImages/gallery/index.html" height="1000" width="100%" frameborder="0"></iframe>
-```
-
 ## Installation & tutorial
 
 See the [Tutorial](@ref).
@@ -24,3 +20,9 @@ If you run into any issues or have questions that you cannot solve on your own b
 
 1) Open an issue in this repo or the main [Makie.jl](https://github.com/JuliaPlots/Makie.jl) repo. 
 2) Join the [Julia Slack](https://slackinvite.julialang.org) and look for the `#makie` channel.
+
+## Example Gallery
+
+```@raw html
+ <iframe src="http://juliaplots.org/MakieReferenceImages/gallery/index.html" height="1000" width="100%" frameborder="0"></iframe>
+```
