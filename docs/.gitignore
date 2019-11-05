@@ -16,3 +16,5 @@ atomics_examples/
 tmax
 prec
 Manifest.toml
+
+!src/assets/logo.png
