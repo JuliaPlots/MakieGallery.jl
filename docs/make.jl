@@ -22,7 +22,7 @@ isManual() = if !all(haskey.(Ref(ENV), ["GITHUB_TOKEN", "CI"]))
                 return true
             end
 
-(isPR() || isManual()) && (MakieGallery.current_ref_version[] = "master")
+MakieGallery.current_ref_version[] = "master"
 
 cd(@__DIR__)
 database = MakieGallery.load_database()
@@ -221,7 +221,7 @@ using Base64
 # deploy the docs
 
 ENV["DOCUMENTER_DEBUG"] = "true"
-deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs") # "github.com/asinghvi17/MakiePreviewDocs.jl"
+deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/JuliaPlots/MakieGallery.jl")
 
 
 # do this only if local, otherwise let Documenter handle it
@@ -246,6 +246,7 @@ end
 
 if isPR()
 
+    deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs") 
     repo_url   = ENV["GITHUB_REPOSITORY"]
     commit_sha = ENV["GITHUB_SHA"]
 
@@ -295,7 +296,6 @@ end
 
 cd(@__DIR__)
 
-ENV["TRAVIS_REPO_SLUG"] = "github.com/asinghvi17/MakiePreviewDocs"
 deploydocs(
     repo = deploy_url
 )
