@@ -278,18 +278,18 @@ if isPR()
         repo = deploy_url,
     )
 
-    # Add a comment on the PR with a link to the preview
-    msg = "Documentation built successfully, a preview can be found here: https://makie.juliaplots.org/preview-PR$(PR)"
-    cmd = `curl -X POST`
-    push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
-    push!(cmd.exec, "-H", "Content-Type: application/json")
-    push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
-    push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
-    try
-        success(cmd)
-    catch e
-        @warn "Curl errored when pushing comment!" exception=e
-    end
+    # # Add a comment on the PR with a link to the preview
+    # msg = "Documentation built successfully, a preview can be found here: https://makie.juliaplots.org/preview-PR$(PR)"
+    # cmd = `curl -X POST`
+    # push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
+    # push!(cmd.exec, "-H", "Content-Type: application/json")
+    # push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
+    # push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
+    # try
+    #     success(cmd)
+    # catch e
+    #     @warn "Curl errored when pushing comment!" exception=e
+    # end
     exit(0)
 end
 
