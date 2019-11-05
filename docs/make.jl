@@ -221,7 +221,7 @@ using Base64
 # deploy the docs
 
 ENV["DOCUMENTER_DEBUG"] = "true"
-deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs.jl") # "github.com/asinghvi17/MakiePreviewDocs.jl"
+deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs") # "github.com/asinghvi17/MakiePreviewDocs.jl"
 
 
 # do this only if local, otherwise let Documenter handle it
@@ -269,6 +269,7 @@ if isPR()
     # Overwrite necessary environment variables to trick Documenter to deploy
     ENV["GITHUB_EVENT_NAME"] = "push"
     ENV["GITHUB_REF"] = "refs/heads/master"
+    ENV["GITHUB_REPOSITORY"] = deploy_url
 
     Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH # make GH Actions deploy by DOCUMENTER_KEY
 
