@@ -240,17 +240,23 @@ end
 
 if isPR()
 
+    repo_url   = ENV["GITHUB_REPOSITORY"]
+    commit_sha = ENV["GITHUB_SHA"]
+    deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/" * "asinghvi17/MakiePreviewDocs.jl") # "github.com/asinghvi17/MakiePreviewDocs.jl"
+
     @info "Pushing preview docs."
+
+    # Find the latest PR associated with the commit from its SHA
     r = HTTP.get(
-        "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/commits/$(ENV["GITHUB_SHA"])/pulls",
+        "https://api.github.com/repos/$repo_url/commits/$commit_sha/pulls",
         [
             "Accept" => "application/vnd.github.groot-preview+json",
             "User-Agent" => "GitHub-jl"
         ]
         )
 
-    url = JSON.parse(String(r.body))[1]["html_url"]
-    PR = splitpath(url)[end]
+    url = JSON.parse(String(r.body))[1]["html_url"] # get the URL of the PR
+    PR = splitpath(url)[end] # get the PR number
     # Overwrite Documenter's function for generating the versions.js file
     foreach(Base.delete_method, methods(Documenter.Writers.HTMLWriter.generate_version_file))
     Documenter.Writers.HTMLWriter.generate_version_file(_, _) = nothing
@@ -258,9 +264,12 @@ if isPR()
     # Overwrite necessary environment variables to trick Documenter to deploy
     ENV["GITHUB_EVENT_NAME"] = "push"
     ENV["GITHUB_REF"] = "refs/heads/master"
+
+    Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH # make GH Actions deploy by DOCUMENTER_KEY
+
     deploydocs(
         devurl = "preview-PR$(PR)",
-        repo = "github.com/JuliaPlots/MakieGallery.jl.git",
+        repo = deploy_url,
     )
 
     # Add a comment on the PR with a link to the preview
