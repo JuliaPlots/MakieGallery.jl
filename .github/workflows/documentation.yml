@@ -26,5 +26,6 @@ jobs:
         run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.add(PackageSpec(name = "Documenter", rev = "master"))'
       - name: Build and deploy
         env:
+          DOCUMENTER_KEY: ${{ secrets.PreviewDeployKey }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: julia --project=docs/ docs/make.jl
