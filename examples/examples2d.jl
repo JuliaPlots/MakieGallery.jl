@@ -678,6 +678,12 @@ end
         f(x) = f(x, P)
         streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
     end
+    
+    @cell "Categorical heatmap" [heatmap, categorical, string] begin
+        x = ["a", "b", "c"]
+        y = ["α", "β", "γ"]
+        heatmap(x, y, rand(3, 3))
+    end
 
 end
 
