@@ -3,7 +3,7 @@
 Hi! Welcome to [`Makie`](https://github.com/JuliaPlots/Makie.jl/), a high-performance, extendable, and multi-platform plotting package for [Julia](https://julialang.org/).
 
 ```@raw html
- <iframe src="http://simondanisch.github.io/ReferenceImages/gallery/index.html" style = "height:800px;width:100%" frameborder="0"></iframe>
+ <iframe src="https://simondanisch.github.io/ReferenceImages/gallery/index.html" style = "height:800px;width:100%" frameborder="0"></iframe>
 ```
 
 ## Installation & tutorial
