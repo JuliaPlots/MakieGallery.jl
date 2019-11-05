@@ -18,7 +18,11 @@ function isPR()
     return false
 end
 
-isPR() && (MakieGallery.current_ref_version[] = "master")
+isManual() = if !all(haskey.(Ref(ENV), ["GITHUB_TOKEN", "CI"]))
+                return true
+            end
+
+(isPR() || isManual()) && (MakieGallery.current_ref_version[] = "master")
 
 cd(@__DIR__)
 database = MakieGallery.load_database()
@@ -217,21 +221,23 @@ using Base64
 # deploy the docs
 
 ENV["DOCUMENTER_DEBUG"] = "true"
+deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs.jl") # "github.com/asinghvi17/MakiePreviewDocs.jl"
+
 
 # do this only if local, otherwise let Documenter handle it
-if !haskey(ENV, "DOCUMENTER_KEY") && !haskey(ENV, "CI") && !haskey(ENV, "GITHUB_TOKEN")
+if !haskey(ENV, "CI") && !haskey(ENV, "GITHUB_TOKEN")
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
     ENV["CI"] = "no"
     ENV["TRAVIS"] = :lolno
     ENV["TRAVIS_BRANCH"] = "master"
     ENV["TRAVIS_PULL_REQUEST"] = "false"
-    ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl.git"
+    ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl"
     ENV["TRAVIS_TAG"] = ""
     ENV["TRAVIS_OS_NAME"] = ""
     ENV["TRAVIS_JULIA_VERSION"] = ""
-    ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)
-    ENV["DOCUMENTER_KEY"] = readchomp(joinpath(homedir(), "documenter.key"))
+    # ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)
+    ENV["DOCUMENTER_KEY"] = get(ENV, "DOCUMENTER_KEY", readchomp(joinpath(homedir(), "documenter.key")))
 end
 
 ############################################
@@ -242,7 +248,6 @@ if isPR()
 
     repo_url   = ENV["GITHUB_REPOSITORY"]
     commit_sha = ENV["GITHUB_SHA"]
-    deploy_url = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/" * "asinghvi17/MakiePreviewDocs.jl") # "github.com/asinghvi17/MakiePreviewDocs.jl"
 
     @info "Pushing preview docs."
 
@@ -287,10 +292,9 @@ if isPR()
     exit(0)
 end
 
-
-# run(`pip install --upgrade pip`)
 cd(@__DIR__)
+
+ENV["TRAVIS_REPO_SLUG"] = "github.com/asinghvi17/MakiePreviewDocs"
 deploydocs(
-    # deps = Deps.pip("mkdocs", "python-markdown-math", "mkdocs-cinder"),
-    repo = "github.com/JuliaPlots/MakieGallery.jl.git",
+    repo = deploy_url
 )
