@@ -15,6 +15,6 @@ prec.zip
 tmax.zip
 .DS_Store
 
-_site
+_site/
 Gemfile
 Gemfile.lock
