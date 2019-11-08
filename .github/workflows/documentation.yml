@@ -17,7 +17,7 @@ jobs:
         with:
           version: ${{ matrix.julia-version }}
       - name: Install dependencies
-        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.pkg"add AbstractPlotting#master GLMakie#master Documenter#mp/overflow-wrap"'
+        run: julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate(); Pkg.pkg"add AbstractPlotting#master GLMakie#master Documenter#master"'
       - name: Build and deploy
         env:
           DOCUMENTER_KEY: ${{ secrets.PreviewDeployKey }}
