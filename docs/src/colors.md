@@ -13,7 +13,7 @@ Any color symbol supported by Color.jl is supported, check out their page on [na
 
 Colormaps are mappings of values to colors.  You can supply the coloring values using the `color` keyword argument, and the colormap will automatically be adjusted to fit those values.  THe default colormap is `viridis`, which looks like this:
 
-@example_database("Viridis color scheme", plot)
+![Viridis colormap](assets/viridis.png)
 
 You can copy this code and substitute `cmap` with any `Colormap` to show the colormap.
 

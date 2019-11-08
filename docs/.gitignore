@@ -17,4 +17,4 @@ tmax
 prec
 Manifest.toml
 
-!src/assets/logo.png
+!src/assets/*
