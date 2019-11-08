@@ -15,7 +15,7 @@ using Test, Statistics
 using FFMPEG
 using BinaryProvider
 using FixedPointNumbers, Colors, ColorTypes
-
+using SyntaxTree # for prettification of code, removing linenumbernodes
 
 include("documenter_extension.jl")
 include("database.jl")
@@ -48,8 +48,6 @@ function load_database()
     ])
 end
 
-
-
 """
     load_tests()
 Loads a database of minimal tests and returns it!
@@ -67,14 +65,20 @@ end
 
 Loads a database with the files given as a String array.
 They must be filenames `filename.jl`, and must be located
-within `joinpath(dirname(pathof(MakieGallery)), "..")`.
-(On Linux, this would translate to `MakieGallery/examples/`).
+within `$(dirname(@__DIR__))`.
+
+To get around this assumption, you can pass an absolute path.
 """
-function load_database(files::AbstractVector{<: AbstractString})
-    empty!(unique_names)
+function MakieGallery.load_database(files::AbstractVector{<: AbstractString})
+    empty!(MakieGallery.unique_names)
     empty!(database)
-    dir = abspath(joinpath(dirname(pathof(MakieGallery)), ".."))
-    nfiles = joinpath.("$dir", "examples", files)
+    nfiles = if !all(isabspath.(files))
+            dir = abspath(joinpath(dirname(pathof(MakieGallery)), ".."))
+            joinpath.("$dir", "examples", files)
+        else
+            files
+        end
+
     for file in nfiles
         MakieGallery.eval(:(include($file)))
     end
@@ -84,4 +88,4 @@ end
 
 export load_database, eval_example, available_examples, run_example
 
-end
+end # module

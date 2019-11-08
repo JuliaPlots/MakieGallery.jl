@@ -9,15 +9,16 @@ struct MediaItem
   tags::Vector{String}
 end
 
+const urlbase = Ref("http://simondanisch.github.io/ReferenceImages/gallery/")
+
 function master_url(root, path)
-    urlbase = "http://juliaplots.org/MakieReferenceImages/gallery/"
     if Sys.iswindows()
         path = replace(path, "\\" => "/")
         root = replace(root, "\\" => "/")
     end
     url = replace(
         path,
-        root => urlbase
+        root => urlbase[]
     )
 end
 
@@ -25,7 +26,7 @@ function MediaItem(path, example)
     media_file = ""
     media_folder = joinpath(path, "media")
     files = readdir(media_folder)
-    for ext in ("mp4", "gif", "jpg", "png")
+    for ext in ("mp4", "gif", "jpg", "png", "pdf", "svg")
         idx = findfirst(x-> endswith(x, ext), files)
         if idx !== nothing
             media_file = joinpath(media_folder, files[idx])

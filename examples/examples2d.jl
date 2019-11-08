@@ -597,7 +597,9 @@ end
            0..10,      # x range
            0..1,       # y range
            hcat(c, c), # reshape this to a matrix for the colors
-           show_axis = false # don't show axes
+           show_axis  = false, # don't show axes
+           scale_plot = false,  # maintain aspect ratio,
+           resolution = (1000, 200)
         )
 
     end
@@ -678,7 +680,7 @@ end
         f(x) = f(x, P)
         streamplot(f, -1.5..1.5, -1.5..1.5, colormap = :magma)
     end
-    
+
     @cell "Categorical heatmap" [heatmap, categorical, string] begin
         x = ["a", "b", "c"]
         y = ["α", "β", "γ"]

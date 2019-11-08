@@ -99,7 +99,7 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             end
             # print code for embedding plot
             src_plot = Documenter.Documents.RawHTML(str)
-            push!(content, src_plot)
+            embed == "plot" || push!(content, src_plot)
         end
         # finally, map the content back to the page
         page.mapping[x] = content

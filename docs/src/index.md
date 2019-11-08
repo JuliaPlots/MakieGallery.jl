@@ -1,14 +1,22 @@
-# `Makie.jl` Documentation
+# Makie.jl
+
+![Makie.jl](assets/logo.png)
 
 Hi! Welcome to [`Makie`](https://github.com/JuliaPlots/Makie.jl/), a high-performance, extendable, and multi-platform plotting package for [Julia](https://julialang.org/).
 
-```@raw html
- <iframe src="http://juliaplots.org/MakieReferenceImages/gallery/index.html" height="1000" width="100%" frameborder="0"></iframe>
-```
-
 ## Installation & tutorial
 
-See the [Tutorial](@ref).
+Install Makie by running `]add Makie` (in the REPL) or `Pkg.add("Makie")`.  
+
+If installing the master branch, be sure to also add `AbstractPlotting#master` and `GLMakie#master`
+
+See the [Tutorial](@ref) for how to plot, or the Example Gallery below for examples.
+
+## Example Gallery
+
+```@raw html
+ <iframe src="https://simondanisch.github.io/ReferenceImages/gallery/index.html" style = "height:800px;width:100%" frameborder="0"></iframe>
+```
 
 ## I'm an expert!
 
@@ -20,7 +28,7 @@ What makes up the Makie Ecosystem? `Makie.jl` is the metapackage for a rich ecos
 
 ## Getting Help
 
-If you run into any issues or have questions that you cannot solve on your own by using the help mode in the REPL, here are your options: 
+If you run into any issues or have questions that you cannot solve on your own by using the help mode in the REPL, here are your options:
 
-1) Open an issue in this repo or the main [Makie.jl](https://github.com/JuliaPlots/Makie.jl) repo. 
+1) Open an issue in this repo or the main [Makie.jl](https://github.com/JuliaPlots/Makie.jl) repo.
 2) Join the [Julia Slack](https://slackinvite.julialang.org) and look for the `#makie` channel.

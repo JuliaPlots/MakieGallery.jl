@@ -52,13 +52,13 @@ end
 # ==========================================================
 # Print source code given database index
 
-function _print_source(io::IO, idx::Int; style = "source", example_counter = NaN)
+function _print_source(io::IO, idx::Int; style = "source", example_counter = NaN, print_toplevel = true)
     style = style == "source" ? "```" : (style == "julia") ? "```julia" : "```@$style"
     print(io, style)
     if example_counter != NaN
         println(io, " ", example_counter)
     end
-    print(io, isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
+    print(io, print_toplevel && isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
     for line in split(database[idx].source, "\n")
         line = replace(line, "@resolution" => "resolution = (500, 500)")
         println(io, line)
@@ -82,9 +82,9 @@ Print source code of database (hard coded internally) at given index `idx`.
 * some explanation text
 * ```example 2 # continuation of the same example - more code to be evaluated
 """
-function print_source(io::IO, idx::Int; style = "source", example_counter = NaN)
+function print_source(io::IO, idx::Int; style = "source", example_counter = NaN, print_toplevel = "false")
     str = sprint() do io
-        _print_source(io, idx; style = style, example_counter = example_counter)
+        _print_source(io, idx; style = style, example_counter = example_counter, print_toplevel = print_toplevel)
     end
     Markdown.parse(str)
 end
@@ -187,11 +187,13 @@ function print_code(
         indent = " "^4,
         replace_nframes = false,
         resolution = (entry)-> "resolution = (500, 500)",
-        outputfile = (entry, ending)-> string(entry.unique_name, ending)
+        outputfile = (entry, ending)-> string(entry.unique_name, ending),
+        print_toplevel = true
     )
 
     println(io, "using ", join(plotting_backends, ", "))
-    println(io, entry.toplevel)
+    print_toplevel && println(io, entry.toplevel)
+    print_toplevel || println(io, "\n# Some setup code has been omitted for clarity.\n")
     print(io, scope_start)
     for line in split(entry.source, "\n")
         line = replace(line, "@resolution" => resolution(entry))
@@ -336,7 +338,7 @@ function flatten2block(args::Vector)
 end
 
 
-function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid = NO_GROUP)
+function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid = NO_GROUP, toplevel = "")
     filter!(x-> !is_linenumber(x), cell.args)
     if !(length(cell.args) in (2, 4, 5))
         error(
@@ -362,7 +364,7 @@ function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid
         error("Title need to be a string. Found: $(title) with type: $(typeof(title))")
     end
 
-    toplevel = ""; file = pfile; startend = lastline:lastline;
+    file = pfile; startend = lastline:lastline;
     if Meta.isexpr(cblock, :block)
         file, startend = find_startend(cblock.args)
         toplevel, source = extract_source(file, startend)
@@ -419,10 +421,14 @@ macro block(author, tags, block)
     parent_tags = extract_tags(tags)
     cells = args[findall(is_cell, args)]
     noncells = args[findall(x-> !is_cell(x), args)]
-    setup = join(globaly_shared_code, "\n")
+    filter!(x -> !(x isa LineNumberNode), noncells)
+    SyntaxTree.linefilter!.(noncells)
+    noncell_str = join(noncells, "\n") #|> Meta.parse |> MacroTools.prettify |> x -> join(x.args, "; ")
+
+    setup = join(globaly_shared_code, "; ")
 
     for cell in cells
-        cell_entry = extract_cell(cell, author, parent_tags, setup, pfile, 1)
+        cell_entry = extract_cell(cell, author, parent_tags, setup, pfile, 1, NO_GROUP, noncell_str)
         push!(database, cell_entry)
         # push a list of all tags to tags_list
         push!(tags_list, collect(String, cell_entry.tags)...)
@@ -537,26 +543,27 @@ function eval_example(
     push!(module_cache, tmpmod)
     steps = split(source, "@substep", keepempty = false)
     Random.seed!(42)
+    include
     if length(steps) == 1
         try
             return include_string(tmpmod, source, string(uname))
         catch e
-            println(stderr, "Example $(entry.title) failed with source:")
+            @warn "Example $(entry.title) failed"  exception=e
+            println("with source:")
             for line in split(source, "\n")
                 println(stderr, "    ", line)
             end
-            rethrow(e)
         end
     else
         return map(enumerate(steps)) do (i, source)
             try
                 return include_string(tmpmod, source, string(uname, "_", i))
             catch e
-                println(stderr, "Example $(entry.title) failed with source:")
+                @warn "Example $(entry.title) failed"  exception=e
+                println("with source:")
                 for line in split(source, "\n")
                     println(stderr, "    ", line)
                 end
-                rethrow(e)
             end
         end
     end

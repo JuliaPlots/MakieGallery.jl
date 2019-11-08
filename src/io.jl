@@ -9,6 +9,25 @@ function tourl(path)
     return repr(path)
 end
 
+
+const preeval_hook = Ref{Function}(_ -> 1)
+
+const preeval_cache = Ref{Any}(nothing)
+
+const posteval_hook = Ref{Function}(_ -> 1)
+
+# For Makie:
+# preeval_hook[] = _ -> begin preeval_cache[] = AbstractPlotting.use_display[]; global display; AbstractPlotting.inline!(!display) end
+# posteval_hook[] = _ -> AbstractPlotting.use_display[] = last
+
+# For Plots:
+# preeval_hook[] = _ -> begin global display; default(show = display) end
+
+# NOTE: `save_media` is the function you want to overload
+# if you want to create a Gallery with custom types.
+# Simply overloading the function should do the trick
+# and MakieGallery will take care of the rest.
+
 function save_media(entry, x::Scene, path::String)
     path = joinpath(path, "image.jpg")
     save(path, x)
@@ -37,13 +56,23 @@ end
 function save_media(entry, results::AbstractVector, path::String)
     paths = String[]
     for (i, res) in enumerate(results)
-        newpath = joinpath(path, "result$i.jpg")
-        save_media(entry, res, newpath)
-        push!(paths, newpath)
+        img = joinpath(path, "image$i.jpg")
+        save(img, res)
+        push!(paths, img)
     end
     paths
 end
 
+# TODO: Figure out the issue which prevents this generic method from working
+# function save_media(entry, results::AbstractVector, path::String)
+#     paths = String[]
+#     for (i, res) in enumerate(results)
+#         newpath = joinpath(path, "item$i")
+#         save_media(entry, res, newpath)
+#         push!(paths, newpath)
+#     end
+#     paths
+# end
 
 function save_media(example, events::RecordEvents, path::String)
     # the path is fixed at record time to be stored relative to the example
@@ -64,6 +93,11 @@ end
 Returns the html to embed an image
 """
 function embed_image(path::AbstractString, alt = "")
+    if splitext(path)[2] == "pdf"
+        return """
+            <iframe src=$(tourl(path))></iframe>
+        """
+    end
     """
     <img src=$(tourl(path)) alt=$(repr(alt))>
     """
@@ -89,12 +123,12 @@ Embeds the most common media types as html
 """
 function embed_media(path::String, alt = "")
     file, ext = splitext(path)
-    if ext in (".png", ".jpg", ".jpeg", ".JPEG", ".JPG", ".gif")
+    if ext in (".png", ".jpg", ".jpeg", ".JPEG", ".JPG", ".gif", ".pdf", ".svg")
         return embed_image(path, alt)
     elseif ext == ".mp4"
         return embed_video(path, alt)
     else
-        error("Unknown media extension: $ext")
+        error("Unknown media extension: $ext with path: $path")
     end
 end
 
@@ -190,7 +224,8 @@ Creates a Markdown representation from an example at `mdpath`.
 """
 function save_highlighted_markdown(
                                 path::String, example::CellEntry, media::Vector{String},
-                                highlighter = Highlights.Themes.DefaultTheme
+                                highlighter = Highlights.Themes.DefaultTheme;
+                                print_toplevel = true
                             )
 
     src = example2source(
@@ -198,7 +233,8 @@ function save_highlighted_markdown(
         scope_start = "",
         scope_end = "",
         indent = "",
-        outputfile = (entry, ending)-> string("output", ending)
+        outputfile = (entry, ending)-> string("output", ending),
+        print_toplevel = print_toplevel
     )
     hio = IOBuffer(read = true, write = true)
     highlight(hio, MIME("text/html"), src, Highlights.Lexers.JuliaLexer, highlighter)
@@ -236,6 +272,9 @@ function set_last_evaled!(unique_name::Symbol)
     last_evaled[] = idx - 1 # minus one, because record_example will start at idx + 1
 end
 
+backend_reset_theme!(; kwargs...) = AbstractPlotting.set_theme!(; kwargs...)
+# for Plots: default(; kwargs...)
+
 """
     record_examples(folder = ""; resolution = (500, 500), resume = false)
 
@@ -245,10 +284,12 @@ start record with `resume = true`, to start at the last example that errored.
 function record_examples(
         folder = "";
         resolution = (500, 500), resume::Union{Bool, Integer} = false,
-        generate_thumbnail = false, display = false
+        generate_thumbnail = false, display = false,
+        display_output_toplevel = true
     )
-    last = AbstractPlotting.use_display[]
-    AbstractPlotting.inline!(!display)
+
+    preeval_hook[](display)
+
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end
@@ -263,7 +304,7 @@ function record_examples(
         1
     end
     @info("starting from index $start")
-    AbstractPlotting.set_theme!(resolution = resolution)
+    backend_reset_theme!(resolution = resolution)
 
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
@@ -271,21 +312,26 @@ function record_examples(
             uname = example.unique_name
             println(uname)
             @testset "$(example.title)" begin
-                subfolder = joinpath(folder, string(uname))
-                outfolder = joinpath(subfolder, "media")
-                ispath(outfolder) || mkpath(outfolder)
-                save_media(example, value, outfolder)
-                push!(result, subfolder)
-                set_last_evaled!(uname)
-                AbstractPlotting.set_theme!(resolution = resolution) # reset before next example
-                @test true
+                try
+                    subfolder = joinpath(folder, string(uname))
+                    outfolder = joinpath(subfolder, "media")
+                    ispath(outfolder) || mkpath(outfolder)
+                    save_media(example, value, outfolder)
+                    push!(result, subfolder)
+                    set_last_evaled!(uname)
+                    backend_reset_theme!(resolution = resolution) # reset before next example
+                    @test true
+                catch e
+                    @warn "Error thrown when evaluating $(example.title)" exception=e
+                    @test false
+                end
             end
         end
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
-    gallery_from_recordings(folder, joinpath(folder, "index.html"))
+    gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
     generate_thumbnail && generate_thumbnails(folder)
-    AbstractPlotting.use_display[] = last
+    posteval_hook[](display)
     result
 end
 
@@ -332,7 +378,8 @@ function gallery_from_recordings(
             "theme",
             "annotations"
         ],
-        hltheme = Highlights.Themes.DefaultTheme
+        hltheme = Highlights.Themes.DefaultTheme,
+        print_toplevel = true
     )
 
     items = map(MakieGallery.database) do example
@@ -340,7 +387,7 @@ function gallery_from_recordings(
         media_path = joinpath(base_path, "media")
         media = master_url.(folder, joinpath.(media_path, readdir(media_path)))
         mdpath = joinpath(base_path, "index.md")
-        save_highlighted_markdown(mdpath, example, media, hltheme)
+        save_highlighted_markdown(mdpath, example, media, hltheme; print_toplevel = print_toplevel)
         md2html(mdpath; stylesheets = [relpath(joinpath(dirname(html_out), "syntaxtheme.css"), base_path)])
         MediaItem(base_path, example)
     end

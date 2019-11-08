@@ -15,3 +15,6 @@ prec.zip
 tmax.zip
 .DS_Store
 
+_site/
+Gemfile
+Gemfile.lock

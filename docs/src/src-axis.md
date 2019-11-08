@@ -23,11 +23,3 @@ You can access the nested attributes in multiple ways. Take the nested attribute
 1. `axis[:names, :axisnames] = ("x", "y", "z")`
 1. `axis[:names][:axisnames] = ("x", "y", "z")`
 1. `axis = (names = (axisnames = ("x", "y", "z"),),)`
-
-### Examples
-
-@example_database("Unicode Marker")
-
-@example_database("Axis + Surface")
-
-@example_database("Axis theming")

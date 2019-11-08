@@ -13,7 +13,7 @@ Any color symbol supported by Color.jl is supported, check out their page on [na
 
 Colormaps are mappings of values to colors.  You can supply the coloring values using the `color` keyword argument, and the colormap will automatically be adjusted to fit those values.  THe default colormap is `viridis`, which looks like this:
 
-@example_database("Viridis color scheme")
+![Viridis colormap](assets/viridis.png)
 
 You can copy this code and substitute `cmap` with any `Colormap` to show the colormap.
 
@@ -58,9 +58,6 @@ Released under The MIT License (MIT) Copyright (c) 2015 Peter Kovesi. These are 
 Created by Cynthia Brewer, Mark Harrower, and The Pennsylvania State University. Released under the Apache License, Version 2.0. Full license info available [here](https://github.com/JuliaPlots/PlotUtils.jl/blob/master/LICENSE.md#colorbrewer).
 
 @example_database("Colormap collection", 4)
-
-!!! note
-    Due to the font in the image above, it may be difficult to tell that the yellow-orange-brown gradient, `YlOrBr`, is not `YIOrBr` - the second character is an `l`, not an `I`.
 
 ### MISC
 

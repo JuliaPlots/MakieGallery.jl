@@ -2,19 +2,20 @@ const makiegallery_dir = dirname(dirname(@__DIR__))
 
 using Base.Threads
 
-const current_ref_version = v"0.2.4"
-function ref_image_dir(version = current_ref_version)
+const current_ref_version = Ref{String}("v0.2.4")
+function ref_image_dir(version = string(current_ref_version[]))
     return download_reference(version)
 end
 """
 Downloads the reference images from ReferenceImages for a specific version
 """
-function download_reference(version = current_ref_version)
+function download_reference(version = string(current_ref_version[]))
+    refpath_version = version[1] == 'v' && version[2] in '0':'9' ? version[2:end] : version
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
-    url = "https://github.com/SimonDanisch/ReferenceImages/archive/v$(version).tar.gz" # TODO FIXME
-    refpath = joinpath(download_dir, "ReferenceImages-$(version)", "gallery")
+    url = "https://github.com/SimonDanisch/ReferenceImages/archive/$(version).tar.gz" # TODO FIXME
+    refpath = joinpath(download_dir, "ReferenceImages-$(refpath_version)", "gallery")
     if !isdir(refpath) # if not yet downloaded
         download_images() = download(url, tarfile)
         try
@@ -36,7 +37,6 @@ function download_reference(version = current_ref_version)
     end
     refpath
 end
-
 
 is_image_file(path) = lowercase(splitext(path)[2]) in (".png", ".jpg", ".jpeg")
 
