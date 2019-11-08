@@ -13,7 +13,7 @@ using Documenter, Markdown, Pkg, Random, FileIO, JSON, HTTP, GitHub
 
 using MakieGallery, AbstractPlotting
 
-import AbstractPlotting: to_string,
+import AbstractPlotting: to_string
 
 using MakieGallery: eval_examples, generate_thumbnail, master_url,
                     print_table, download_reference,
@@ -60,7 +60,7 @@ end
 
 function hasGHAPRComment(repo::AbstractString, pr::Int, msg::AbstractString)
     return hasGHAPRComment(
-        GitHub.comments(repo, pr, :pr),
+        GitHub.comments(repo, pr, :pr)[1],
         msg
     )
 end
@@ -88,25 +88,25 @@ function push_PR_preview_docs(deploy_url)
     @info "Pushing preview docs."
 
     # Find the latest PR associated with the commit, from its SHA
-    PR = getPR(repo, commit_sha)
+    PR = parse(Int, getPR(repo, commit_sha))
 
     # Overwrite Documenter's function for generating the versions.js file
     foreach(
         Base.delete_method,
         methods(Documenter.Writers.HTMLWriter.generate_version_file)
     )
-    Documenter.Writers.HTMLWriter.generate_version_file(_, _) = nothing
+    @eval Documenter.Writers.HTMLWriter.generate_version_file(_, _) = nothing
+
+    # Force Documenter to deploy by SSH, to circumvent the bug with Github not
+    # deploying documentation when an application pushes to `gh-pages`
+    @eval Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH
 
     # Overwrite necessary environment variables to trick Documenter to deploy
     ENV["GITHUB_EVENT_NAME"] = "push"
     ENV["GITHUB_REF"] = "refs/heads/master"
     ENV["GITHUB_REPOSITORY"] = deploy_url
 
-    # Force Documenter to deploy by SSH, to circumvent the bug with Github not
-    # deploying documentation when an application pushes to `gh-pages`
-    Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH
-
-    deploydocs(
+    Base.invokelatest(deploydocs,
         devurl = "preview-PR$(PR)",
         repo = deploy_url,
     )
@@ -376,12 +376,12 @@ end
 # Set up for pushing preview docs from PRs #
 ############################################
 
+cd(@__DIR__)
+
 if isPR()
     @info "Pull request detected, pushing preview documentation"
     push_PR_preview_docs(get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs"))
 end
-
-cd(@__DIR__)
 
 deploydocs(
     repo = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/JuliaPlots/MakieGallery.jl")
