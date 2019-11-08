@@ -342,7 +342,8 @@ makedocs(
             "why-makie.md",
             "devdocs.md",
             "gallery.md",
-            "AbstractPlotting Reference" => "abstractplotting_api.md"
+            "AbstractPlotting Reference" => "abstractplotting_api.md",
+            "Type Trees" => "typetrees.md"
         ],
     ]
 )
