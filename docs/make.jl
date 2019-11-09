@@ -39,7 +39,7 @@ function isPR()::Bool
     end
     if haskey(ENV, "GITHUB_TOKEN")
         @info "Github Actions detected"
-        return occursin("master", get(ENV, "GITHUB_REF", "nothing"))
+        return !occursin("master", get(ENV, "GITHUB_REF", "nothing"))
     end
     return false
 end
