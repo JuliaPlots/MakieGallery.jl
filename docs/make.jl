@@ -33,12 +33,13 @@ Detects whether the commit being built is in a pull request or not.
 function isPR()::Bool
     if haskey(ENV, "CI")
         if haskey(ENV, "TRAVIS")
+            @info "Travis CI detected"
             return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
         end
     end
     if haskey(ENV, "GITHUB_TOKEN")
         @info "Github Actions detected"
-        return rstrip(read(pipeline(`git branch --show-current`), String)) != "master"
+        return occursin("master", get(ENV, "GITHUB_REF", "nothing"))
     end
     return false
 end
