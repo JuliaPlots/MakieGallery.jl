@@ -55,7 +55,7 @@ end
 
 function hasGHAPRComment(cs::Vector{GitHub.Comment}, msg::AbstractString)
     return any(cs) do comment
-        isGHActions(comment.user) && cs[1].body == msg
+        isGHActions(comment.user) && occursin(msg, comment.body)
     end
 end
 
