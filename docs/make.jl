@@ -38,7 +38,7 @@ function isPR()::Bool
     end
     if haskey(ENV, "GITHUB_TOKEN")
         @info "Github Actions detected"
-        return read(pipeline(`git branch --show-current`), String) != "master"
+        return rstrip(read(pipeline(`git branch --show-current`), String)) != "master"
     end
     return false
 end
