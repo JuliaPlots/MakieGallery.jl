@@ -6,11 +6,12 @@ variables:
 
 stages:
   - test
-  - documentation
   - refimages
 
 gallerytest:
   stage: test
+  tags:
+      - opengl
   image: "juliagpu/julia:v1.2-${CI_IMAGE_TAG}"
   before_script:
       - apt-get -qq update
