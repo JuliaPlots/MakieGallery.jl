@@ -297,7 +297,10 @@ end
 makedocs(
     modules = [AbstractPlotting],
     doctest = false, clean = true,
-    format = Documenter.HTML(prettyurls = false),
+    format = Documenter.HTML(;
+                  prettyurls = false, 
+                  analytics = "UA-25440897-2"
+              ),
     sitename = "Makie.jl",
     expandfirst = [
         "basic-tutorials.md",
