@@ -25,6 +25,7 @@ jobs:
           git config --local user.email "44736852+zeptodoctor@users.noreply.github.com";
           git commit -am "Removed ${BUILD_DIR}";
           git remote set-url origin https://x-access-token:${GIT_TOKEN}@github.com/${DOCS_REPOSITORY};
+          git push
           )
 
         env: 
