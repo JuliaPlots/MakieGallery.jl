@@ -33,8 +33,8 @@ database  = if _minimal
 
 # Setup MakieGallery's pre-eval and post-eval hooks
 
-MakieGallery.preeval_hook[]  = _ -> begin preeval_cache[] = AbstractPlotting.use_display[]; global display; AbstractPlotting.inline!(!display) end
-MakieGallery.posteval_hook[] = _ -> AbstractPlotting.use_display[] = last
+MakieGallery.preeval_hook[]  = display -> begin MakieGallery.preeval_cache[] = AbstractPlotting.use_display[]; AbstractPlotting.inline!(!display) end
+MakieGallery.posteval_hook[] = display -> begin AbstractPlotting.use_display[] = MakieGallery.preeval_cache[]; end
 
 # We have lots of redundant examples, so no need to test all of them every time
 # (We should before a tag + deploy docs though)

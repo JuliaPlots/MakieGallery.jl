@@ -1,0 +1,35 @@
+name: Clean PR builds
+
+on: 
+  pull_request:
+    types: [closed]
+    
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        julia-version: [1.2.0]
+        julia-arch: [x86]
+        os: [ubuntu-latest]
+    steps:
+      - uses: actions/checkout@v1.0.0
+        with: 
+          repository: asinghvi17/MakiePreviewDocs
+          ref: refs/heads/gh-pages
+      - name: Remove PR preview folder
+        run: |
+          [ -d ${BUILD_DIR} ] && \
+          (rm -rf ${BUILD_DIR};
+          git config --local user.name "zeptodoctor";
+          git config --local user.email "44736852+zeptodoctor@users.noreply.github.com";
+          git commit -am "Removed ${BUILD_DIR}";
+          git remote set-url origin https://x-access-token:${GIT_TOKEN}@github.com/${DOCS_REPOSITORY};
+          git push
+          )
+
+        env: 
+          BUILD_DIR: "preview-PR${{ github.event.number }}"
+          GIT_TOKEN: ${{ secrets.PreviewDeployKey }}
+          DOCS_REPOSITORY: "asinghvi17/MakiePreviewDocs"
+        

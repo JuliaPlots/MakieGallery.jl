@@ -6,11 +6,12 @@ variables:
 
 stages:
   - test
-  - documentation
   - refimages
 
 gallerytest:
   stage: test
+  tags:
+      - opengl
   image: "juliagpu/julia:v1.2-${CI_IMAGE_TAG}"
   before_script:
       - apt-get -qq update
@@ -22,7 +23,7 @@ gallerytest:
     - glxinfo | grep 'version'
     - julia -e 'using InteractiveUtils; versioninfo()'
     - julia --project -e "using Pkg;
-                          pkg\"add $CI_DEV_PKGS\""
+                          pkg\"add StaticArrays@0.11 $CI_DEV_PKGS\""
     - julia --project -e 'using Pkg; pkg"test"'
 
   artifacts:
