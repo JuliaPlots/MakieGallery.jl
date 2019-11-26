@@ -26,6 +26,8 @@ Head straight to the [Plotting functions overview](@ref).
 
 What makes up the Makie Ecosystem? `Makie.jl` is the metapackage for a rich ecosystem, which consists of [`GLMakie.jl`](https://github.com/JuliaPlots/GLMakie.jl), [`CairoMakie.jl`](https://github.com/JuliaPlots/CairoMakie.jl) and [`WGLMakie.jl`](https://github.com/JuliaPlots/WGLMakie.jl) (the backends); [`AbstractPlotting.jl`](https://github.com/JuliaPlots/AbstractPlotting.jl) (the bulk of the package); and [`StatsMakie.jl`](https://github.com/JuliaPlots/StatsMakie.jl) (statistical plotting support, as in [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)).
 
+There are also a number of packages that are being built to extend and enable more customizability within Makie. While these are not part of Makie currently, if you are looking to go a little deeper into what is possible, it is worth looking into them: [MakieThemes.jl](https://github.com/JuliaPlots/MakieThemes.jl)
+
 ## Getting Help
 
 If you run into any issues or have questions that you cannot solve on your own by using the help mode in the REPL, here are your options:
