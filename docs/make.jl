@@ -301,6 +301,7 @@ makedocs(
     sitename = "Makie.jl",
     expandfirst = [
         "basic-tutorials.md",
+        "examples.md",
         "statsmakie.md",
         "animation.md",
         "interaction.md",
@@ -320,6 +321,7 @@ makedocs(
         "Home" => "index.md",
         "Basics" => [
             "basic-tutorials.md",
+            "examples.md",
             "statsmakie.md",
             "animation.md",
             "interaction.md",
