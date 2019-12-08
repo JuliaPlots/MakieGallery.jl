@@ -78,6 +78,37 @@ Any plot created based on this pipeline system will get updated whenever the nod
 *Note: for now, `lift` is just an alias for `Observables.map`,
 and `Node` is just an alias for `Observables.Observable`. This allows decoupling of the APIs.*
 
+#### Shorthand macro for `lift`
+
+When using [`lift`](@ref), it can be tedious to reference each participating `Node`
+at least three times, once as an argument to `lift`, once as an argument to the closure that
+is the first argument, and at least once inside the closure:
+
+```julia
+x = Node(rand(100))
+y = Node(rand(100))
+z = lift((x, y) -> x .+ y, x, y)
+```
+
+To circumvent this, you can use the `@lift` macro. You simply write the operation
+you want to do with the lifted `Node`s and prepend each `Node` variable
+with a dollar sign $. The macro will lift every Node variable it finds and wrap
+the whole expression in a closure. The equivalent to the above statement using `@lift` is:
+
+```julia
+z = @lift($x .+ $y)
+```
+
+This also works with multiline statements and tuple or array indexing:
+
+```julia
+multiline_node = @lift begin
+    a = $x[1:50] .* $y[51:100]
+    b = sum($z)
+    a - b
+end
+```
+
 ### Event triggering
 Often it is the case that you want an event to be triggered each time a `Node` has its value updated.
 This is done using the `on-do` block from `Observables`.
