@@ -75,8 +75,10 @@ That is to say, the `Node` `y` maps the function `f` (which is `a -> a^2` in thi
 This is the basis of updating `Node`s, and is used for updating plots in Makie.
 Any plot created based on this pipeline system will get updated whenever the nodes it is based on are updated!
 
-*Note: for now, `lift` is just an alias for `Observables.map`,
-and `Node` is just an alias for `Observables.Observable`. This allows decoupling of the APIs.*
+!!! note
+    For now, `lift` is just an alias for `Observables.map`,
+    and `Node` is just an alias for `Observables.Observable`. 
+    This allows decoupling of the APIs.
 
 #### Shorthand macro for `lift`
 
