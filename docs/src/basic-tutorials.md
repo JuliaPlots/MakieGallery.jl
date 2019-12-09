@@ -9,7 +9,7 @@ add Makie
 ```
 
 ## Getting the latest version of Makie
-Run the following commands in the package manager:
+Run the following commands in the package manager, this is required if you have Julia version above v1.0.0:
 ```Julia
 add Makie#master AbstractPlotting#master GLMakie#master
 test Makie
@@ -31,6 +31,15 @@ Note that before you put anything in the scene, it will be blank!
 
 The user-facing functions of Makie are pretty well documented, so you can usually use the help mode in the REPL, or your editor of choice. If you countinue to have issues, see [Getting Help](@ref).
 
+## Plotting in Scripts
+
+If you go and try out each example listed here in the interactive Julia terminal/repl then you would not need the _display(scene)_ at the end. However if you go and try to do it in script _.jl_ file then you 
+would need the _display(scene)_ to display the graph, as in the repl Julia automatically calls _display_.
+
+```Julia
+display(scene)
+```
+
 ## Basic plotting
 
 Below are some examples of basic plots to help you get oriented.
@@ -41,6 +50,18 @@ Many of these examples also work in 3D.
 
 It is worth noting initally that if you run a Makie.jl example and nothing shows up, you likely need to do `display(scene)` to render the example on screen.
 
+## Plot Attributes
+
+Plot attributes are used to style the plots and in Makie.jl these modifiers are called attributes. They are documented on the [Attributes](@ref) page.
+
+As an example we will change the line width of the line by using the __linewidth__ attribute.
+
+```Julia
+x = 1:10
+y = rand(10, 2)
+scene = lines(x, y, linewidth = 2)
+```
+
 ### Scatter plot
 
 @example_database("Tutorial simple scatter")
@@ -50,6 +71,28 @@ It is worth noting initally that if you run a Makie.jl example and nothing shows
 ### Line plot
 
 @example_database("Tutorial simple line")
+
+## Different types of Plot Layouts
+
+In Makie.jl you can use multiple types of plots listed over [here](http://makie.juliaplots.org/dev/functions-overview.html). You can either combine multiple plots or display them seperately.
+
+## Combining Multiple Plots as Subplots
+
+If you want multiple plots or multiple types of plots on a single graph then you can use functions such as _lines!_ to
+add to the plot, you just have to add the scene as a arguement and you can have all the available attributes for the type
+of graph you want.
+
+```Julia
+x1 = 1:10
+y1 = rand(10)
+scene = lines(x1,y1)
+
+x2 = 1:10
+y2 = rand(10)
+scatter!(scene, x2, y2, color = :red)
+```
+
+This will display a line and multiple circles scattered at many points as it uses a line and a scatter type graph.
 
 ### Adding a title
 
