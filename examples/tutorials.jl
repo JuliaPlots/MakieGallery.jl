@@ -22,6 +22,28 @@
         scene = lines(x, y, color = :blue)
     end
 
+    @cell "Tutorial plot attributes" [tutorial, line, attributes] begin
+        x = 1:10
+        y = rand(10, 2)
+        scene = lines(x, y, linewidth = 2)
+    end
+
+    @cell "Tutorial subplots" [tutorial, line, scatter] begin
+        x1 = 1:10
+        y1 = rand(10)
+        scene = lines(x1,y1)
+
+        x2 = 1:10
+        y2 = rand(10)
+        scatter!(scene, x2, y2, color = :red)
+    end
+
+    @cell "Tutorial two lines" [tutorial, line] begin
+        x1 = 1:10
+        y1 = rand(10,2)
+        scene = lines(x1,y1)
+    end
+
     @cell "Tutorial adding to a scene" [tutorial, line, scene, markers] begin
         x = range(0, stop = 2pi, length = 80)
         f1(x) = sin.(x)
@@ -35,7 +57,7 @@
         lines!(scene, x, y2, color = :black)
         scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
     end
-    
+
     @cell "Tutorial removing from a scene" [tutorial, line, scene, markers] begin
         x = range(0, stop = 2pi, length = 80)
         f1(x) = sin.(x)

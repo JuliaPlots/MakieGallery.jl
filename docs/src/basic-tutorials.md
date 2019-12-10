@@ -33,7 +33,7 @@ The user-facing functions of Makie are pretty well documented, so you can usuall
 
 ## Plotting in Scripts
 
-If you go and try out each example listed here in the interactive Julia terminal/repl then you would not need the _display(scene)_ at the end. However if you go and try to do it in script _.jl_ file then you 
+If you go and try out each example listed here in the interactive Julia terminal/repl then you would not need the _display(scene)_ at the end. However if you go and try to do it in script _.jl_ file then you
 would need the _display(scene)_ to display the graph, as in the repl Julia automatically calls _display_.
 
 ```Julia
@@ -56,11 +56,7 @@ Plot attributes are used to style the plots and in Makie.jl these modifiers are 
 
 As an example we will change the line width of the line by using the __linewidth__ attribute.
 
-```Julia
-x = 1:10
-y = rand(10, 2)
-scene = lines(x, y, linewidth = 2)
-```
+@example_database("Tutorial plot attributes")
 
 ### Scatter plot
 
@@ -72,6 +68,8 @@ scene = lines(x, y, linewidth = 2)
 
 @example_database("Tutorial simple line")
 
+@example_database("Tutorial two lines")
+
 ## Different types of Plot Layouts
 
 In Makie.jl you can use multiple types of plots listed over [here](http://makie.juliaplots.org/dev/functions-overview.html). You can either combine multiple plots or display them seperately.
@@ -82,15 +80,7 @@ If you want multiple plots or multiple types of plots on a single graph then you
 add to the plot, you just have to add the scene as a arguement and you can have all the available attributes for the type
 of graph you want.
 
-```Julia
-x1 = 1:10
-y1 = rand(10)
-scene = lines(x1,y1)
-
-x2 = 1:10
-y2 = rand(10)
-scatter!(scene, x2, y2, color = :red)
-```
+@example_database("Tutorial subplots")
 
 This will display a line and multiple circles scattered at many points as it uses a line and a scatter type graph.
 
