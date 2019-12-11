@@ -12,7 +12,7 @@ gallerytest:
   stage: test
   tags:
       - opengl
-  image: "juliagpu/julia:v1.2-${CI_IMAGE_TAG}"
+  image: "juliagpu/julia:v1.2-opengl"
   before_script:
       - apt-get -qq update
       # glfw
