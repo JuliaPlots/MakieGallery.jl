@@ -127,7 +127,62 @@
         step!(st)
         st
     end
+    
+    @cell "Tutorial two lines" [tutorial, barplot] begin
+        # simple Makie.jl implementationo to generate two random zig zag lines on a graph.
+        using Makie
+        scene = Scene()
+        lines!(scene, rand(10), color = :blue, linewidth = 3)
+        lines!(scene, rand(10), color = :orange, linewidth = 3)
+        sc_t = title(scene, "two lines")
+        
+    end
+    
+     
+    @cell "Tutorial line function" [tutorial, barplot] begin
+        # plotting graph of simple cos function.
+        using Makie
+        x = range(0, stop = 2pi, length = 40)
+        f(x) = cos.(x)
+        y = f(x)
+        scene = lines(x, y, color = :orange, linewidth = 3)
+        sc_t = title("cos function graph")
+        sc_t
+    end
+    
+    @cell "Tutorial advanced scatter plot" [tutorial, barplot] begi
+        #  Simple scatter plot in Makie.jl.
 
+        using Makie
+
+        x1 = rand(10)
+        y1 = rand(10)
+        x2 = rand(10)
+        y2 = rand(10)
+ 
+        scene = Scene()
+        scatter!(x1, y1, color = :orange)
+        scatter!(x2, y2, color = :blue)
+
+        sc_t = title(scene, "My Scatter Plot")
+        sc_t
+    end
+    
+    @cell "Tutorial vbox layout" [tutorial, barplot] begi
+        # combining multiple graph plots into a layout using vbox.
+
+        using Makie
+
+        scene = vbox(
+	        hbox(lines(rand(10), color = :blue), lines(rand(10), color = :red), lines(rand(10), color = :green)),
+	        hbox(scatter(rand(10), rand(10), color = :orange) , scatter(rand(10), rand(10), color = :gray))
+        )
+
+        sc_t = title("vbox layout")
+        sc_t
+
+    end
+    
     # @cell "Tutorial markersizes" [tutorial, markersize, scatter] begin
     #
     #     scene = scatter(rand(10); markersize = 10px)
