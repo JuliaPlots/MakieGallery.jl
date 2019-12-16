@@ -52,7 +52,7 @@ plotting random dots on a graph using __scatter__.
 @example_database("Tutorial advanced scatter plot")
 
 ### Line plot
-Line plot can be used do plot any line. Attributes can be used to control width, color etc. of the line. 
+A line plot can be used to plot any line. Attributes can be used to control width, color etc. of the line. 
 
 @example_database("Tutorial simple line")
 
