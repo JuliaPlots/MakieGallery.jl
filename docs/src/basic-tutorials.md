@@ -43,13 +43,22 @@ It is worth noting initally that if you run a Makie.jl example and nothing shows
 
 ### Scatter plot
 
+plotting random dots on a graph using __scatter__.
+
 @example_database("Tutorial simple scatter")
 
 @example_database("Tutorial markersize")
 
+@example_database("Tutorial advanced scatter plot")
+
 ### Line plot
+Line plot can be used do plot any line. Attributes can be used to control width, color etc. of the line. 
 
 @example_database("Tutorial simple line")
+
+@example_database("Tutorial two lines")
+
+@example_database("Tutorial line function")
 
 ### Adding a title
 
@@ -72,6 +81,13 @@ You can also use the convenience functions [`xlims!`](@ref), [`ylims!`](@ref) an
 ### Basic theming
 
 @example_database("Tutorial basic theming")
+
+
+### Layouts using vbox
+
+vbox is used to combine multiple graphs into horizontal and vertical layouts. __vbox__ is used for vertical layouts and __hbox__ for horizontal layouts. 
+
+@example_database("Tutorial vbox layout")
 
 ### Statistical plotting
 
