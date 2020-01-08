@@ -44,7 +44,7 @@ end
 @block AnshulSinghvi ["interactive"]  begin
 
     @cell "Interactive Differential Equation" [lines, slider, animated, record, diffeq, interactive] begin
-        using DifferentialEquations, ParameterizedFunctions
+        using OrdinaryDiffEq, ParameterizedFunctions
         import AbstractPlotting: textslider
         lorenz = @ode_def Lorenz begin           # define the system
             dx = σ * (y - x)
