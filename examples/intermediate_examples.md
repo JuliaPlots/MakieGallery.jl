@@ -1,4 +1,6 @@
-# Makie Tutorial (Intermediate)
+# Makie Examples (Intermediate)
+
+Based on [this example page](http://docs.juliaplots.org/latest/examples/gr/) from JuliaPlots.
 
 ## Initialize
 
