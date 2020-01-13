@@ -526,8 +526,6 @@ function examples2source(f, tags...; start = 1, kw_args...)
     end
 end
 
-const module_cache = Module[]
-
 function eval_example(
         entry;
         kw_args...
@@ -538,15 +536,11 @@ function eval_example(
     )
 
     uname = entry.unique_name
-    tmpmod = Module(gensym(uname))
-    # modules created via Module get gc'ed, so we need to store a global reference
-    push!(module_cache, tmpmod)
     steps = split(source, "@substep", keepempty = false)
     Random.seed!(42)
-    include
     if length(steps) == 1
         try
-            return include_string(tmpmod, source, string(uname))
+            return include_string(MakieGallery, "let\n" * source * "\nend\n", string(uname))
         catch e
             @warn "Example $(entry.title) failed"  exception=e
             println("with source:")

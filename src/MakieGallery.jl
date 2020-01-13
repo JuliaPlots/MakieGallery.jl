@@ -28,6 +28,14 @@ function event_path(entry, ending)
     joinpath(@__DIR__, "..", "examples", "recorded_events", string(entry.unique_name, ".jls"))
 end
 
+function assetpath(paths...)
+    return normpath(joinpath(@__DIR__, "..", "assets", paths...))
+end
+
+function loadasset(paths...)
+    return FileIO.load(assetpath(paths...))
+end
+
 """
 Loads the full example database and returns it!
 """

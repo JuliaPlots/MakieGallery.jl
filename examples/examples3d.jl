@@ -59,14 +59,13 @@
         volume(rand(32, 32, 32), algorithm = :mip)
     end
     @cell "Textured Mesh" [mesh, texture, cat] begin
-        using FileIO, GLMakie
+        using FileIO
         scene = Scene(@resolution)
-        catmesh = FileIO.load(GLMakie.assetpath("cat.obj"), GLNormalUVMesh)
-        mesh(catmesh, color = GLMakie.loadasset("diffusemap.tga"))
+        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"), GLNormalUVMesh)
+        mesh(catmesh, color = MakieGallery.loadasset("diffusemap.tga"))
     end
     @cell "Load Mesh" [mesh, cat] begin
-        using GLMakie
-        mesh(GLMakie.loadasset("cat.obj"))
+        mesh(MakieGallery.loadasset("cat.obj"))
     end
     @cell "Colored Mesh" [mesh, axis] begin
         x = [0, 1, 2, 0]
@@ -81,8 +80,7 @@
         mesh(x, y, z, indices, color = color)
     end
     @cell "Wireframe of a Mesh" [mesh, wireframe, cat] begin
-        using GLMakie
-        wireframe(GLMakie.loadasset("cat.obj"))
+        wireframe(MakieGallery.loadasset("cat.obj"))
     end
     @cell "Wireframe of Sphere" [wireframe] begin
         wireframe(Sphere(Point3f0(0), 1f0))
@@ -279,8 +277,8 @@
     end
 
     @cell "FEM mesh 3D" [mesh, fem] begin
-        using GeometryTypes, GLMakie
-        cat = GLMakie.loadasset("cat.obj")
+        using GeometryTypes
+        cat = MakieGallery.loadasset("cat.obj")
         vertices = decompose(Point3f0, cat)
         faces = decompose(Face{3, Int}, cat)
         coordinates = [vertices[i][j] for i = 1:length(vertices), j = 1:3]
@@ -440,8 +438,8 @@
     end
 
     @cell "Normals of a Cat" [mesh, linesegment, cat] begin
-        using LinearAlgebra, GLMakie
-        x = GLMakie.loadasset("cat.obj")
+        using LinearAlgebra
+        x = MakieGallery.loadasset("cat.obj")
         mesh(x, color = :black)
         pos = map(x.vertices, x.normals) do p, n
             p => p .+ (normalize(n) .* 0.05f0)
@@ -541,7 +539,6 @@
     end
 
     @cell "Line GIF" [lines, animated, gif, offset, record] begin
-        using GLMakie
         us = range(0, stop = 1, length = 100)
         scene = Scene()
         scene = linesegments!(scene, FRect3D(Vec3f0(0, -1, 0), Vec3f0(1, 2, 2)))
@@ -562,8 +559,6 @@
                 )[end]
                 pushfirst!(lineplots, p)
                 translate!(p, 0, 0, 0)
-                #TODO automatically insert new plots
-                insert!(GLMakie.global_gl_screen(), scene, p)
             else
                 lineplots = circshift(lineplots, 1)
                 lp = first(lineplots)
