@@ -60,7 +60,6 @@
         @substep
 
         plot(histogram, x, y)
-
         @substep
 
         plot(histogram(nbins = 30), x, y)

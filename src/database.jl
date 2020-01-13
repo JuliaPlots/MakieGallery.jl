@@ -1,4 +1,8 @@
 
+# Deprecated! We just handle the backends before executing the
+# examples!
+const plotting_backends = []
+
 struct CellEntry
     author::String
     title::String
@@ -174,8 +178,6 @@ function CellEntry(author, title, tags, file, file_range, toplevel, source, grou
     CellEntry(string(author), title, uname, tags, file, file_range, toplevel, source, groupid)
 end
 
-const plotting_backends = String["Makie"] # for now - we will have to fix this later to allow for different backends.
-
 """
 Prints the source of an entry in the database at `idx`.
 This puts entries of a group into one local scope
@@ -191,7 +193,6 @@ function print_code(
         print_toplevel = true
     )
 
-    println(io, "using ", join(plotting_backends, ", "))
     print_toplevel && println(io, entry.toplevel)
     print_toplevel || println(io, "\n# Some setup code has been omitted for clarity.\n")
     print(io, scope_start)
@@ -384,8 +385,11 @@ end
 
     ```example
     @block SimonDanisch ["2D"] begin
-        # shared setup code
-        using Makie, GeometryTypes, Colors
+        # shared setup code. Never include Makie or a backend, to make the
+        # example backend agnostic. If you need to use a certain backend,
+        # include the backend name as a tag!
+
+        using GeometryTypes, Colors
 
         # a cell with additional tags. The tags will get merged with tags from outer block
         @cell "Sample 1" ["heatmap"] begin
@@ -538,22 +542,28 @@ function eval_example(
     uname = entry.unique_name
     steps = split(source, "@substep", keepempty = false)
     Random.seed!(42)
+
+    temp_mod = MakieGallery.eval(:(module $(gensym("TempModule")) end))
+    @eval temp_mod (using AbstractPlotting)
+    @eval temp_mod (using ..MakieGallery)
+
     if length(steps) == 1
         try
-            return include_string(MakieGallery, "let\n" * source * "\nend\n", string(uname))
+            return include_string(temp_mod, source, string(uname))
         catch e
-            @warn "Example $(entry.title) failed"  exception=e
+            @warn "Example $(entry.title) failed"
             println("with source:")
             for line in split(source, "\n")
                 println(stderr, "    ", line)
             end
+            rethrow(e)
         end
     else
         return map(enumerate(steps)) do (i, source)
             try
-                return include_string(tmpmod, source, string(uname, "_", i))
+                return include_string(temp_mod, source, string(uname, "_", i))
             catch e
-                @warn "Example $(entry.title) failed"  exception=e
+                @warn "Example $(entry.title) failed" exception=e
                 println("with source:")
                 for line in split(source, "\n")
                     println(stderr, "    ", line)

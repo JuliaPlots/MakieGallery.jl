@@ -56,9 +56,12 @@ end
 function save_media(entry, results::AbstractVector, path::String)
     paths = String[]
     for (i, res) in enumerate(results)
-        img = joinpath(path, "image$i.jpg")
-        save(img, res)
-        push!(paths, img)
+        # Only save supported results
+        if res isa Union{Scene, String}
+            img = joinpath(path, "image$i.jpg")
+            save(img, res)
+            push!(paths, img)
+        end
     end
     paths
 end

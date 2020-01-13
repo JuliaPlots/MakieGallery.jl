@@ -1,4 +1,4 @@
-@block SebastianM_C ["3d"] begin
+@block SebastianM_C ["3d", "diffeq"] begin
     @cell "DifferentialEquations path animation" [lines, meshscatter, animated, record, diffeq] begin
         using OrdinaryDiffEq
         using Statistics
@@ -41,7 +41,7 @@
 
 end
 
-@block AnshulSinghvi ["interactive"]  begin
+@block AnshulSinghvi ["interactive", "diffeq"]  begin
 
     @cell "Interactive Differential Equation" [lines, slider, animated, record, diffeq, interactive] begin
         using OrdinaryDiffEq, ParameterizedFunctions
