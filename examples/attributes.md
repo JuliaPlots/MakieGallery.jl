@@ -1,11 +1,11 @@
-# Show the usage of attributes in Makie
-
-using Makie
-using Images
-using GeometryTypes
+## Show the usage of attributes in Makie
+Makie has various attributes available for usage. This file intents to show the usage and implementation of those attributes
+A full list of attributes can be found [here](http://makie.juliaplots.org/dev/plot-attributes.html#List-of-attributes-1)
 
 
-# shading
+### shading
+
+```julia
 scene = mesh(
     HyperRectangle(Vec3f0(1, 1, 1), Vec3f0(1, 1, 3)),
     color = (:green, 0.4),
@@ -14,11 +14,15 @@ scene = mesh(
     center = false,
 )
 display(scene)
+```
+
+### Output
+![img1](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p1.png)
 
 
+### colormap, color, colorrange, linestyle, linewidth, align, pos, textsize, rotation
 
-# colormap, color, colorrange, linestyle, linewidth, align, pos, textsize, rotation
-
+```julia
 scene = Scene()
 y = 200 * rand(300)
 x = range(0, 600, length = 300)
@@ -44,10 +48,15 @@ text!(
     rotation = pi / 6,
 )
 display(scene)
+```
+
+### Output
+![img2](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p2.png)
 
 
+### markersize, strokecolor, strokewidth, glowcolor, glowwidth, marker, marker_offset
 
-# markersize, strokecolor, strokewidth, glowcolor, glowwidth, marker, marker_offset
+```julia
 scene = Scene()
 points = Point2f0[(i, i) for i = 1:6]
 offset = rand(Point2f0, length(points)) ./ 5
@@ -71,9 +80,15 @@ scatter!(
     marker = :+,
 )
 display(scene)
+```
+
+### Output
+![img3](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p3.png)
 
 
-# visible
+### visible
+
+```julia
 scene = Scene()
 y = rand(3)
 scatter!(scene, y, visible = false)
@@ -82,34 +97,65 @@ text!(
     "The above plot is not visible!",
 )
 display(scene)
+```
+
+### Output
+![img4](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p4.png)
 
 
-# interpolate
+### interpolate
+
+```julia
 scene = Scene()
 
 source_img = load(download("https://images-na.ssl-images-amazon.com/images/I/41OEdd1En8L._SX322_BO1,204,203,200_.jpg"))
 img = Float32.(channelview(Gray.(source_img)))
 heatmap!(scene, img, interpolate = true)
 display(scene)
+```
+
+### Output
+![img5](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p5.png)
 
 
+### absorption, algorithm
 
-# absorption, algo
+```julia
 scene = Scene()
 volume!(scene, rand(50, 50, 50), algorithm = :absorption, absorption = 7.0f0)
 display(scene)
+```
+
+### Output
+![img6](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p6.png)
 
 
-#isorange, isovalue
+```juila
 scene = Scene()
 img = Float32.(channelview(source_img))
 volume!(scene, img, isorange = 0.012f0, isovalue = 0.3f0)
 display(scene)
+```
 
-# levels
+### Output
+![img7](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p7.png)
+
+
+### levels
+
+```julia
 N = 20
 x = range(-0.5, stop = 0.5, length = N)
 y = range(-0.5, stop = 0.5, length = N)
 z = x .* y'
 a = contour(x, y, z, levels = 100, colormap = :magma, fillrange = true)
 display(a)
+```
+
+### Output
+![img8](https://github.com/Akshat-mehrotra/codein/blob/master/JULIA/Makie%20attributes/image/p8.png)
+
+
+---
+
+*This page was generated using [Literate.jl](https://github.com/fredrikekre/Literate.jl).*
