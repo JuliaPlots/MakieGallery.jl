@@ -73,7 +73,6 @@ scatter!(
 display(scene)
 
 
-
 # visible
 scene = Scene()
 y = rand(3)
@@ -84,14 +83,12 @@ text!(
 )
 display(scene)
 
-scene = Scene()
-
-
 
 # interpolate
+scene = Scene()
 
 source_img = load(download("https://images-na.ssl-images-amazon.com/images/I/41OEdd1En8L._SX322_BO1,204,203,200_.jpg"))
-img = Float32.(channelview(Gray.(gray_img)))
+img = Float32.(channelview(Gray.(source_img)))
 heatmap!(scene, img, interpolate = true)
 display(scene)
 
@@ -108,11 +105,11 @@ scene = Scene()
 img = Float32.(channelview(source_img))
 volume!(scene, img, isorange = 0.012f0, isovalue = 0.3f0)
 display(scene)
-#
-# # levels
-# N = 20
-# x = range(-0.5, stop = 0.5, length = N)
-# y = range(-0.5, stop = 0.5, length = N)
-# z = x .* y'
-# a = contour(x, y, z, levels = 100, colormap = :magma, fillrange = true)
-# display(a)
+
+# levels
+N = 20
+x = range(-0.5, stop = 0.5, length = N)
+y = range(-0.5, stop = 0.5, length = N)
+z = x .* y'
+a = contour(x, y, z, levels = 100, colormap = :magma, fillrange = true)
+display(a)
