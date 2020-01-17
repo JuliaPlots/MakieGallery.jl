@@ -2,7 +2,7 @@ const makiegallery_dir = dirname(dirname(@__DIR__))
 
 using Base.Threads
 
-const current_ref_version = Ref{String}("v0.2.4")
+const current_ref_version = Ref{String}("v0.2.5")
 function ref_image_dir(version = string(current_ref_version[]))
     return download_reference(version)
 end
@@ -14,8 +14,8 @@ function download_reference(version = string(current_ref_version[]))
     download_dir = joinpath(makiegallery_dir, "testimages")
     isdir(download_dir) || mkpath(download_dir)
     tarfile = joinpath(download_dir, "gallery.zip")
-    url = "https://github.com/SimonDanisch/ReferenceImages/archive/$(version).tar.gz" # TODO FIXME
-    refpath = joinpath(download_dir, "ReferenceImages-$(refpath_version)", "gallery")
+    url = "https://github.com/JuliaPlots/MakieReferenceImages/archive/$(version).tar.gz" # TODO FIXME
+    refpath = joinpath(download_dir, "MakieReferenceImages-$(refpath_version)", "gallery")
     if !isdir(refpath) # if not yet downloaded
         download_images() = download(url, tarfile)
         try
@@ -50,6 +50,10 @@ function compare_media(a, b; sigma = [1,1], eps = 0.02)
     if ext in (".png", ".jpg", ".jpeg", ".JPEG", ".JPG")
         imga = load(a)
         imgb = load(b)
+        if size(imga) != size(imgb)
+            @warn "images don't have the same size, difference will be Inf"
+            return Inf
+        end
         return approx_difference(imga, imgb, sigma, eps)
     elseif ext in (".mp4", ".gif")
         mktempdir() do folder
