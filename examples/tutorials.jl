@@ -147,7 +147,7 @@ end
             )
             scene
     end
-    @cell "attribute usage : colormap, color, colorrange, linestyle, linewidth, align, pos, textsize, rotation" [tutorial, lines, text] begin
+    @cell "attribute usage : colormap, color, colorrange, linestyle, linewidth, align, pos, textsize, rotation" [tutorial, lines, text, colormap, color, colorrange, linestyle, linewidth, align, pos, textsize, rotation] begin
 
         scene = Scene()
         y = 200 * rand(300)
@@ -175,7 +175,7 @@ end
         )
         scene
     end
-    @cell "attribute usage : markersize, strokecolor, strokewidth, glowcolor, glowwidth, marker, marker offset" [tutorial, scatter] begin
+    @cell "attribute usage : markersize, strokecolor, strokewidth, glowcolor, glowwidth, marker, marker offset" [tutorial, scatter, markersize, strokecolor, strokewidth, glowcolor, glowwidth, marker, marker offset] begin
         scene = Scene()
         points = Point2f0[(i, i) for i = 1:6]
         offset = rand(Point2f0, length(points)) ./ 5
@@ -200,7 +200,7 @@ end
         )
         scene
     end
-    @cell "attributes usage : visible" [tutorial, scatter, text]
+    @cell "attributes usage : visible" [tutorial, scatter, text, visible]
         scene = Scene()
         y = rand(3)
         scatter!(scene, y, visible = false)
@@ -210,24 +210,24 @@ end
         )
         scene
     end
-    @cell "attribute usage : interpolate" [tutorial, heatmap, image]
+    @cell "attribute usage : interpolate" [tutorial, heatmap, image, interpolate]
         source_img = load(download("https://images-na.ssl-images-amazon.com/images/I/41OEdd1En8L._SX322_BO1,204,203,200_.jpg"))
         img = Float32.(channelview(Gray.(source_img)))
         heatmap!(scene, img, interpolate = true)
         scene
     end
-    @cell "attribute usage : absorption, algorithm" [tutorial, volume]
+    @cell "attribute usage : absorption, algorithm" [tutorial, volume, absorption, algorithm]
         scene = Scene()
         volume!(scene, rand(50, 50, 50), algorithm = :absorption, absorption = 7.0f0)
         scene
     end
-    @cell "attribute usage : isorange, isovalue" [tutorial, volume]
+    @cell "attribute usage : isorange, isovalue" [tutorial, volume, isorange, isovalue]
         scene = Scene()
         img = Float32.(channelview(source_img))
         volume!(scene, img, isorange = 0.012f0, isovalue = 0.3f0)
         scene
     end
-    @cell "attribute usage : levels" [contour]
+    @cell "attribute usage : levels" [contour, levels]
         N = 20
         x = range(-0.5, stop = 0.5, length = N)
         y = range(-0.5, stop = 0.5, length = N)
