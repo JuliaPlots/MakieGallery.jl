@@ -1,65 +1,98 @@
 using Makie
-using LinearAlgebra
 
-res = 500
-game = Scene(resolution = (res, res), raw = true, camera = campixel!)
-cell = 10
-cells = res ÷ 10
-snakelen = 5
-middle = cells ÷ 2
-snakestart = middle - (snakelen ÷ 2)
-segments = Point2f0.(middle, range(snakestart, step = cell, length = snakelen))
-snake = scatter!(game, segments, markersize = cell, color = :black, marker = :rect)[end]
-global last_dir = (0, 1)
-dir = lift(game.events.keyboardbuttons) do but
-    global last_dir
-    ispressed(but, Keyboard.left) && return (last_dir = (-1, 0))
-    ispressed(but, Keyboard.up) && return (last_dir = (0, 1))
-    ispressed(but, Keyboard.right) && return (last_dir = (1, 0))
-    ispressed(but, Keyboard.down) && return (last_dir = (0, -1))
-    last_dir
-end
-newsnake = copy(segments)
+score = 0
+println("  ______   __    _       __       _   _   _______")
+println("/ ______| |  \\  | |     /  \\     | | / / |  _____|")
+println("| |____   | \\ \\ | |    / /\\ \\    | |/ /  | |____")
+println("|_____  \\ | |\\ \\| |   / /__\\ \\   | | \\   |  ____|")
+println(" _____| | | | \\ \\ |  / /----\\ \\  | |\\ \\  | |_____")
+println("|_______/ |_|  \\__| /_/      \\_\\ |_| \\_\\ |_______|")
+println("")
+println("use the arrow keys to move and collect the red fruit. The snake gets faster and faster as the game progresses!")
+scene = Scene(resolution = (400, 400), raw = true, camera = campixel!)
+scene = scatter!([10], [10], color = :green, marker = :rect, markersize = 20)
+display(scene)
 
-food = scatter!(game, [Point2f0(res .÷ 2)], markersize = 2cell, marker = '☕')[end]
+k = [[0, 20], [0, 20], [0, 20], [0, 20]]
+dir = lift(scene.events.keyboardbuttons) do but
+    
+    if ispressed(but, Keyboard.left)
+        global k[1] = [-20, 0]
 
-function run_game(game, snake, newsnake, food)
-    display(game)
-    spawntime = time()
-    newspawn = 6
-    speed = 1/10
-    while isopen(game)
-        curr_snake = snake[1][]
-        circshift!(newsnake, curr_snake, 1)
-        newsnake[1] = newsnake[2] .+ Point2f0(dir[] .* cell)
-        spawndiff = time() - spawntime
-        if spawndiff > 0
-            if (newspawn - spawndiff) < 0.1 && (newspawn - spawndiff) > 0
-                food[1][][1] = Point2f0(rand(1:cells), rand(1:cells)) .* cell
-
-            elseif (newspawn - spawndiff) < 0.1
-                food[1][][1] = Point2f0(res + cell)
-                food[1][] = food[1][] # update array
-                spawntime = time()
-            end
-        end
-        if norm(newsnake[1] .- food[1][]) < 3cell
-            snake[:color] = :red
-            food[1][][1] = Point2f0(res + cell)
-            # append segments to snake
-            a, b = newsnake[end], newsnake[end - 1]
-            push!(newsnake, a .+ (b .- a))
-            push!(curr_snake, Point2f0(0))
-            speed = speed - (speed * 0.5)
-            spawntime = time()
-        else
-            snake[:color] = :black
-        end
-        food[1][] = food[1][] # update array
-        snake[1] = newsnake
-        newsnake = curr_snake
-        sleep(speed);
-        force_update!()
+    elseif ispressed(but, Keyboard.up)
+        global k[1] = [0, 20]
+        
+    elseif ispressed(but, Keyboard.right)
+        global k[1] = [20, 0]
+        
+    elseif ispressed(but, Keyboard.down)
+        global k[1] = [0, -20]
+        
     end
+    
 end
-run_game(game, snake, newsnake, food)
+
+y = [70, 50, 30, 10]
+x = [10, 10, 10, 10]
+fruit_x = 90
+fruit_y = 110
+game_over = false
+speed = 0.3
+while game_over == false
+    
+    scene = scatter!(x, y, color = :white, marker = :rect, markersize = 25)
+    scene = scatter!([fruit_x], [fruit_y], color = :white, marker = :rect, markersize = 25)
+
+    for i1 = 0:(length(x) - 2)
+        n1 = length(x) - i1
+        if k[n1 - 1] == [(x[n1 - 1] - x[n1]), (y[n1 - 1] - y[n1])]
+            k[n1] = k[n1 - 1]
+        end
+    end
+    
+    
+
+    for f = 2:length(x)
+        if x[f] == x[1] && y[f] == y[1]
+            global game_over = true
+        end
+    end
+    
+    if x[1] < 10 || x[1] > 390 || y[1] < 10 || y[1] > 390
+        global game_over = true
+    end
+
+    for i = 1:length(x)
+        x[i] += k[i][1]
+        y[i] += k[i][2]
+    end
+
+    if x[1] == fruit_x && y[1] == fruit_y
+        global fruit_x = rand([10, 30, 50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270, 290, 310, 330, 350, 370, 390])
+        global fruit_y = rand([10, 30, 50, 70, 90, 110, 130, 150, 170, 190, 210, 230, 250, 270, 290, 310, 330, 350, 370, 390])
+        push!(x, x[end] - k[end][1])
+        push!(y, y[end] - k[end][2])
+        push!(k, k[end])
+        global speed -= 0.01
+        global score += 1
+    end
+    scene = scatter!(x, y, color = :green, marker = :rect, markersize = 20)
+    scene = scatter!([fruit_x], [fruit_y], color = :red, marker = :rect, markersize = 20)
+    sleep(speed)
+
+end
+
+for i = 1:100
+    println("")
+end
+
+println("Game Over. Better Luck next time!")
+println("Your score was " * string(score) * ".")
+for i3 = 1:3
+    scene = scatter!(x, y, color = :white, marker = :rect, markersize = 25)
+    sleep(0.5)
+    scene = scatter!(x, y, color = :green, marker = :rect, markersize = 20)
+    sleep(0.5)
+end
+
+
