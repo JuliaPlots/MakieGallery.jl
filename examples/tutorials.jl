@@ -223,6 +223,7 @@ end
     end
     @cell "attribute usage : isorange, isovalue" [tutorial, volume, isorange, isovalue]
         scene = Scene()
+        source_img = load(download("https://images-na.ssl-images-amazon.com/images/I/41OEdd1En8L._SX322_BO1,204,203,200_.jpg"))
         img = Float32.(channelview(source_img))
         volume!(scene, img, isorange = 0.012f0, isovalue = 0.3f0)
         scene
