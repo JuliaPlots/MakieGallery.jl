@@ -53,7 +53,7 @@
     @cell "build plot in pieces" [lines] begin
          scene = Scene()
          # initialize the stepper and give it an output destination
-         st = Stepper(scene, "mystepper")
+         st = Stepper(scene, @replace_with_a_path)
          lines!(scene, rand(50)/3, color = :purple, linewidth = 5)
          step!(st)
          scatter!(scene, rand(50), color = :orange, markersize = 1)
