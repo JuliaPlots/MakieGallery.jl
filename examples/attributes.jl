@@ -17,7 +17,7 @@
     @cell "color" [lines, color] begin
         vbox(
             lines(rand(10), linewidth = 20, color = :blue)
-            lines(rand(10), linewidth = 20, color = to_colormap(:viridis, 10))
+            lines(rand(10), linewidth = 20, color = to_colormap(:viridis, 10)) #mapping from a colormap to colors with 10 color points
         )
     end
 
@@ -120,6 +120,9 @@
     end
 
     @cell "visible" [scatter, visible] begin
-        scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = true)
+        vbox(
+            scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = true),
+            scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = false),
+        )
     end
 end
