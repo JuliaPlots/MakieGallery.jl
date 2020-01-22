@@ -84,7 +84,7 @@
         scatter!(scene2, rand(10), color=:orange)
         barplot!(scene3, randn(99))
         plot!(scene4, histogram, randn(1000))
-        display(vbox(hbox(scene2,scene1),hbox(scene4,scene3)))
+        vbox(hbox(scene2,scene1),hbox(scene4,scene3))
     end
 
     @cell "text" [scatter, text] begin
