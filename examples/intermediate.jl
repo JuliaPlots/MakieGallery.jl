@@ -23,7 +23,7 @@
         g(v, t) = cos(v + t)
         lines!(scene,lift(t -> f.(range(0, stop = 2pi, length = 50), t), mytime),color = :blue)
         lines!(scene,lift(t -> g.(range(0, stop = 2pi, length = 50), t), mytime),color = :orange)
-        record(scene, "mygraph.gif", range(0, stop = 4pi, length = 100)) do i
+        record(scene, @replace_with_a_path(mp4), range(0, stop = 4pi, length = 100)) do i
             mytime[] = i
         end
     end
