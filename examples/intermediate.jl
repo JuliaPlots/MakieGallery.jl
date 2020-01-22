@@ -91,7 +91,6 @@
         scene = Scene()
         scatter!(scene, rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, position = (5.0, 1.1))
-        display(scene)
     end
 
     @cell "contours" [contour, fillrange] begin
