@@ -124,7 +124,7 @@
         scene[Axis][:names, :axisnames] = ("text","")
         scene[Axis][:names, :rotation] = (1.5pi)
         leg = legend([scene[2]], ["line"], position = (1, -1))
-        display(vbox(line,leg))
+        vbox(line, leg)
     end
 
     @cell "lines with varying colors" [lines, scatter, vbox, colormap] begin
