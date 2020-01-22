@@ -33,7 +33,7 @@
         lines(randn(10),color=LinRange(-1, 1, 10),colormap=:colorwheel,linewidth=8, colorrange = (-1.0,1.0))
     end
 
-    @cell "fillrange" [lines, colormap, colorrange] begin
+    @cell "fillrange" [contour, fillrange] begin
         x = LinRange(-1, 1, 20)
         y = LinRange(-1, 1, 20)
         z = x .* y'
