@@ -50,10 +50,6 @@
         scatter(randn(10),color=:blue, glowcolor = :orange, glowwidth = 10)
     end
 
-    @cell "glowcolor, glowwidth" [scatter, glowcolor, glowwidth] begin
-        scatter(randn(10),color=:blue, glowcolor = :orange, glowwidth = 10)
-    end
-
     @cell "image" [image] begin
         import FileIO
         img = Makie.logo()
