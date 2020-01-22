@@ -30,7 +30,7 @@
 
     @cell "parametric plots" [poly] begin
         x = LinRange(0, 2pi, 100)
-        poly(Point2f0.(zip(sin.(x), sin.(2x))), color = "orange", strokecolor = "blue", strokewidth = 4)
+        poly(Point2f0.(sin.(x), sin.(2x)), color = "orange", strokecolor = "blue", strokewidth = 4)
     end
 
     @cell "colors" [lines] begin
