@@ -44,7 +44,6 @@
         scene = Scene()
         scatter!(scene, rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, align = (:center, :center), font = "Blackchancery")
-        display(scene)
     end
 
     @cell "glowcolor, glowwidth" [scatter, glowcolor, glowwidth] begin
