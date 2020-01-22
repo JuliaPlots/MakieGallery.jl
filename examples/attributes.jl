@@ -121,7 +121,6 @@
         scene = Scene()
         scatter!(scene, rand(10), color = to_colormap(:colorwheel, 10))
         text!(scene, "hello world", textsize = 2)
-        display(scene)
     end
 
     @cell "visible" [scatter, visible] begin
