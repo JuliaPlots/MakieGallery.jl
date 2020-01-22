@@ -26,7 +26,7 @@
         θ = (6π) .* t
         x = t .* cos.(θ)
         y = t .* sin.(θ)
-        lines(x,y,color=t,colormap=:colorwheel,linewidth=8,scale_plot= false)
+        lines(x, y, color = t, colormap = :colorwheel, linewidth = 8, scale_plot = false)
     end
 
     @cell "colorrange" [lines, colormap, colorrange] begin
