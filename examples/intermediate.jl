@@ -41,7 +41,8 @@
 
     @cell "image" [image] begin
         import FileIO
-        img = FileIO.load(download("http://makie.juliaplots.org/dev/assets/logo.png"))
+        img = Makie.logo()
+
         image(img, scale_plot = false)
     end
 
