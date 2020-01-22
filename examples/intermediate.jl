@@ -14,7 +14,6 @@
         x = range(0, stop = 3pi, step = 0.01)
         lines!(scene, x, sin.(x), color = :black)
         lines!(scene, x, cos.(x), color = :blue)
-        display(scene)
     end
 
     @cell "animations" [lines] begin
