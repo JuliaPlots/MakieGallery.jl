@@ -50,7 +50,6 @@
         scene = Scene()
         lines!(scene, rand(10), color = to_colormap(:viridis, 10), linewidth = 5)
         lines!(scene, rand(20), color = :red, alpha = 0.5)
-        display(scene)
     end
 
     @cell "build plot in pieces" [lines] begin
