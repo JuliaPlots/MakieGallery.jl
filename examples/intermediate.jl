@@ -134,7 +134,7 @@
         y = t .* sin.(θ)
         p1 = lines(x,y,color=t,colormap=:colorwheel,linewidth= 8,scale_plot= false)
         p2 = scatter(x,y,color=t,colormap=:colorwheel,linewidth= 8,scale_plot= false)
-        display(vbox(p1, p2))
+        vbox(p1, p2)
     end
 
 end
