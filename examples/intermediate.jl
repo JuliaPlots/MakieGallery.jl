@@ -7,7 +7,6 @@
         lines!(scene, rand(10), linewidth=3.0, color=:green)
         lines!(scene, rand(10), linewidth=3.0, color=:purple)
         lines!(scene, rand(10), linewidth=3.0, color=:orange)
-        display(scene)
     end
 
     @cell "multiple functions" [lines] begin
