@@ -373,6 +373,18 @@
             color = rand(RGB{Float64}, 5)
         )
     end
+    
+    @cell "Standard deviation band" [band, lines, statistics] begin
+        using Statistics
+        n, m = 100, 101
+        t = range(0, 1, length=m)
+        X = cumsum(randn(n, m), dims = 2)
+        X = X .- X[:, 1]
+        μ = vec(mean(X, dims=1)) # mean
+        lines(t, μ)              # plot mean line
+        σ = vec(std(X, dims=1))  # stddev
+        band!(t, μ + σ, μ - σ)   # plot stddev band
+    end
 
     @cell "Parallel Prefix Sum" [lines, scatter] begin
         # credits to [jiahao chen](https://github.com/jiahao)

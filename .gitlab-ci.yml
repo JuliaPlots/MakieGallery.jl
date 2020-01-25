@@ -27,7 +27,7 @@ gallerytest:
     - julia --project -e 'using Pkg; pkg"test"'
 
   artifacts:
-    when: on_failure
+    when: always
     paths:
       - test/tested_different
       - test/test_recordings
