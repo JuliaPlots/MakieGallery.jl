@@ -42,6 +42,8 @@ Loads the full example database and returns it!
 function load_database()
     return load_database([
         "tutorials.jl",
+        "attributes.jl",
+        "intermediate.jl",
         "examples2d.jl",
         "examples3d.jl",
         "interactive.jl",
