@@ -9,10 +9,19 @@ stages:
   - refimages
 
 gallerytest:
+
   stage: test
+  
   tags:
       - xorg
-  image: "juliagpu/julia:v1.2-${CI_IMAGE_TAG}"
+      
+  image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
+  
+  cache:
+    key: ${CI_JOB_NAME}
+    paths: 
+      - .julia/artifacts/751db842bac36f25ca3ab1ad5b24a555036938df
+      
   before_script:
       - apt-get -qq update
       # glfw
