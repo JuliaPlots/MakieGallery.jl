@@ -6,6 +6,8 @@
 ##############################
 
 using Documenter, Markdown, Pkg, Random, FileIO, JSON, HTTP, GitHub
+using D3TypeTrees, D3Trees
+
 
 ##############################
 #      Specific imports      #
@@ -246,7 +248,22 @@ open(path, "w") do io
     println(io, "See [Plot attributes](@ref) for the available plot attributes.")
 end
 
+@info "Generating type trees"
+open(joinpath(srcpath, "typetrees.md"), "w") do f
 
+    println(f, "# Type Trees")
+    println(f)
+
+    for typ in [AbstractPlotting.Transformable, AbstractPlotting.AbstractCamera]
+        println(f, "## $(Symbol(typ))")
+        println(f)
+        println(f, "```@raw html")
+        show(f, MIME("text/html"), TypeTree(typ))
+        println(f, "```")
+        println(f)
+    end
+
+end
 ################################################################################
 #                 Building HTML documentation with Documenter                  #
 ################################################################################
