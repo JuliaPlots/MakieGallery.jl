@@ -341,7 +341,7 @@ cd(@__DIR__)
 
 Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH
 
-invokelatest(deploydocs,
+Base.invokelatest(deploydocs,
     repo = "github.com/JuliaPlots/MakieGallery.jl",
     push_preview = true
 )
