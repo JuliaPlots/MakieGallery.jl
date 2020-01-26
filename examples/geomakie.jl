@@ -24,21 +24,21 @@
     @cell "Earth and Coastlines" [earth, coastlines, geoaxis] begin
         using GeoMakie
 
-        coastlines(; crs = (dest = WinkelTripel(),))
+        coastlines(; crs = (dest = WinkelTripel(),), show_axis = false, scale_plot = false)
         earth!(; crs = (dest = WinkelTripel(),))
         geoaxis!(-180, 180, -90, 90; crs = (dest = WinkelTripel(),))
     end
-    
+
     @cell "Air Particulates" [record, animation] begin
         using GeoMakie
         using GeoMakie: ImageMagick, Glob
-        
+
         source = LonLat()
         dest = WinkelTripel()
 
         imgdir = observations("rgb/MYDAL2_M_AER_RA")
 
-        imgpaths = sort(Glob.glob(joinpath(relpath(imgdir), "*.PNG"))) # change this to your requirements
+        imgpaths = sort(Glob.glob("*.PNG", imgdir)) # change this to your requirements
 
         img = ImageMagick.load(imgpaths[1])
 
@@ -64,7 +64,7 @@
 
         record(fullsc, @replace_with_a_path(mp4), imgpaths; framerate = 10) do img
             year, month = match(re, img).captures
-            surfplot.color = ImageMagick.load(joinpath(imgdir,img))
+            surfplot.color = ImageMagick.load(img)
             titletext[] = "$month/$year"
         end
 

@@ -50,8 +50,8 @@
     end
 
     @cell "image" [image] begin
-        using Makie
-        img = Makie.logo()
+        using FileIO
+        img = load(joinpath(dirname(pathof(MakieGallery)), "..", "docs", "src", "assets", "logo.png"))
         image(img, scale_plot = false)
     end
 

@@ -37,13 +37,6 @@
         lines(1:50, 1:1, linewidth = 20, color = to_colormap(:viridis, 50))
     end
 
-    @cell "image" [image] begin
-        import FileIO
-        img = Makie.logo()
-
-        image(img, scale_plot = false)
-    end
-
     @cell "attributes" [attributes, lines, color, colormap, linewidth] begin
         scene = Scene()
         lines!(scene, rand(10), color = to_colormap(:viridis, 10), linewidth = 5)
@@ -60,30 +53,26 @@
          step!(st)
     end
 
-    @cell "histogram 2d" [histogram] begin
-        using StatsMakie
-        plot(histogram(nbins = 20), randn(10000), randn(10000))
-    end
-
     @cell "barplot" [barplot] begin
         barplot(randn(99))
     end
 
-    @cell "histogram" [histogram] begin
-        using StatsMakie
-        plot(histogram, randn(1000))
-    end
-
     @cell "subplots" [lines, scatter, barplot, histogram, vbox, hbox] begin
         scene1, scene2, scene3, scene4 = Scene(), Scene(), Scene(), Scene()
+
         lines!(scene1, rand(10), color=:red)
         lines!(scene1, rand(10), color=:blue)
         lines!(scene1, rand(10), color=:green)
+
         scatter!(scene2, rand(10), color=:red)
         scatter!(scene2, rand(10), color=:blue)
         scatter!(scene2, rand(10), color=:orange)
+
         barplot!(scene3, randn(99))
-        plot!(scene4, histogram, randn(1000))
+
+        v(x::Point2{T}) where T = Point2f0(x[2], 4*x[1])
+        streamplot!(scene4, v, -2..2, -2..2)
+
         vbox(hbox(scene2,scene1),hbox(scene4,scene3))
     end
 
@@ -99,9 +88,9 @@
         z = x .* y'
 
         vbox(
-        contour(x, y, z, levels = 50, linewidth =3),
-        contour(x, y, z, levels = 0, linewidth = 0, fillrange = true)
-         )
+            contour(x, y, z, levels = 50, linewidth =3),
+            contour(x, y, z, levels = 0, linewidth = 0, fillrange = true)
+        )
     end
 
     @cell "3D" [meshscatter, colormap] begin
