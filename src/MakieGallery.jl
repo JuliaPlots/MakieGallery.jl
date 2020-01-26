@@ -55,6 +55,7 @@ function load_database()
         "bigdata.jl",
         "layouting.jl",
         "statsmakie.jl",
+        # "geomakie.jl",
     ])
 end
 

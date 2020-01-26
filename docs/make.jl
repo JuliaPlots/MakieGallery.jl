@@ -81,60 +81,19 @@ function getPR(repo, commit_sha; ind = 1)
     return splitpath(url)[end] # get the PR number
 end
 
-function push_PR_preview_docs(deploy_url)
-
-    repo       = ENV["GITHUB_REPOSITORY"]
-    commit_sha = ENV["GITHUB_SHA"]
-
-    @info "Pushing preview docs."
-
-    # Find the latest PR associated with the commit, from its SHA
-    PR = parse(Int, getPR(repo, commit_sha))
-
-    # Overwrite Documenter's function for generating the versions.js file
-    foreach(
-        Base.delete_method,
-        methods(Documenter.Writers.HTMLWriter.generate_version_file)
-    )
-    @eval Documenter.Writers.HTMLWriter.generate_version_file(_, _) = nothing
-
-    # Force Documenter to deploy by SSH, to circumvent the bug with Github not
-    # deploying documentation when an application pushes to `gh-pages`
-    @eval Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH
-
-    # Overwrite necessary environment variables to trick Documenter to deploy
-    ENV["GITHUB_EVENT_NAME"] = "push"
-    ENV["GITHUB_REF"] = "refs/heads/master"
-    ENV["GITHUB_REPOSITORY"] = deploy_url
-
-    Base.invokelatest(deploydocs,
-        devurl = "preview-PR$(PR)",
-        repo = deploy_url,
-    )
-
-    # Add a comment on the PR with a link to the preview, if it doesn't already exist
-    # or if the
-    msg = """
-        Documentation built successfully.
-        A preview can be found here: $deploy_url/preview-PR$(PR)
-        """
-
-    if hasGHAPRComment(repo, PR, msg)
-        @info "No previous comment detected - commenting with doc URL!"
-        cmd = `curl -X POST`
-        push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
-        push!(cmd.exec, "-H", "Content-Type: application/json")
-        push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
-        push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
-        try
-            success(cmd)
-        catch e
-            @warn "Curl errored when pushing comment!" exception=e
-        end
-    end
-
-    exit(0)
-end
+# if hasGHAPRComment(repo, PR, msg)
+#     @info "No previous comment detected - commenting with doc URL!"
+#     cmd = `curl -X POST`
+#     push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
+#     push!(cmd.exec, "-H", "Content-Type: application/json")
+#     push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
+#     push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
+#     try
+#         success(cmd)
+#     catch e
+#         @warn "Curl errored when pushing comment!" exception=e
+#     end
+# end
 
 
 ################################################################################
@@ -380,11 +339,7 @@ end
 
 cd(@__DIR__)
 
-if isPR()
-    @info "Pull request detected, pushing preview documentation"
-    push_PR_preview_docs(get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/asinghvi17/MakiePreviewDocs"))
-end
-
 deploydocs(
-    repo = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/JuliaPlots/MakieGallery.jl")
+    repo = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/JuliaPlots/MakieGallery.jl"),
+    push_preview = true
 )

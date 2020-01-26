@@ -4,6 +4,9 @@ using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
 
+# Download reference images from master
+MakieGallery.current_ref_version[] = "master"
+
 database = MakieGallery.load_database()
 
 # which one are the slowest and kicked those out!
@@ -33,6 +36,7 @@ slow_examples = [
     "WorldClim visualization",
     "Image on Geometry (Moon)",
     "Image on Geometry (Earth)",
+    "Air Particulates"
 ]
 # DIffeq errors with stackoverflow
 # The others look fine on the CI, but the measured difference is too high -.-

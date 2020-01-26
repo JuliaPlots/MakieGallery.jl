@@ -189,4 +189,10 @@
         Δy = fill(0.25, 4)
         p = errorbar(x,y,Δx,Δy,xcolor=:green, ycolor=:red)
     end
+
+    @cell "histogram 2d" [histogram] begin
+        # This cell was contributed by Kim Fung (@fungktt) during GCI'19
+        using StatsMakie
+        plot(histogram(nbins = 20), randn(10000), randn(10000))
+    end
 end
