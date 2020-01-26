@@ -339,7 +339,9 @@ end
 
 cd(@__DIR__)
 
-deploydocs(
-    repo = get(ENV, "DOCUMENTER_DEPLOY_URL", "github.com/JuliaPlots/MakieGallery.jl"),
+Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH
+
+invokelatest(deploydocs,
+    repo = "github.com/JuliaPlots/MakieGallery.jl",
     push_preview = true
 )
