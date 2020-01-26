@@ -9,7 +9,7 @@ struct MediaItem
   tags::Vector{String}
 end
 
-const urlbase = Ref("http://simondanisch.github.io/ReferenceImages/gallery/")
+const urlbase = Ref("http://juliaplots.org/MakieReferenceImages/gallery/")
 
 function master_url(root, path)
     if Sys.iswindows()
