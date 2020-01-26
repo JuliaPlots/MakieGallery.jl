@@ -4,6 +4,9 @@ using MakieGallery
 using Makie, AbstractPlotting
 using Statistics
 
+# Download reference images from master
+MakieGallery.current_ref_version[] = "master"
+
 database = MakieGallery.load_database()
 
 # which one are the slowest and kicked those out!

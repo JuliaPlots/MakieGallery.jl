@@ -16,7 +16,7 @@
         lines!(scene, x, cos.(x), color = :blue)
     end
 
-    @cell "animations" [lines] begin
+    @cell "animations" [lines, record] begin
         scene = Scene()
         mytime = Node(0.0)
         f(v, t) = sin(v + t)
