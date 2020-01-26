@@ -11,12 +11,11 @@
         scene = Scene()
         scatter!(scene, rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, align = (:center, :center))
-        display(scene)
     end
 
     @cell "color" [lines, color] begin
         vbox(
-            lines(rand(10), linewidth = 20, color = :blue)
+            lines(rand(10), linewidth = 20, color = :blue),
             lines(rand(10), linewidth = 20, color = to_colormap(:viridis, 10)) #mapping from a colormap to colors with 10 color points
         )
     end
@@ -51,7 +50,7 @@
     end
 
     @cell "image" [image] begin
-        import FileIO
+        using Makie
         img = Makie.logo()
         image(img, scale_plot = false)
     end
@@ -81,7 +80,6 @@
         scene = Scene()
         lines!(scene, randn(20), linewidth = 8)
         lines!(scene, rand(20), linewidth = 4)
-        display(scene)
     end
 
     @cell "markersize" [scatter, markersize] begin
@@ -92,7 +90,6 @@
         scene = Scene()
         scatter!(scene, rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, position = (5.0, 1.1))
-        display(scene)
     end
 
     @cell "rotation" [text, rotation] begin
@@ -122,7 +119,7 @@
     @cell "visible" [scatter, visible] begin
         vbox(
             scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = true),
-            scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = false),
+            scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = false)
         )
     end
 end
