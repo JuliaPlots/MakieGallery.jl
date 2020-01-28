@@ -11,7 +11,7 @@
     @cell "Tutorial markersize" [tutorial, scatter, markersize] begin
         x = 1:10
         y = 1:10
-        sizevec = [s for s = 1:length(x)] ./ 10
+        sizevec = x ./ 10
         scene = scatter(x, y, markersize = sizevec)
     end
 
@@ -38,10 +38,8 @@
     
     @cell "Tutorial removing from a scene" [tutorial, line, scene, markers] begin
         x = range(0, stop = 2pi, length = 80)
-        f1(x) = sin.(x)
-        f2(x) = exp.(-x) .* cos.(2pi*x)
-        y1 = f1(x)
-        y2 = f2(x)
+        y1 = sin.(x)
+        y2 = exp.(-x) .* cos.(2pi * x)
 
         scene = lines(x, y1, color = :blue)
         scatter!(scene, x, y1, color = :red, markersize = 0.1)
@@ -74,8 +72,7 @@
 
     @cell "Tutorial basic theming" [tutorial, scene, limits] begin
         x = range(0, stop = 2pi, length = 40)
-        f(x) = cos.(x)
-        y = f(x)
+        y = cos.(x)
         scene = lines(x, y, color = :blue)
 
         axis = scene[Axis] # get the axis object from the scene
