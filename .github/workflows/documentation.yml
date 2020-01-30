@@ -20,6 +20,6 @@ jobs:
         run: julia --project=docs/ -e 'using Pkg; Pkg.pkg"add AbstractPlotting#master GLMakie#master Documenter#master https://github.com/JuliaPlots/GeoMakie.jl"; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
       - name: Build and deploy
         env:
-          DOCUMENTER_KEY: ${{ secrets.PreviewDeployKey }}
+          DOCUMENTER_KEY: ${{ secrets.DocumenterDeployKey }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: julia --project=docs/ docs/make.jl
