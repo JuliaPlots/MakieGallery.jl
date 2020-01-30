@@ -304,15 +304,16 @@ makedocs(
         ],
         "Documentation" => [
             "scenes.md",
+            "axis.md",
+            "convenience.md",
             "signatures.md",
             "plot-attributes.md",
             "colors.md",
             "theming.md",
             "cameras.md",
-            "backends.md",
-            "axis.md",
             "recipes.md",
             "output.md",
+            "backends.md",
             "troubleshooting.md"
         ],
         "Developer Documentation" => [
