@@ -375,6 +375,8 @@
     end
     
     @cell "Standard deviation band" [band, lines, statistics] begin
+        # Sample 100 Brownian motion path and plot the mean trajectory together 
+        # with a ±1σ band (visualizing uncertainty as marginal standard deviation). 
         using Statistics
         n, m = 100, 101
         t = range(0, 1, length=m)
