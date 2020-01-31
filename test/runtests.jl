@@ -36,7 +36,8 @@ slow_examples = [
     "WorldClim visualization",
     "Image on Geometry (Moon)",
     "Image on Geometry (Earth)",
-    "Air Particulates"
+    "Interaction with mouse",
+    "Air Particulates",
 ]
 # DIffeq errors with stackoverflow
 # The others look fine on the CI, but the measured difference is too high -.-
