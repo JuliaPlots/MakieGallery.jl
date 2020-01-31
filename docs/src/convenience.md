@@ -1,6 +1,6 @@
 # Convenience functions
 
-Makie also offers some convenience functions to make manipulating the Axis easier.
+Makie also offers some convenience functions to make manipulating the Axis easier. 
 
 ```@docs
 xlims!
