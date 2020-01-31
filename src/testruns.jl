@@ -9,6 +9,19 @@ function ref_image_dir(version = string(current_ref_version[]))
 end
 
 """
+Get the latest commit SHA from the given branch name in the reference image repo.
+"""
+function get_latest_sha(branchname::String)
+
+    r = HTTP.get("https://api.github.com/repos/JuliaPlots/MakieReferenceImages/commits", ["User-Agent" => "MakieGallery.jl"], ["sha" => branchname])
+
+    resp = JSON.parse(String(r.body))
+
+    return resp[1]["sha"]
+
+end
+
+"""
     download_reference(version = string(current_ref_version[]))
 
 Downloads the reference images from ReferenceImages for a specific version
@@ -18,16 +31,7 @@ function download_reference(version = string(current_ref_version[]))
 
     # Resolve the specific commit, if a branch is given
     if version[1] != "v"
-
-        lsr = readlines(`git ls-remote https://github.com/JuliaPlots/MakieReferenceImages`) .|> split .|> pairs
-
-        shas = getindex.(lsr, 1)
-        branchnames = getindex.(lsr, 2)
-
-        ind = findfirst(x -> occursin("refs/heads/$version", x), branchnames)
-
-        refpath_version = version = shas[ind]
-
+        refpath_version = version = get_latest_sha(version) # set the version to the SHA
     end
 
     download_dir = joinpath(makiegallery_dir, "testimages")
