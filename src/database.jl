@@ -1,7 +1,7 @@
 
 # Deprecated! We just handle the backends before executing the
 # examples!
-const plotting_backends = []
+const plotting_backends = ["AbstractPlotting"]
 
 struct CellEntry
     author::String
@@ -62,7 +62,7 @@ function _print_source(io::IO, idx::Int; style = "source", example_counter = NaN
     if example_counter != NaN
         println(io, " ", example_counter)
     end
-    print(io, print_toplevel && isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
+    print(io, print_toplevel & isempty(database[idx].toplevel) ? "" : "$(database[idx].toplevel)\n")
     for line in split(database[idx].source, "\n")
         line = replace(line, "@resolution" => "resolution = (500, 500)")
         println(io, line)
@@ -86,7 +86,7 @@ Print source code of database (hard coded internally) at given index `idx`.
 * some explanation text
 * ```example 2 # continuation of the same example - more code to be evaluated
 """
-function print_source(io::IO, idx::Int; style = "source", example_counter = NaN, print_toplevel = "false")
+function print_source(io::IO, idx::Int; style = "source", example_counter = NaN, print_toplevel = false)
     str = sprint() do io
         _print_source(io, idx; style = style, example_counter = example_counter, print_toplevel = print_toplevel)
     end
@@ -368,7 +368,7 @@ function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid
     file = pfile; startend = lastline:lastline;
     if Meta.isexpr(cblock, :block)
         file, startend = find_startend(cblock.args)
-        toplevel, source = extract_source(file, startend)
+        _, source = extract_source(file, startend)
     else
         source = string(cblock) # single cell e.g. @cell scatter(...)
     end
@@ -544,7 +544,12 @@ function eval_example(
     Random.seed!(42)
 
     temp_mod = MakieGallery.eval(:(module $(gensym("TempModule")) end))
-    @eval temp_mod (using AbstractPlotting)
+    for backend in plotting_backends
+        Base.invokelatest(
+            temp_mod.eval,
+            Meta.parse("using $backend")
+        )
+    end
     @eval temp_mod (using ..MakieGallery)
 
     if length(steps) == 1
