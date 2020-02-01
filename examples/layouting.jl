@@ -173,10 +173,10 @@ end
                 recordframe!(io)
             end
             for ax in axes
-                ax.xspinevisible = false
-                ax.yspinevisible = false
-                ax.xoppositespinevisible = false
-                ax.yoppositespinevisible = false
+                ax.bottomspinevisible = false
+                ax.leftspinevisible = false
+                ax.topspinevisible = false
+                ax.rightspinevisible = false
                 recordframe!(io)
             end
         end
