@@ -335,7 +335,7 @@ using Documenter, Base64
 ENV["DOCUMENTER_DEBUG"] = "true"
 
 # do this only if local, otherwise let Documenter handle it
-if !haskey(ENV, "CI") && !haskey(ENV, "GITHUB_TOKEN")
+if !haskey(ENV, "CI") || !haskey(ENV, "GITHUB_TOKEN") 
     @info "Manually deploying - setting environment variables!"
     # Workaround for when deploying locally and silly Windows truncating the env variable
     # on the CI these should be set!
