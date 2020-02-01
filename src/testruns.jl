@@ -13,7 +13,7 @@ Get the latest commit SHA from the given branch name in the reference image repo
 """
 function get_latest_sha(branchname::String)
 
-    r = HTTP.get("https://api.github.com/repos/JuliaPlots/MakieReferenceImages/commits", ["User-Agent" => "MakieGallery.jl"], ["sha" => branchname])
+    r = HTTP.get("https://api.github.com/repos/JuliaPlots/MakieReferenceImages/commits", ["User-Agent" => "MakieGallery.jl", "sha" => branchname])
 
     resp = JSON.parse(String(r.body))
 
