@@ -26,7 +26,7 @@ function MediaItem(path, example)
     media_file = ""
     media_folder = joinpath(path, "media")
     files = readdir(media_folder)
-    for ext in ("mp4", "gif", "jpg", "png", "pdf", "svg")
+    for ext in ("mp4", "gif", "jpg", "png", "pdf", "svg", "jpeg")
         idx = findfirst(x-> endswith(x, ext), files)
         if idx !== nothing
             media_file = joinpath(media_folder, files[idx])
@@ -82,10 +82,10 @@ function create_page(
   html_groups = """
   <script src="$shufflejs"></script>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://rawgit.com/Vestride/Shuffle/master/docs/css/prism.css">
-  <link rel="stylesheet" href="https://rawgit.com/Vestride/Shuffle/master/docs/css/normalize.css">
-  <link rel="stylesheet" href="https://rawgit.com/Vestride/Shuffle/master/docs/css/style.css">
-  <link rel="stylesheet" href="https://rawgit.com/Vestride/Shuffle/master/docs/css/shuffle-styles.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Vestride/Shuffle/docs/css/prism.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Vestride/Shuffle/docs/css/normalize.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Vestride/Shuffle/docs/css/style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Vestride/Shuffle/docs/css/shuffle-styles.css">
     <div class="container">
       <div class="row">
         <div class="col-12@sm">

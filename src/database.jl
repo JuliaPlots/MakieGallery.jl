@@ -274,8 +274,9 @@ function extract_source(file, file_range)
                     # if end is on start indention level,
                     # this isn't the macro end and needs to be part of source
                     println(source, "end")
+                else
+                    break
                 end
-                break
             else
                 start_indent = printline(line, toplevel, source, start_indent)
             end
@@ -368,7 +369,8 @@ function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid
     file = pfile; startend = lastline:lastline;
     if Meta.isexpr(cblock, :block)
         file, startend = find_startend(cblock.args)
-        _, source = extract_source(file, startend)
+        cell_toplevel, source = extract_source(file, startend)
+        toplevel = toplevel * "\n" * cell_toplevel
     else
         source = string(cblock) # single cell e.g. @cell scatter(...)
     end

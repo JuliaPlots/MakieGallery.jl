@@ -29,7 +29,7 @@ const posteval_hook = Ref{Function}(_ -> 1)
 # and MakieGallery will take care of the rest.
 
 function save_media(entry, x::Scene, path::String)
-    path = joinpath(path, "image.jpg")
+    path = joinpath(path, "image.jpeg")
     save(path, x)
     [path]
 end
@@ -44,7 +44,7 @@ end
 
 function save_media(entry, x::AbstractPlotting.Stepper, path::String)
     # return a list of all file names
-    images = filter(x-> endswith(x, ".jpg"), readdir(x.folder))
+    images = filter(x-> endswith(x, ".jpeg") || endswith(x, ".jpg"), readdir(x.folder))
     return map(images) do img
         p = joinpath(x.folder, img)
         out = joinpath(path, basename(p))
@@ -182,10 +182,13 @@ function md2html(md_path; stylesheets = Vector{String}[])
             $(String(take!(hio)))
           </head>
           <body>
-            $(string(HTMLWriter.mdconvert(md)))
-          </body>
-        </html>
         """)
+        println.(Ref(io), string.(HTMLWriter.mdconvert(md)))
+        println(io, """
+            </body>
+            </html>
+            """
+        )
     end
 end
 
@@ -379,7 +382,10 @@ function gallery_from_recordings(
             "camera",
             "recipe",
             "theme",
-            "annotations"
+            "annotations",
+            "layout",
+            "grid",
+            "geomakie"
         ],
         hltheme = Highlights.Themes.DefaultTheme,
         print_toplevel = true
