@@ -8,17 +8,24 @@ function ref_image_dir(version = string(current_ref_version[]))
     return download_reference(version)
 end
 
+shacache = Ref{Union{String, Nothing}}(nothing)
+
 """
 Get the latest commit SHA from the given branch name in the reference image repo.
 """
 function get_latest_sha(branchname::String)
 
-    r = HTTP.get("https://api.github.com/repos/JuliaPlots/MakieReferenceImages/commits", ["User-Agent" => "MakieGallery.jl", "sha" => branchname])
+    if shacache[] === nothing
 
-    resp = JSON.parse(String(r.body))
+        r = HTTP.get("https://api.github.com/repos/JuliaPlots/MakieReferenceImages/commits", ["User-Agent" => "MakieGallery.jl", "sha" => branchname])
 
-    return resp[1]["sha"]
+        resp = JSON.parse(String(r.body))
 
+        shacache[] = resp[1]["sha"]
+
+    end
+
+    return shacache[]
 end
 
 """

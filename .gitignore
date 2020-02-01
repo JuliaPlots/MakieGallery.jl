@@ -14,7 +14,7 @@ tmax
 prec.zip
 tmax.zip
 .DS_Store
-
+docs/src/typetrees.md
 _site/
 Gemfile
 Gemfile.lock
