@@ -35,7 +35,7 @@
         lines!(scene, x, y2, color = :black)
         scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
     end
-    
+
     @cell "Tutorial removing from a scene" [tutorial, line, scene, markers] begin
         x = range(0, stop = 2pi, length = 80)
         y1 = sin.(x)
@@ -55,6 +55,8 @@
 
         pop!(scene.plots)
         step!(st)
+
+        st
     end
 
     @cell "Tutorial adjusting scene limits" [tutorial, scene, limits] begin

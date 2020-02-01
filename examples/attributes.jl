@@ -1,7 +1,7 @@
 @block KimFung ["attributes"] begin
 
     @cell "algorithm" [vbox, volume, algorithm] begin
-        vbox(
+        sc = vbox(
             volume(rand(32, 32, 32), algorithm = :mip), #with mip algorithm
             volume(rand(32, 32, 32), algorithm = :absorptionrgba), #with AbsorptionRGBA algorithm
         )
