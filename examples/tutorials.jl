@@ -47,7 +47,7 @@
         lines!(scene, x, y2, color = :black)
         scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
         # initialize the stepper and give it an output destination
-        st = Stepper(scene, "/Users/anshul/tmp/out")
+        st = Stepper(scene, @replace_with_a_path)
         step!(st)
 
         pop!(scene.plots)
