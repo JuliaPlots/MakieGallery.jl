@@ -362,4 +362,18 @@ end
             recordframe!(io)
         end
     end
+    
+    @cell "3D scenes" [3d] begin
+        scene, layout = layoutscene()
+        makescene() = LScene(scene, camera = cam3d!, raw = false,
+            scenekw = (backgroundcolor = RGBf0(0.9, 0.9, 0.9), clear = true))
+        layout[1, 1]   = makescene()
+        layout[1, 2]   = makescene()
+        layout[2, 1:2] = makescene()
+        layout[1:2, 3] = makescene()
+        foreach(LScene, layout) do s
+            scatter!(s, rand(100, 3));
+        end
+        scene
+    end
 end
