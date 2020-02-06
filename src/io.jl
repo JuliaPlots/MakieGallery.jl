@@ -29,7 +29,7 @@ const posteval_hook = Ref{Function}(_ -> 1)
 # and MakieGallery will take care of the rest.
 
 function save_media(entry, x::Scene, path::String)
-    path = joinpath(path, "image.jpeg")
+    path = joinpath(path, "image.jpg")
     save(path, x)
     [path]
 end
