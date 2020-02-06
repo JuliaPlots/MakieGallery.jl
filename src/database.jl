@@ -484,13 +484,13 @@ macro replace_with_a_path(ending = :mp4)
     string(output_fallback, ending)
 end
 
-if VERSION < v"1.3"
+# if VERSION < v"1.3"
     macro loopmacro(ex)
         :($(esc(ex)))
     end
-else
-    var"@loopmacro" = Threads.var"@threads"
-end
+# else
+#     var"@loopmacro" = Threads.var"@threads"
+# end
 
 """
 Walks through every example matching `tags`, and calls `f` on the example.
