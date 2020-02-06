@@ -625,7 +625,7 @@
         streamplot(f, -1.5..1.5, -1.5..1.5, -1.5..1.5, colormap = :magma, gridsize = (10, 10), arrow_size = 0.06)
     end
     
-    @cell "Fractional Brownian surface" [3d] begin
+    @cell "Fractional Brownian surface" ["3d"] begin
         # This example was provided by Moritz Schauer (@mschauer).
         
         # Here, we define some form of noise function:
@@ -659,8 +659,8 @@
         surface(data; shading=false, show_axis=false, colormap = :deep)
     end
     
-    @cell "Coloured fractional Brownian noise field" [3d] begin
-        # This example was contributed by Harmen Stoppels (@harmen_stoppels)
+    @cell "Coloured fractional Brownian noise field" ["3d"] begin
+        # This example was contributed by Harmen Stoppels (@haampie)
         
         using FFTW
 
