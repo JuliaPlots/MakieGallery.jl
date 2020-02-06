@@ -484,6 +484,14 @@ macro replace_with_a_path(ending = :mp4)
     string(output_fallback, ending)
 end
 
+# if VERSION < v"1.3"
+    macro loopmacro(ex)
+        :($(esc(ex)))
+    end
+# else
+#     var"@loopmacro" = Threads.var"@threads"
+# end
+
 """
 Walks through every example matching `tags`, and calls `f` on the example.
 Merges groups of examples into one example entry.
@@ -493,7 +501,7 @@ function enumerate_examples(f, tags...; start = 1, exclude_tags = nothing)
     sort!(database, by = (x)-> x.groupid)
     group_tmp = CellEntry[]
     last_id = NO_GROUP
-    for i in start:length(database)
+    @loopmacro for i in start:length(database)
         entry = database[i]
         all(x-> string(x) in entry.tags, tags) || continue
         if exclude_tags != nothing && !isempty(exclude_tags)
