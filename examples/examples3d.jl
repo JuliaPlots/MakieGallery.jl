@@ -660,7 +660,7 @@
     end
     
     @cell "Coloured fractional Brownian noise field" ["3d"] begin
-        # This example was contributed by Harmen Stoppels (@harmen_stoppels)
+        # This example was contributed by Harmen Stoppels (@haampie)
         
         using FFTW
 
