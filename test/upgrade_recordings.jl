@@ -1,7 +1,24 @@
 using MakieGallery
 
 # load the database.  TODO this is a global and should be changed.
-database = MakieGallery.load_database();
+# Here, we reorder the database, to make it easier to see.
+database = MakieGallery.load_database([
+    "tutorials.jl",
+    "layouting.jl",
+    "statsmakie.jl",
+    "geomakie.jl",
+    "examples2d.jl",
+    "examples3d.jl",
+    "interactive.jl",
+    "documentation.jl",
+    "diffeq.jl",
+    "implicits.jl",
+    "recipes.jl",
+    "bigdata.jl",
+    "short_tests.jl",
+    "attributes.jl",
+    "intermediate.jl",
+]);
 
 # where is the refimage repo?
 repo = joinpath(get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), "ReferenceImages")), "gallery")
