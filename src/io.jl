@@ -30,7 +30,7 @@ const posteval_hook = Ref{Function}(_ -> 1)
 
 function save_media(entry, x::Scene, path::String)
     path = joinpath(path, "image.jpg")
-    save(path, x)
+    save(FileIO.File(DataFormat{:JPEG}, path), x) # work around FileIO bug for now
     [path]
 end
 
@@ -59,7 +59,7 @@ function save_media(entry, results::AbstractVector, path::String)
         # Only save supported results
         if res isa Union{Scene, String}
             img = joinpath(path, "image$i.jpg")
-            save(img, res)
+            save(FileIO.File(DataFormat{:JPEG}, img), res) # work around FileIO
             push!(paths, img)
         end
     end
