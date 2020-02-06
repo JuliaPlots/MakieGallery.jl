@@ -624,12 +624,12 @@
         f(x) = f(x, P)
         streamplot(f, -1.5..1.5, -1.5..1.5, -1.5..1.5, colormap = :magma, gridsize = (10, 10), arrow_size = 0.06)
     end
-    
+
     @cell "Fractional Brownian surface" ["3d"] begin
         # This example was provided by Moritz Schauer (@mschauer).
-        
+        using SparseArrays, LinearAlgebra
+
         # Here, we define some form of noise function:
-        using SparseArrays
         function gridlaplacian(m, n)
             S = sparse(0.0I, n*m, n*m)
             linear = LinearIndices((1:m, 1:n))
@@ -647,18 +647,18 @@
             end
             return S
         end
-        
+
         # d is used to denote the size of the data
         d = 150
-        
+
         data = 0.1randn(d,d) + reshape(
-                cholesky(gridlaplacian(d,d) + 0.003I) \ randn(d*d), 
+                cholesky(gridlaplacian(d,d) + 0.003I) \ randn(d*d),
                 d, d
         )
-        
+
         surface(data; shading=false, show_axis=false, colormap = :deep)
     end
-    
+
     @cell "Coloured fractional Brownian noise field" ["3d"] begin
         # This example was contributed by Harmen Stoppels (@haampie)
         
@@ -673,9 +673,9 @@
         end
 
         z = cloud(256, 0.75)
-        
+
         volume(z; algorithm = :mip, colorrange = extrema(z))
-        
+
     end
 
     # @cell "2D text in 3D" [text, annotations] begin
