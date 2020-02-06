@@ -363,7 +363,7 @@ end
         end
     end
     
-    @cell "3D scenes" [3d] begin
+    @cell "3D scenes" ["3d"] begin
         scene, layout = layoutscene()
         makescene() = LScene(scene, camera = cam3d!, raw = false,
             scenekw = (backgroundcolor = RGBf0(0.9, 0.9, 0.9), clear = true))
