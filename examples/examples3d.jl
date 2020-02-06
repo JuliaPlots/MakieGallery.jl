@@ -658,6 +658,25 @@
         
         surface(data; shading=false, show_axis=false, colormap = :deep)
     end
+    
+    @cell "Coloured fractional Brownian noise field" [3d] begin
+        # This example was contributed by Harmen Stoppels (@harmen_stoppels)
+        
+        using FFTW
+
+        function cloud(n = 256, p = 0.75f0)
+            ωs = fft(randn(Float32, n, n, n))
+            r = Float32[0:n÷2; n÷2-1:-1:(iseven(n) ? 1 : 0)]
+            xs, ys, zs = reshape(r, :, 1, 1), reshape(r, 1, :, 1), reshape(r, 1, 1, :)
+            ωs ./= (1.0f0 .+ (xs.^2 .+ ys.^2 .+ zs.^2) .^ p)
+            return real.(ifft(ωs))
+        end
+
+        z = cloud(256, 0.75)
+        
+        volume(z; algorithm = :mip, colorrange = extrema(z))
+        
+    end
 
     # @cell "2D text in 3D" [text, annotations] begin
         # TODO this has a world age problem!?!??
