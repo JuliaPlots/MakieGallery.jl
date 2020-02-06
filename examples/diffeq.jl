@@ -83,7 +83,8 @@ end
                         prob;
                         p = [σ, ρ, β],
                         tspan = (ts[1], ts[end])
-                    )
+                    ),
+                    Tsit5(),
                 )(ts).u
             )  # change to fit the dimensionality - maybe even return 2 arrays, or a set of `Point2`s...
         end
