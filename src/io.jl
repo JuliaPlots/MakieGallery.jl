@@ -395,7 +395,7 @@ function gallery_from_recordings(
     items = map(MakieGallery.database) do example
         base_path = joinpath(folder, string(example.unique_name))
         media_path = joinpath(base_path, "media")
-        media = master_url.(folder, joinpath.(media_path, readdir(media_path)))
+        media = master_url.(abspath(folder), joinpath.(abspath(media_path), readdir(media_path)))
         mdpath = joinpath(base_path, "index.md")
         save_highlighted_markdown(mdpath, example, media, hltheme; print_toplevel = print_toplevel)
         md2html(mdpath; stylesheets = [relpath(joinpath(dirname(html_out), "syntaxtheme.css"), base_path)])
