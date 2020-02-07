@@ -8,11 +8,10 @@ Enter the package manager by typing `]` into the Repl. You should see `pkg>`.
 add Makie
 ```
 
-## Getting the latest version of Makie
+## Getting the development version of Makie
 Run the following commands in the package manager:
-```Julia
+```julia
 add Makie#master AbstractPlotting#master GLMakie#master
-test Makie
 ```
 
 The first use of Makie might take a little bit of time, due to precompilation.
