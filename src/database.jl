@@ -1,6 +1,6 @@
 
-# Deprecated! We just handle the backends before executing the
-# examples!
+# These are used in two places: one, before executing the examples,
+# and two, after the
 const plotting_backends = ["AbstractPlotting"]
 
 struct CellEntry
@@ -179,6 +179,18 @@ function CellEntry(author, title, tags, file, file_range, toplevel, source, grou
 end
 
 """
+    print_code(
+        io, entry;
+        scope_start = "begin\n",
+        scope_end = "end\n",
+        indent = " "^4,
+        replace_nframes = false,
+        resolution = (entry)-> "resolution = (500, 500)",
+        outputfile = (entry, ending)-> string(entry.unique_name, ending),
+        print_toplevel = true,
+        print_backends = false
+    )
+
 Prints the source of an entry in the database at `idx`.
 This puts entries of a group into one local scope
 """
@@ -190,11 +202,13 @@ function print_code(
         replace_nframes = false,
         resolution = (entry)-> "resolution = (500, 500)",
         outputfile = (entry, ending)-> string(entry.unique_name, ending),
-        print_toplevel = true
+        print_toplevel = true,
+        print_backends = false
     )
 
     print_toplevel && println(io, entry.toplevel)
     print_toplevel || println(io, "\n# Some setup code has been omitted for clarity.\n")
+    print_backends && println(io, "using ", join(plotting_backends, ", ", " "), "\n")
     print(io, scope_start)
     for line in split(entry.source, "\n")
         line = replace(line, "@resolution" => resolution(entry))
@@ -235,7 +249,7 @@ function findspace(line)
         c_s === nothing && break
         c, s = c_s
     end
-    space_len -= 1
+    # space_len -= 1
     space_len
 end
 
@@ -257,6 +271,8 @@ function printline(line, toplevel, source, start_indent)
 end
 
 """
+    extract_source(file, file_range)
+
 We could just use the AST of the macro, but since we're interested to also capture
 comments and formatting for e.g. docs, we need to extract the source directly
 from the file!
@@ -271,8 +287,8 @@ function extract_source(file, file_range)
             # allow to parse past maximum(file_range) until next end
             if i > maximum(file_range) && occursin("end", line)
                 if length(line) > start_indent && line[start_indent] == ' '
-                    # if end is on start indention level,
-                    # this isn't the macro end and needs to be part of source
+                    # if `end` is on start indentation level,
+                    # this isn't the macro `end`, and needs to be part of source
                     println(source, "end")
                 else
                     break

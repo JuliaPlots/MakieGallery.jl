@@ -240,7 +240,8 @@ function save_highlighted_markdown(
         scope_end = "",
         indent = "",
         outputfile = (entry, ending)-> string("output", ending),
-        print_toplevel = print_toplevel
+        print_toplevel = print_toplevel,
+        print_backends = true
     )
     hio = IOBuffer(read = true, write = true)
     highlight(hio, MIME("text/html"), src, Highlights.Lexers.JuliaLexer, highlighter)
