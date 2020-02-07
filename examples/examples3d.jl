@@ -629,7 +629,10 @@
         # This example was provided by Moritz Schauer (@mschauer).
         using SparseArrays, LinearAlgebra
 
-        # Here, we define some form of noise function:
+        #=
+               Define the precision matrix (inverse covariance matrix) for the Gaussian noise matrix It approximately coincides with the Laplacian of the 2d grid or the graph representing the
+neighborhood relation of pixels in the picture, https://en.wikipedia.org/wiki/Laplacian_matrix 
+        =#
         function gridlaplacian(m, n)
             S = sparse(0.0I, n*m, n*m)
             linear = LinearIndices((1:m, 1:n))
@@ -651,6 +654,8 @@
         # d is used to denote the size of the data
         d = 150
 
+         # Sample centered Gaussian noise with the right correlation by the method
+         # based on the Cholesky decomposition of the precision matrix
         data = 0.1randn(d,d) + reshape(
                 cholesky(gridlaplacian(d,d) + 0.003I) \ randn(d*d),
                 d, d
