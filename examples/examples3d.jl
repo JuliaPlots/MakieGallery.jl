@@ -626,13 +626,10 @@
     end
 
     @cell "Fractional Brownian surface" ["3d"] begin
-        # This example was provided by Moritz Schauer (@mschauer).
+        "This example was provided by Moritz Schauer (@mschauer)."
         using SparseArrays, LinearAlgebra
 
-        #=
-               Define the precision matrix (inverse covariance matrix) for the Gaussian noise matrix It approximately coincides with the Laplacian of the 2d grid or the graph representing the
-neighborhood relation of pixels in the picture, https://en.wikipedia.org/wiki/Laplacian_matrix 
-        =#
+        # Here, we define some form of noise function:
         function gridlaplacian(m, n)
             S = sparse(0.0I, n*m, n*m)
             linear = LinearIndices((1:m, 1:n))
@@ -654,8 +651,6 @@ neighborhood relation of pixels in the picture, https://en.wikipedia.org/wiki/La
         # d is used to denote the size of the data
         d = 150
 
-         # Sample centered Gaussian noise with the right correlation by the method
-         # based on the Cholesky decomposition of the precision matrix
         data = 0.1randn(d,d) + reshape(
                 cholesky(gridlaplacian(d,d) + 0.003I) \ randn(d*d),
                 d, d
@@ -665,10 +660,13 @@ neighborhood relation of pixels in the picture, https://en.wikipedia.org/wiki/La
     end
 
     @cell "Coloured fractional Brownian noise field" ["3d"] begin
-        # This example was contributed by Harmen Stoppels (@haampie)
+        "This example was contributed by Harmen Stoppels (@haampie)"
         
         using FFTW
-
+        
+        # Obtain an approximately fractal Brownian, appropriately damping 
+        # the high frequencies of Fourier transformed spatial white noise, 
+        # and (inverse) Fourier transform the result back into the spatial domain.
         function cloud(n = 256, p = 0.75f0)
             ωs = fft(randn(Float32, n, n, n))
             r = Float32[0:n÷2; n÷2-1:-1:(iseven(n) ? 1 : 0)]
