@@ -373,10 +373,10 @@
             color = rand(RGB{Float64}, 5)
         )
     end
-    
+
     @cell "Standard deviation band" [band, lines, statistics] begin
-        # Sample 100 Brownian motion path and plot the mean trajectory together 
-        # with a ±1σ band (visualizing uncertainty as marginal standard deviation). 
+        # Sample 100 Brownian motion path and plot the mean trajectory together
+        # with a ±1σ band (visualizing uncertainty as marginal standard deviation).
         using Statistics
         n, m = 100, 101
         t = range(0, 1, length=m)
@@ -564,7 +564,8 @@
         record(sc, @replace_with_a_path(mp4), LinRange(0, 20, 5*30)) do i
           sf[] = Base.Fix2(v, i)
           title_str[] = "t = $(round(i; sigdigits = 2))"
-       end
+        end
+
     end
 end
 

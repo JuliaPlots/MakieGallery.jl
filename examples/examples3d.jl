@@ -625,8 +625,72 @@
         streamplot(f, -1.5..1.5, -1.5..1.5, -1.5..1.5, colormap = :magma, gridsize = (10, 10), arrow_size = 0.06)
     end
 
+    @cell "Fractional Brownian surface" ["3d"] begin
+        "This example was provided by Moritz Schauer (@mschauer)."
+        using SparseArrays, LinearAlgebra
+
+        #=
+        Define the precision matrix (inverse covariance matrix)
+        for the Gaussian noise matrix.  It approximately coincides
+        with the Laplacian of the 2d grid or the graph representing
+        the neighborhood relation of pixels in the picture,
+        https://en.wikipedia.org/wiki/Laplacian_matrix
+        =#
+        function gridlaplacian(m, n)
+            S = sparse(0.0I, n*m, n*m)
+            linear = LinearIndices((1:m, 1:n))
+            for i in 1:m
+                for j in 1:n
+                    for (i2, j2) in ((i + 1, j), (i, j + 1))
+                        if i2 <= m && j2 <= n
+                            S[linear[i, j], linear[i2, j2]] -= 1
+                            S[linear[i2, j2], linear[i, j]] -= 1
+                            S[linear[i, j], linear[i, j]] += 1
+                            S[linear[i2, j2], linear[i2, j2]] += 1
+                        end
+                    end
+                end
+            end
+            return S
+        end
+
+        # d is used to denote the size of the data
+        d = 150
+
+         # Sample centered Gaussian noise with the right correlation by the method
+         # based on the Cholesky decomposition of the precision matrix
+        data = 0.1randn(d,d) + reshape(
+                cholesky(gridlaplacian(d,d) + 0.003I) \ randn(d*d),
+                d, d
+        )
+
+        surface(data; shading=false, show_axis=false, colormap = :deep)
+    end
+
+    @cell "Coloured fractional Brownian noise field" ["3d"] begin
+        "This example was contributed by Harmen Stoppels (@haampie)"
+
+        using FFTW
+
+        # Obtain approximately fractal Brownian noise, appropriately damping
+        # the high frequencies of Fourier transformed spatial white noise,
+        # and (inverse) Fourier transforming the result back into the spatial domain.
+        function cloud(n = 256, p = 0.75f0)
+            ωs = fft(randn(Float32, n, n, n))
+            r = Float32[0:n÷2; n÷2-1:-1:(iseven(n) ? 1 : 0)]
+            xs, ys, zs = reshape(r, :, 1, 1), reshape(r, 1, :, 1), reshape(r, 1, 1, :)
+            ωs ./= (1.0f0 .+ (xs.^2 .+ ys.^2 .+ zs.^2) .^ p)
+            return real.(ifft(ωs))
+        end
+
+        z = cloud(256, 0.75)
+
+        volume(z; algorithm = :mip, colorrange = extrema(z))
+
+    end
+
     # @cell "2D text in 3D" [text, annotations] begin
-    # TODO this has a world age problem!?!??
+        # TODO this has a world age problem!?!??
         # using GeometryTypes
         # import AbstractPlotting: project
         # scene = meshscatter(rand(10), rand(10), rand(10), markersize = 0.02)

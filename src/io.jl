@@ -29,8 +29,8 @@ const posteval_hook = Ref{Function}(_ -> 1)
 # and MakieGallery will take care of the rest.
 
 function save_media(entry, x::Scene, path::String)
-    path = joinpath(path, "image.jpeg")
-    save(path, x)
+    path = joinpath(path, "image.jpg")
+    save(FileIO.File(DataFormat{:JPEG}, path), x) # work around FileIO bug for now
     [path]
 end
 
@@ -59,7 +59,7 @@ function save_media(entry, results::AbstractVector, path::String)
         # Only save supported results
         if res isa Union{Scene, String}
             img = joinpath(path, "image$i.jpg")
-            save(img, res)
+            save(FileIO.File(DataFormat{:JPEG}, img), res) # work around FileIO
             push!(paths, img)
         end
     end
@@ -240,7 +240,8 @@ function save_highlighted_markdown(
         scope_end = "",
         indent = "",
         outputfile = (entry, ending)-> string("output", ending),
-        print_toplevel = print_toplevel
+        print_toplevel = print_toplevel,
+        print_backends = true
     )
     hio = IOBuffer(read = true, write = true)
     highlight(hio, MIME("text/html"), src, Highlights.Lexers.JuliaLexer, highlighter)
@@ -394,7 +395,7 @@ function gallery_from_recordings(
     items = map(MakieGallery.database) do example
         base_path = joinpath(folder, string(example.unique_name))
         media_path = joinpath(base_path, "media")
-        media = master_url.(folder, joinpath.(media_path, readdir(media_path)))
+        media = master_url.(abspath(folder), joinpath.(abspath(media_path), readdir(media_path)))
         mdpath = joinpath(base_path, "index.md")
         save_highlighted_markdown(mdpath, example, media, hltheme; print_toplevel = print_toplevel)
         md2html(mdpath; stylesheets = [relpath(joinpath(dirname(html_out), "syntaxtheme.css"), base_path)])

@@ -104,6 +104,9 @@ end
 
 MakieGallery.current_ref_version[] = "master"
 
+empty!(MakieGallery.plotting_backends)
+append!(MakieGallery.plotting_backends, ["Makie"])
+
 cd(@__DIR__)
 database = MakieGallery.load_database()
 

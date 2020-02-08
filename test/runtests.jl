@@ -42,9 +42,10 @@ slow_examples = [
 # DIffeq errors with stackoverflow
 # The others look fine on the CI, but the measured difference is too high -.-
 # Maybe related to the axis changes, will investigate later
-filter!(database) do entry
+filter!(MakieGallery.database) do entry
     !("diffeq" in entry.tags) &&
-    !(entry.unique_name in (:analysis, :colormap_collection, :lots_of_heatmaps))
+    !(entry.unique_name in (:analysis, :colormap_collection, :lots_of_heatmaps)) &&
+    !(entry.title in slow_examples)
  end
 
 # Download is broken on CI
