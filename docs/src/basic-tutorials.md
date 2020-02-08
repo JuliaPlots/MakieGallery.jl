@@ -86,7 +86,19 @@ You can force display to the backend's preferred window by calling `display(Abst
 
 ## Saving plots
 
-See the [Output](@ref) section.
+Makie overloads the `FileIO` interface, so it is simple to save Scenes as images.
+
+## Static plots
+
+To save a `scene` as an image, you can just write e.g.:
+
+```julia
+Makie.save("plot.png", scene)
+Makie.save("plot.jpg", scene)
+```
+where `scene` is the scene handle.
+
+See [Output](@ref) for more information.
 
 ## Animations
 
