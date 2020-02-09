@@ -221,6 +221,6 @@ record(scene, "test.mp4"; framerate = 10) do io
           recordframe!(io) # record a new frame
       end
   end
-  ```
+```
   
   This will sample from the Scene `scene` for 10 seconds, at a rate of 10 frames per second.
