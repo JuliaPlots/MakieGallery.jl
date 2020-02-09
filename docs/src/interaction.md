@@ -209,3 +209,18 @@ end
 ```
 <!--TODO make an actual example
 TODO can we make a keyboard viewer in Makie?-->
+
+## Recording your interactions
+
+If you want to record the Scene you're interacting with, you can do that from within Makie.  As an example, see the following code:
+
+```julia
+record(scene, "test.mp4"; framerate = 10) do io
+      for i = 1:100        # sampling time
+          sleep(0.1)       # sampling rate 
+          recordframe!(io) # record a new frame
+      end
+  end
+  ```
+  
+  This will sample from the Scene `scene` for 10 seconds, at a rate of 10 frames per second.
