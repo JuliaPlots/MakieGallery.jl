@@ -8,17 +8,17 @@ There are three main backends for AbstractPlotting:
 
 You can activate any backend by `using` the appropriate package and calling it's `activate!` function; to activate WGLMakie, you would do s`using WGLMakie; WGLMakie.activate!()`.
 
-## GLMakie
+## [GLMakie](https://github.com/JuliaPlots/GLMakie.jl)
 
 GLMakie is the native, desktop-based backend, and is the most feature-complete.  
 It requires an OpenGL enabled graphics card with OpenGL version 3.3 or higher.
 
-## WGLMakie
+## [WGLMakie](https://github.com/JuliaPlots/WGLMakie.jl)
 
 WGLMakie is the Web-based backend, and is still experimental (though relatively feature-complete).
 Currently, installing it is not straightforward; see the [`WGLMakie.jl` README](https://github.com/JuliaPlots/WGLMakie.jl) for detailed instructions.
 
-## CairoMakie
+## [CairoMakie](https://github.com/JuliaPlots/CairoMakie.jl)
 
 CairoMakie uses Cairo to draw vector graphics to SVG and PDF.  
 It needs Cairo.jl to build properly, which may be difficult on MacOS.
