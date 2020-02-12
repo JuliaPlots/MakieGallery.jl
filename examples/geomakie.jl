@@ -1,8 +1,8 @@
 @block AnshulSinghvi ["geo", "geomakie"] begin
 
-    @cell "Geographical axes" [geoaxis, projection] begin
-        using GeoMakie
+    using GeoMakie
 
+    @cell "Geographical axes" [geoaxis, projection] begin
         projections = [
             Projection("+proj=longlat") => "Standard lon-lat",
             Projection("+proj=robin")   => "Robinson",
@@ -22,15 +22,54 @@
     end
 
     @cell "Earth and Coastlines" [earth, coastlines, geoaxis] begin
-        using GeoMakie
-
         coastlines(; crs = (dest = WinkelTripel(),), show_axis = false, scale_plot = false)
         earth!(; crs = (dest = WinkelTripel(),))
         geoaxis!(-180, 180, -90, 90; crs = (dest = WinkelTripel(),))
     end
 
+    @cell "Longitudes in 0-360" [earth, geomakie] begin
+
+        lons = LinRange(0.5, 359.5, 360) # this is not the recommended way
+        lats = LinRange(-89.5, 89.5, 180)
+
+        field = [exp(cosd(l)) + 3(y/90) for l in lons, y in lats]
+
+        cf = circshift(field, 180) # shift the field to the correct position
+
+        source = Projection("+proj=lonlat +lon_0=180 +pm=180")
+        dest = Projection("+proj=moll +lon_0=0")
+
+        xs, ys = xygrid(lons, lats)
+        Proj4.transform!(source, dest, vec(xs), vec(ys))
+
+        scene = surface(xs, ys; color = cf, shading = false, show_axis = false)
+
+        geoaxis!(scene, -180, 180, -90, 90; crs = (src = source, dest = dest,))
+
+        coastlines!(scene, 1; crs = (src = source, dest = dest,))
+
+    end
+
+    @cell "Simple field over the Earth" [earth, geomakie] begin
+        lons = LinRange(-179.5, 179.5, 360)
+        lats = LinRange(-89.5, 89.5, 180)
+
+        field = [exp(cosd(l)) + 3(y/90) for l in lons, y in lats]
+
+        source = LonLat()
+        dest = WinkelTripel()
+
+        xs, ys = xygrid(lons, lats)
+        Proj4.transform!(source, dest, vec(xs), vec(ys))
+
+        scene = surface(xs, ys; color = field, shading = false, show_axis = false, scale_plot = false)
+
+        geoaxis!(scene, -180, 180, -90, 90; crs = (src = source, dest = dest,))
+
+        coastlines!(scene, 1; crs = (src = source, dest = dest,))
+    end
+
     @cell "Air Particulates" [record, animation] begin
-        using GeoMakie
         using GeoMakie: ImageMagick, Glob
 
         source = LonLat()
