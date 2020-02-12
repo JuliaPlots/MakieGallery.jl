@@ -280,6 +280,7 @@ makedocs(
         prettyurls = false,
         assets = ["assets/favicon.ico"],
     ),
+    repo="https://github.com/JuliaPlots/AbstractPlotting.jl/blob/{commit}{path}#L{line}",
     sitename = "Makie.jl",
     expandfirst = [
         "basic-tutorials.md",
