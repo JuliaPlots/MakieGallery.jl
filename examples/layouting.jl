@@ -376,4 +376,18 @@ end
         end
         scene
     end
+    
+    @cell "Inline legend" [legend] begin
+        scene, layout = layoutscene()
+
+        ax = layout[1, 1] = LAxis(scene)
+        
+        ls = [lines!(ax, 1:10, (1:10) .* i, color = rand(RGBf0)) for i in 1:5]
+
+        leg = layout[1, 1] = LLegend(scene, ls, ["line $i" for i in 1:5];
+            width = Auto(false), height = Auto(false), halign = :left, valign = :top,
+            margin = (10, 10, 10, 10))
+
+        scene
+    end
 end
