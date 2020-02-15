@@ -2,13 +2,10 @@
 <img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/master/assets/logo.png" alt="Makie.jl" width="480">
 </div>
 
-Build status: [![][gitlab-img]][gitlab-url] [![Build Status](https://travis-ci.com/JuliaPlots/MakieGallery.jl.svg?branch=master)](https://travis-ci.com/JuliaPlots/MakieGallery.jl)
+Build status: [![][gitlab-img]][gitlab-url]
 
 [gitlab-img]: https://gitlab.com/JuliaGPU/MakieGallery-jl/badges/master/pipeline.svg
 [gitlab-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
-
-[travis-img]: https://gitlab.com/JuliaGPU/MakieGallery-jl/badges/master/pipeline.svg
-[travis-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
 
 [Makie example gallery generated with this package](http://juliaplots.org/MakieReferenceImages/gallery/index.html)
 
@@ -57,3 +54,7 @@ However, this documentation requires the reference images to be downloaded in th
 (configurability via an environment variable is planned).  
 You can get the reference images from https://github.com/JuliaPlots/MakieReferenceImages -
 it's a large repository, so you may want to shallow clone.
+
+## Updating the reference images
+
+You can upgrade the reference images by using the script `test/upgrade_recordings.jl`.  Then, you can create a pull request to [MakieReferenceImages](https://github.com/JuliaPlots/MakieReferenceImages).
