@@ -582,12 +582,11 @@ function eval_example(
         try
             return include_string(temp_mod, source, string(uname))
         catch e
-            @warn "Example $(entry.title) failed"
+            @warn "Example $(entry.title) failed" exception=e
             println("with source:")
             for line in split(source, "\n")
                 println(stderr, "    ", line)
             end
-            rethrow(e)
         end
     else
         return map(enumerate(steps)) do (i, source)
