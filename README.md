@@ -1,5 +1,5 @@
 <div align="center">
-<img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/sd/abstract/docs/src/assets/logo.png" alt="Makie.jl" width="480">
+<img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/master/assets/logo.png" alt="Makie.jl" width="480">
 </div>
 
 Build status: [![][gitlab-img]][gitlab-url] [![Build Status](https://travis-ci.com/JuliaPlots/MakieGallery.jl.svg?branch=master)](https://travis-ci.com/JuliaPlots/MakieGallery.jl)
