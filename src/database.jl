@@ -643,3 +643,18 @@ function available_examples()
     database = MakieGallery.load_database()
     unique(map(x-> x.title, database))
 end
+
+"""
+    get_unrecorded_examples(database, dir)
+
+Return the UIDs of the examples in the database which have not been recorded.
+"""
+function get_unrecorded_examples(database, dir)
+
+    uids = getproperty.(database, :unique_name)
+
+    repos = readdir(dir) .|> Symbol
+
+    return setdiff(uids, repos)
+
+end
