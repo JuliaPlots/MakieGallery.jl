@@ -477,6 +477,37 @@
         render(A)
     end
 
+    @cell "Interactive light cone" [record, interaction] begin
+
+        # draw the axis
+        scene = linesegments([Point2f0(-5,0) => Point2f0(5,0), Point2f0(0,-1) => Point2f0(0,2)],scale_plot=false, show_axis=false)
+
+        function get_lightcone(pos)
+            x,v = pos
+            len = sqrt(x^2+2^2)
+            return [
+                    Point2f0(x,v) => Point2f0(x + x/len, v + 2/len),
+                    Point2f0(x + x/len, v + 2/len) => Point2f0(x-1, v),
+                    Point2f0(x-1, v) => Point2f0(x,v)
+                ]
+        end
+
+        visible = Node(false)
+        lift(scene.events.mousebuttons) do mb
+            visible[] = ispressed(scene, Mouse.left)
+        end
+
+        coords = lift(scene.events.mouseposition) do mp
+            pos = to_world(scene, Point2f0(mp))
+            return get_lightcone(pos)
+        end
+
+        linesegments!(scene, coords; visible = visible)
+
+        RecordEvents(scene, @replace_with_a_path)
+
+    end
+
     @cell "Cobweb plot" [lines, interaction] begin
 
         ## setup functions

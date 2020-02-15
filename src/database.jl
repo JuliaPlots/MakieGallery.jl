@@ -582,12 +582,11 @@ function eval_example(
         try
             return include_string(temp_mod, source, string(uname))
         catch e
-            @warn "Example $(entry.title) failed"
+            @warn "Example $(entry.title) failed" exception=e
             println("with source:")
             for line in split(source, "\n")
                 println(stderr, "    ", line)
             end
-            rethrow(e)
         end
     else
         return map(enumerate(steps)) do (i, source)
@@ -643,4 +642,19 @@ Returns an array of the titles of all available examples
 function available_examples()
     database = MakieGallery.load_database()
     unique(map(x-> x.title, database))
+end
+
+"""
+    get_unrecorded_examples(database, dir)
+
+Return the UIDs of the examples in the database which have not been recorded.
+"""
+function get_unrecorded_examples(database, dir)
+
+    uids = getproperty.(database, :unique_name)
+
+    repos = readdir(dir) .|> Symbol
+
+    return setdiff(uids, repos)
+
 end

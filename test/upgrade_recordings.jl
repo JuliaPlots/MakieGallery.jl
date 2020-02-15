@@ -1,5 +1,25 @@
 using MakieGallery
 
+function record_unrecorded(database, dir)
+
+    unrecorded_examples = MakieGallery.get_unrecorded_examples(MakieGallery.database, dir)
+
+    db = filter(x -> x.unique_name ∈ unrecorded_examples, MakieGallery.database)
+
+    old_db = copy(database)
+
+    empty!(MakieGallery.database)
+    append!(MakieGallery.database, db)
+
+    examples = MakieGallery.record_examples(repo)
+
+    empty!(MakieGallery.database)
+    append!(MakieGallery.database, old_db)
+
+    return examples
+
+end
+
 # load the database.  TODO this is a global and should be changed.
 # Here, we reorder the database, to make it easier to see.
 database = MakieGallery.load_database([
@@ -57,16 +77,19 @@ svec = sort(database, by = x -> findfirst(==(x.file), preferred_order)) |> Vecto
 empty!(MakieGallery.database)
 append!(MakieGallery.database, svec)
 MakieGallery.database
+
+record_unrecorded(MakieGallery.database, repo)
+
 # generate `thumb.jpg` for every directory in `recordings`
-MakieGallery.generate_thumbnails(recordings)
+MakieGallery.generate_thumbnails(repo)
 
 # move this content to the repo
 # cp(recordings, repo, force = true)
 
 empty!(MakieGallery.plotting_backends)
 append!(MakieGallery.plotting_backends, ["Makie"])
-MakieGallery.plotting_backends
-# generate HTML pages for the Gallery and
+
+# generate HTML pages for the Gallery
 MakieGallery.gallery_from_recordings(
     repo,
     joinpath(repo, "index.html");
