@@ -607,8 +607,9 @@ end
 Walks through examples and evaluates them. Returns the evaluated value and calls
 `f(entry, value)`.
 """
-function eval_examples(f, tags...; start = 1, exclude_tags = nothing, kw_args...)
+function eval_examples(f, tags...; start = 1, exclude_tags = nothing, print_uid = true, kw_args...)
     enumerate_examples(tags...; start = start, exclude_tags = exclude_tags) do entry
+        print_uid && (printstyled("Running ", color = :blue, bold = true); println(entry.unique_name))
         result = eval_example(entry; kw_args...)
         f(entry, result)
     end

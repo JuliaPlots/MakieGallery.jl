@@ -315,7 +315,6 @@ function record_examples(
 
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
-            printstyled("Running ", color = :blue, bold = true)
             uname = example.unique_name
             println(uname)
             @testset "$(example.title)" begin
@@ -328,6 +327,10 @@ function record_examples(
                     set_last_evaled!(uname)
                     backend_reset_theme!(resolution = resolution) # reset before next example
                     @test true
+                    if generate_thumbnail && !isfile(outfolder) && ispath(outfolder)
+                        sample = joinpath(outfolder, first(readdir(outfolder)))
+                        generate_thumbnail(sample, joinpath(outfolder, "thumb.jpg"))
+                    end
                 catch e
                     @warn "Error thrown when evaluating $(example.title)" exception=e
                     @test false
@@ -337,7 +340,6 @@ function record_examples(
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
-    generate_thumbnail && generate_thumbnails(folder)
     posteval_hook[](display)
     result
 end
