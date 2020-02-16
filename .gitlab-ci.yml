@@ -38,8 +38,29 @@ gallerytest:
   artifacts:
     when: always
     paths:
+      - .julia
       - test/tested_different
       - test/test_recordings
       - Project.toml
       - Manifest.toml
+    expire_in: 4 days
+
+deploy:
+  stage: refimages
+  on: manual
+  dependencies:
+    - gallerytest
+  tags:
+    - xorg
+
+  image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
+
+  script:
+    - apt-get install -y xorg-dev mesa-utils
+    - julia --project test/upgrade_recordings.jl
+
+  artifacts:
+    when: always
+    paths:
+      - .julia/dev/MakieReferenceImages
     expire_in: 4 days

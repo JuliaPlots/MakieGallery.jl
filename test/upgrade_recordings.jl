@@ -116,10 +116,11 @@ end
 # generate HTML pages for the Gallery
 MakieGallery.gallery_from_recordings(
     repo,
-    joinpath(repo, "index.html");
+    joinpath(gallery, "index.html");
     hltheme = MakieGallery.Highlights.Themes.DefaultTheme
 )
 
-MakieGallery.generate_preview(repo)
-
-run(`open ./src/preview.html`)
+cd(repo)
+run(`git stage -A`)
+run(`git commit -am "Reference image update"`)
+run(`git push`)
