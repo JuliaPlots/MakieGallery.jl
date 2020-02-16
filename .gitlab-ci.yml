@@ -46,21 +46,18 @@ gallerytest:
     expire_in: 4 days
 
 deploy:
+
   stage: refimages
-  on: manual
-  dependencies:
-    - gallerytest
+
+  when: manual
+
   tags:
     - xorg
 
   image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
 
-  script:
-    - apt-get install -y xorg-dev mesa-utils
-    - julia --project test/upgrade_recordings.jl
+  before_script:
+      - apt-get install -y xorg-dev mesa-utils
 
-  artifacts:
-    when: always
-    paths:
-      - .julia/dev/MakieReferenceImages
-    expire_in: 4 days
+  script:
+    - julia --project test/upgrade_recordings.jl
