@@ -51,6 +51,9 @@ deploy:
 
   when: manual
 
+  dependencies:
+    - gallerytest
+
   tags:
     - xorg
 
