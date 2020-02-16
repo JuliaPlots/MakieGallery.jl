@@ -21,6 +21,7 @@ slow_examples = [
     "Animated surface and wireframe",
     "Moire",
     "Line GIF",
+    "Interaction with mouse",
     "Electrostatic repulsion",
     "pong",
     "pulsing marker",
@@ -36,6 +37,7 @@ slow_examples = [
     "Image on Geometry (Earth)",
     "Interaction with mouse",
     "Air Particulates",
+    "Window resizing"
 ]
 # DIffeq errors with stackoverflow
 # The others look fine on the CI, but the measured difference is too high -.-
