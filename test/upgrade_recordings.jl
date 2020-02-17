@@ -95,7 +95,7 @@ gallery_examples  = Symbol.(readdir(gallery))
 
 to_record = setdiff(unrec_uids, gallery_examples)
 
-record_selection(database, recordings; selection = to_record, generate_thumbnails = true)
+record_selection(database, recordings; selection = to_record, generate_thumbnail = true)
 
 for uid in union(diff_uids, unrec_uids)
     if uid ∈ recorded_examples

@@ -316,7 +316,6 @@ function record_examples(
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
             uname = example.unique_name
-            println(uname)
             @testset "$(example.title)" begin
                 try
                     subfolder = joinpath(folder, string(uname))
