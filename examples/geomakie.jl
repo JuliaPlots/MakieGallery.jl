@@ -101,7 +101,7 @@
 
         geoaxis!(lsc, -180, 180, -90, 90; crs = (src = source, dest = dest,))
 
-        coastlines!(lsc, 1; crs = (src = source, dest = dest,))
+        coastlines!(lsc; crs = (src = source, dest = dest,))
 
         layout[1, 2] = LColorbar(scene, splot; label = "Arbitrary data", width = 30)
 
