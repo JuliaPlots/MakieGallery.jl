@@ -1,24 +1,30 @@
 using MakieGallery
 
-function record_unrecorded(database, dir)
+function record_selection(
+    database, dir;
+    selection = MakieGallery.get_unrecorded_examples(MakieGallery.database, dir),
+    kwargs...
+    )
 
-    unrecorded_examples = MakieGallery.get_unrecorded_examples(MakieGallery.database, dir)
-
-    db = filter(x -> x.unique_name ∈ unrecorded_examples, MakieGallery.database)
+    db = filter(x -> x.unique_name ∈ selection, MakieGallery.database)
 
     old_db = copy(database)
 
     empty!(MakieGallery.database)
     append!(MakieGallery.database, db)
 
-    examples = MakieGallery.record_examples(repo)
+    examples = MakieGallery.record_examples(repo; kwargs...)
 
     empty!(MakieGallery.database)
     append!(MakieGallery.database, old_db)
 
     return examples
-
 end
+
+empty!(MakieGallery.plotting_backends)
+append!(MakieGallery.plotting_backends, ["Makie"])
+
+# we need to clone the repo - this means git must be installed on the user system.
 
 # load the database.  TODO this is a global and should be changed.
 # Here, we reorder the database, to make it easier to see.
@@ -41,9 +47,14 @@ database = MakieGallery.load_database([
 ]);
 
 # where is the refimage repo?
-repo = joinpath(get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), ".julia", "dev", "MakieReferenceImages")), "gallery")
+repo = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), ".julia", "dev", "MakieReferenceImages"))
 
-recordings = joinpath(@__DIR__, "test_recordings")
+# clone if not present
+isdir(repo) || run(`git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages $repo`)
+
+gallery     = joinpath(repo, "gallery")
+recordings  = joinpath(@__DIR__, "test_recordings")
+differences = joinpath(@__DIR__, "tested_different")
 
 # MakieGallery.generate_preview(recordings, joinpath(recordings, "index.html"))
 
@@ -76,26 +87,40 @@ svec = sort(database, by = x -> findfirst(==(x.file), preferred_order)) |> Vecto
 
 empty!(MakieGallery.database)
 append!(MakieGallery.database, svec)
-MakieGallery.database
 
-record_unrecorded(MakieGallery.database, repo)
+diff_uids  = Symbol.(readdir(differences))
+unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, repo)
+recorded_examples = Symbol.(readdir(recordings))
+gallery_examples  = Symbol.(readdir(gallery))
+
+to_record = setdiff(unrec_uids, gallery_examples)
+
+record_selection(database, recordings; selection = to_record, generate_thumbnail = true)
+
+for uid in union(diff_uids, unrec_uids)
+    if uid ∈ recorded_examples
+        mkpath(joinpath(gallery, string(uid)))
+        cp(
+            joinpath(recordings, string(uid)),
+            joinpath(gallery, string(uid));
+            force = true
+        )
+    else
+        @warn "Example with unique name $uid was not recorded and not listed."
+    end
+end
 
 # generate `thumb.jpg` for every directory in `recordings`
-MakieGallery.generate_thumbnails(repo)
-
-# move this content to the repo
-# cp(recordings, repo, force = true)
-
-empty!(MakieGallery.plotting_backends)
-append!(MakieGallery.plotting_backends, ["Makie"])
+# MakieGallery.generate_thumbnails(repo)
 
 # generate HTML pages for the Gallery
 MakieGallery.gallery_from_recordings(
     repo,
-    joinpath(repo, "index.html");
+    joinpath(gallery, "index.html");
     hltheme = MakieGallery.Highlights.Themes.DefaultTheme
 )
 
-MakieGallery.generate_preview(repo)
-
-run(`open ./src/preview.html`)
+cd(repo)
+run(`git stage -A`)
+run(`git commit -am "Reference image update"`)
+run(`git push`)

@@ -114,6 +114,9 @@
         v(x::Point2{T}) where T = Point2{T}(x[2], 4*x[1])
         streamplot(v, -2..2, -2..2)
     end
+    
+    @cell lines(-1..1, x -> x^2)
+    @cell scatter(-1..1, x -> x^2)
 end
 
 
