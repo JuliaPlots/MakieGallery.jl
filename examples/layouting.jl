@@ -392,7 +392,7 @@ end
     end
 
     @cell "Window resizing" [record] begin
-        using Animations
+        using MakieLayout.Animations
 
         container_scene = Scene(camera = campixel!, resolution = (1200, 1200))
 
