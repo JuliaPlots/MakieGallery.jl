@@ -3,6 +3,7 @@ variables:
   MODERNGL_DEBUGGING: "true"
   JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
   CI_DEV_PKGS: "Makie#master AbstractPlotting#master GLMakie#master StatsMakie#master MakieLayout#master GeoMakie#master"
+  CI_WEEKSTAMP: ${date +%Y/%m:W%U}
 
 stages:
   - test
@@ -18,7 +19,7 @@ gallerytest:
   image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
 
   cache:
-    key: one-key-to-rule-them-all # clear this every week or so
+    key: ${CI_WEEKSTAMP} # clear this every week or so
     paths:
       - .julia/artifacts
       - .julia/packages
@@ -33,7 +34,7 @@ gallerytest:
     - glxinfo | grep 'version'
     - julia -e 'using InteractiveUtils; versioninfo()'
     - julia --project -e "using Pkg;
-                          pkg\"add $CI_DEV_PKGS\"; gc"
+                          pkg\"add $CI_DEV_PKGS; gc\""
     - julia --project -e 'using Pkg; pkg"test"'
 
   artifacts:
@@ -60,7 +61,7 @@ deploy:
   image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
 
   cache:
-    key: one-key-to-rule-them-all # clear this every week or so
+    key: ${CI_WEEKSTAMP} # clear this every week or so
     paths:
       - .julia/artifacts
       - .julia/packages
