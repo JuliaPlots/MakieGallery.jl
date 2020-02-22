@@ -25,6 +25,7 @@ gallerytest:
       - .julia/packages
 
   before_script:
+      - echo The cache ID is $CI_WEEKSTAMP
       - apt-get -qq update
       # glfw
       - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
