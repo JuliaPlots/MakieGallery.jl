@@ -3,7 +3,7 @@ variables:
   MODERNGL_DEBUGGING: "true"
   JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
   CI_DEV_PKGS: "Makie#master AbstractPlotting#master GLMakie#master StatsMakie#master MakieLayout#master GeoMakie#master"
-  CI_WEEKSTAMP: ${date +%Y/%m:W%U}
+  CI_WEEKSTAMP: $(date +%Y/%m:W%U)
 
 stages:
   - test
