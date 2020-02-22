@@ -25,7 +25,7 @@ Observable{Float64} with 0 listeners. Value:
 0
 ```
 
-The value of the `x` can be changed simply using `push!`:
+The value of the `x` can be changed by setting the empty index, i.e.:
 ```julia
 julia> x[] = 3.34;
 julia> x
@@ -128,7 +128,7 @@ end
 As you can see, at we have run this block in Julia, but nothing happened yet.
 Instead, a function was defined. However, upon doing:
 ```julia
-push!(x, 5.0);
+x[] = 5.0;
 ```
 
 ```
