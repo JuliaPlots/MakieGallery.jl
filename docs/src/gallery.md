@@ -3,7 +3,7 @@
 `MakieGallery.jl` is the repo which hosts these docs, as well as the source code for the examples in the Example Gallery.
 
 Docs are built using [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl), and are located in the `docs` folder.  
-The raw markdown files from which documentation is generated are located in `docs/src`, but all the pages are not there; some, like `Plotting functions overview`, are generated during documentation build.  
+The raw markdown files from which documentation is generated are located in `docs/src`, but not all the pages are there; some, like [`Plotting functions overview`](@ref), are generated during the documentation build.  
 Those markdown pages have a `src-` prefix.
 
 ## Tests
