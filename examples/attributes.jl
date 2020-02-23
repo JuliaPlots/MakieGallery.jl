@@ -62,7 +62,7 @@
     @cell "isorange, isovalue" [volume, algorithm, isorange, isovalue] begin
         r = range(-1, stop = 1, length = 100)
         matr = [(x.^2 + y.^2 + z.^2) for x = r, y = r, z = r]
-        volume(matr .* (matr .> 1.4), algorithm = :iso, isorange = 3, isovalue = 1.7)
+        volume(matr .* (matr .> 1.4), algorithm = :iso, isorange = 0.05, isovalue = 1.7)
     end
 
     @cell "levels" [contour, colormap, levels] begin
