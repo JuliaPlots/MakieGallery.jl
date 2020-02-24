@@ -165,7 +165,7 @@
         # record a video
         N = 150
         record(scene, @replace_with_a_path(mp4), 1:N) do i
-            push!(t, Base.time())
+            t[] = Base.time()
         end
     end
 
@@ -456,7 +456,7 @@
         scene = Scene(backgroundcolor = :black)
         scatter!(
             scene,
-            (randn(Point3f0, stars) .- 0.5) .* 10,
+            map(i-> (randn(Point3f0) .- 0.5) .* 10, 1:stars),
             glowwidth = 1, glowcolor = (:white, 0.1), color = rand(stars),
             colormap = [(:white, 0.4), (:blue, 0.4), (:yellow, 0.4)],
             markersize = rand(range(0.0001, stop = 0.05, length = 100), stars),
