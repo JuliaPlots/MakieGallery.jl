@@ -32,7 +32,7 @@
         N = 1000
         record(scene, @replace_with_a_path(mp4), LinRange(tspan..., N)) do tᵢ
             global eyepos
-            push!(t, tᵢ)
+            t[] = tᵢ
             eyepos = Vec3f0(eyepos[1] - (N / 10000), eyepos[2], eyepos[3])
             update_cam!(scene, eyepos, mean(trajectory[]))
             sleep(0.001)

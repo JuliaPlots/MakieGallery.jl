@@ -43,7 +43,7 @@
         linesegments!(scene, points)
         N = 150
         record(scene, @replace_with_a_path(mp4), range(0, stop = 10, length = N)) do i
-            push!(time_node, i)
+            time_node[] = i
         end
     end
     @cell "barplot" [barplot] begin

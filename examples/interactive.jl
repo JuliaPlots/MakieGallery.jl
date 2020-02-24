@@ -59,7 +59,7 @@
         on(scene.events.mousebuttons) do buttons
            if ispressed(scene, Mouse.left)
                pos = to_world(scene, Point2f0(scene.events.mouseposition[]))
-               push!(clicks, push!(clicks[], pos))
+               clicks[] = push!(clicks[], pos)
            end
            return
         end
@@ -89,19 +89,20 @@
         scene = Scene(resolution = (500, 500))
         lines!(scene, r, sin.(r), linewidth = 3)
         lineplot = scene[end]
-        visible = node(:visible, false)
+        visible = Node(false)
         poprect = lift(scene.events.mouseposition) do mp
             FRect((mp .+ 5), 250, 40)
         end
         textpos = lift(scene.events.mouseposition) do mp
             Vec3f0((mp .+ 5 .+ (250/2, 40 / 2))..., 120)
         end
-        popup = poly!(campixel(scene), poprect, raw = true, color = :white, strokewidth = 2, strokecolor = :black, visible = visible)
+        popup = poly!(campixel(scene), poprect, raw = true, color = :white,
+                      strokewidth = 2, strokecolor = :black, visible = visible)
         rect = popup[end]
         translate!(rect, Vec3f0(0, 0, 100))
-        text!(popup, "( 0.000,  0.000)", textsize = 30, position = textpos, color = :darkred, align = (:center, :center), raw = true, visible = visible)
+        text!(popup, "( 0.000,  0.000)", textsize = 30, position = textpos,
+              color = :darkred, align = (:center, :center), raw = true, visible = visible)
         text_field = popup[end]
-        scene
         x = Node(false)
         on(scene.events.mouseposition) do event
             plot, idx = mouse_selection(scene)
@@ -165,7 +166,7 @@
     end
 
     @cell "Edit Polygon" [poly, node, on, events] begin
-        points = node(:poly, Point2f0[(0, 0), (0.5, 0.5), (1.0, 0.0)])
+        points = Node(Point2f0[(0, 0), (0.5, 0.5), (1.0, 0.0)])
         scene = Scene(resolution = (500, 500))
         poly!(scene, points, strokewidth = 2, strokecolor = :black, color = :skyblue2, show_axis = false, scale_plot = false)
         scatter!(points, color = :white, strokewidth = 10, markersize = 0.05, strokecolor = :black, raw = true)
@@ -556,31 +557,26 @@
         using Colors
         x₀ = -5.0
         #gateState = false
-        xRange = 10.0
+        x_range = 10.0
         #  deflection
-        p₀(x) = x/2.0
+        p₀(x) = x / 2.0
         # plot
-        nPts = 100.0
-        x = (x₀ .+ collect((-nPts/2.):(nPts/2.)) / nPts * xRange)
-        scene = lines(x,  p₀(x),
-                 linewidth = 4,
-                 color = :darkcyan,
-                 leg = false
-            )
+        n_points = 100.0
+        x = (x₀ .+ collect((-n_points/2.0):(n_points/2.0)) / n_points * x_range)
+        scene = lines(x, p₀(x), linewidth = 4, color = :darkcyan, leg = false)
         axis = scene[Axis]
-        axis[:names][:axisnames] =  ( "x","y")
+        axis[:names][:axisnames] = ("x", "y")
 
         D = Node(x₀)
-        HC_handle = scatter!(lift(x->[x],  D), [2.0], marker=:circle,
-              markersize = 1., color = :red)[end]
+        HC_handle = scatter!(lift(x->[x], D), [2.0], marker=:circle,
+                             markersize = 1.0, color = :red)[end]
 
-        s1 = slider(LinRange(-10.0, 0.0, 101),
-          raw = true, camera = campixel!, start = -10.0)
+        s1 = slider(LinRange(-10.0, 0.0, 101), raw = true, camera = campixel!, start = -10.0)
         kx = s1[end][:value]
 
         scatter!(scene, lift(x->[x; x], kx), lift(x-> [0.5; p₀(x)], kx),
-        marker = :hexagon,  color = RGBA(.5,0.,.5,.5),
-        markersize = .35, strokewidth = .01, strokecolor = :black)
+                 marker = :hexagon, color = RGBA(0.5, 0.0, 0.5, 0.5),
+                 markersize = 0.35, strokewidth = 0.01, strokecolor = :black)
 
         S = Scene(resolution = (800, 600))
         hbox(scene, s1; parent = S)
@@ -589,10 +585,10 @@
                 sleep(0.01)
             end
             while isopen(S)
-                p = p₀((10.0+kx[])/10.)
+                p = p₀((10.0 + kx[]) / 10.0)
                 gateState = rand(1)[] < p
                 HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
-                push!(D, -3. + rand(1)[]/5.)
+                D[] = -3.0 + rand() / 5.0
                 sleep(0.001)
             end
         end
