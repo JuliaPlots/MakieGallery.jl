@@ -570,12 +570,11 @@ function eval_example(
     Random.seed!(42)
 
     temp_mod = MakieGallery.eval(:(module $(gensym("TempModule")) end))
+
     for backend in plotting_backends
-        Base.invokelatest(
-            temp_mod.eval,
-            Meta.parse("using $backend")
-        )
+        @eval temp_mod (using $(Symbol(backend)))
     end
+
     @eval temp_mod (using ..MakieGallery)
 
     if length(steps) == 1
