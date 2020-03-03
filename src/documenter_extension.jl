@@ -277,9 +277,10 @@ function column_embed(::Type{DatabaseLookup}, x, page, doc)
                     )
                 )
             else
-            # print code for embedding plot
-            src_plot = Documenter.Documents.RawHTML(str)
-            embed == "plot" || push!(content, src_plot)
+                # print code for embedding plot
+                src_plot = Documenter.Documents.RawHTML(str)
+                embed == "plot" || push!(content, src_plot)
+            end
         end
         # finally, map the content back to the page
         page.mapping[x] = content
