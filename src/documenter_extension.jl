@@ -1,3 +1,6 @@
+"The syntax highlighter to use when embedding plots."
+const DEFAULT_HIGHLIGHTER = Ref(Highlights.Themes.DefaultTheme)
+
 struct DatabaseLookup <: Expanders.ExpanderPipeline end
 
 Selectors.order(::Type{DatabaseLookup}) = 0.5
@@ -71,7 +74,10 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             if subidx != nothing
                 source = split(source, "@substep", keepempty = false)[subidx]
             end
-            src_code = Markdown.MD(Markdown.Code("julia", source))
+            hio = IOBuffer(read = true, write = true)
+            highlight(hio, MIME("text/html"), source, Highlights.Lexers.JuliaLexer, DEFAULT_HIGHLIGHTER[])
+            html = String(take!(hio))
+            src_code = Markdown.MD(Markdown.Code("@raw html", html))
             push!(content, src_code)
         end
         # TODO figure out a better way to not hardcode this
