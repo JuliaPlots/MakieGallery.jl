@@ -1,3 +1,6 @@
+"The syntax highlighter to use when embedding plots."
+const DEFAULT_HIGHLIGHTER = Ref(Highlights.Themes.DefaultTheme)
+
 struct DatabaseLookup <: Expanders.ExpanderPipeline end
 
 Selectors.order(::Type{DatabaseLookup}) = 0.5
@@ -71,7 +74,10 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             if subidx != nothing
                 source = split(source, "@substep", keepempty = false)[subidx]
             end
-            src_code = Markdown.MD(Markdown.Code("julia", source))
+            hio = IOBuffer(read = true, write = true)
+            highlight(hio, MIME("text/html"), source, Highlights.Lexers.JuliaLexer, DEFAULT_HIGHLIGHTER[])
+            html = String(take!(hio))
+            src_code = Documenter.Documents.RawHTML(html)
             push!(content, src_code)
         end
         # TODO figure out a better way to not hardcode this
@@ -185,4 +191,105 @@ function get_video_duration(path::AbstractString)
         @warn("`get_video_duration` on $filename did not work, using fallback video duration of 0.5 seconds")
         dur = 0.5
     end
+end
+
+function column_embed(::Type{DatabaseLookup}, x, page, doc)
+
+    matched = nothing
+    for elem in x.content
+        if isa(elem, AbstractString)
+            matched = match(regex_pattern, elem)
+            matched != nothing && break
+        end
+    end
+    matched == nothing && error("No match: $x")
+    capture = matched[1]
+    embed = matched[2]
+
+    subidx = nothing
+    # we also allow to reference a subsection annotated with @substep with an
+    # inter: @example_database("Title", 2)
+    if embed isa AbstractString && all(isnumeric, embed)
+        subidx = parse(Int, embed)
+        embed = nothing
+    end
+    # The sandboxed module -- either a new one or a cached one from this page.
+    database_keys = lowercase.(filter(x-> !(x in ("", " ")), split(capture, '"')))
+    # info("$database_keys with embed option $embed")
+    map(database_keys) do database_key
+        is_stepper = false
+
+        # buffer for content
+        content = []
+
+        # bibliographic stuff
+        idx = findall(x-> lowercase(x.title) == database_key, database)
+        isempty(idx) && error("can't find example $database_key")
+        entry = database[idx[1]]
+        uname = string(entry.unique_name)
+        lines = entry.file_range
+        tags = entry.tags
+        src_code = ""
+        # print source code for the example
+        if embed == nothing || isequal(embed, "code")
+            global src_code
+            source = look_up_source(database_key)
+            if subidx != nothing
+                source = split(source, "@substep", keepempty = false)[subidx]
+            end
+            hio = IOBuffer(read = true, write = true)
+            highlight(hio, MIME("text/html"), source, Highlights.Lexers.JuliaLexer, DEFAULT_HIGHLIGHTER[])
+            html = String(take!(hio))
+            src_code = Markdown.MD(Markdown.Code("@raw html", html))
+            push!(content, src_code)
+        end
+        # TODO figure out a better way to not hardcode this
+        media_root = ref_image_dir()
+        # embed plot for the example
+        if embed == nothing || isequal(embed, "plot")
+            # print to buffer
+            str = sprint() do io
+                mpath = joinpath(media_root, uname, "media")
+                if !isdir(mpath)
+                    @error("Can't find referenced example $(uname), with title: $(entry.title), with database query: $(capture)")
+                end
+                files = readdir(mpath)
+                if subidx !== nothing
+                    idx = findfirst(files) do file
+                        num = match(r"\d+", file)
+                        num === nothing && return false
+                        subidx == parse(Int, num.match)
+                    end
+                    if idx !== nothing
+                        embed_media(io, [master_url(media_root, joinpath(mpath, files[idx]))])
+                    end
+                else
+                    embed_media(io, master_url.(media_root, joinpath.(mpath, files)))
+                end
+            end
+
+            if embedding == nothing
+                empty!(content)
+
+            else
+            # print code for embedding plot
+            src_plot = Documenter.Documents.RawHTML(str)
+            embed == "plot" || push!(content, src_plot)
+        end
+        # finally, map the content back to the page
+        page.mapping[x] = content
+    end
+end
+
+function embed_into_cell(source, media)
+    return Documenter.Documents.RawHTML("""
+        <div class="row">
+            <div class="col-md-6">
+                <pre>$source</pre>
+            </div>
+            <div class="col-md-6">
+               $media
+            </div>
+    </div>
+    """)
 end
