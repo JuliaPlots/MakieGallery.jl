@@ -290,7 +290,7 @@ end
 function embed_into_cell(source, media)
     return Documenter.Documents.RawHTML("""
     <div class="columns">
-        <div class="column">
+        <div class="column is-half">
             $source
         </div>
         <div class="column">
