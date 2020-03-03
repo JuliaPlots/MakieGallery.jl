@@ -289,11 +289,11 @@ end
 
 function embed_into_cell(source, media)
     return Documenter.Documents.RawHTML("""
-    <table class="table">
+    <table class="table is-fullwidth">
         <tbody>
             <tr>
                 <td>
-                    <pre>$source</pre>
+                    $source
                 </td>
                 <td>
                    $media
