@@ -17,4 +17,6 @@ tmax
 prec
 Manifest.toml
 
+src/assets/syntaxtheme.css
+
 !src/assets/*

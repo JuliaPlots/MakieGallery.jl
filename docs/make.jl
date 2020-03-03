@@ -116,6 +116,13 @@ srcpath = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
 mediapath = download_reference()
 
+################################################################################
+#                          Syntax highlighting theme                           #
+################################################################################
+
+open(joinpath(srcpath, "assets", "syntaxtheme.css"), "w") do io
+    stylesheet(io, MIME("text/css"), hltheme)
+end
 
 ################################################################################
 #                      Automatic Markdown page generation                      #
@@ -278,7 +285,10 @@ makedocs(
     doctest = false, clean = true,
     format = Documenter.HTML(
         prettyurls = false,
-        assets = ["assets/favicon.ico"],
+        assets = [
+            "assets/favicon.ico",
+            "assets/syntaxtheme.css"
+        ],
     ),
     sitename = "Makie.jl",
     expandfirst = [
