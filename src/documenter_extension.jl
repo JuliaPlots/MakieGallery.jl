@@ -293,7 +293,7 @@ function embed_into_cell(source, media)
         <div class="column is-half">
             $source
         </div>
-        <div class="column">
+        <div class="column is-half">
            $media
         </div>
     </div>
