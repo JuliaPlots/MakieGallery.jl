@@ -270,7 +270,12 @@ function column_embed(::Type{DatabaseLookup}, x, page, doc)
 
             if embedding == nothing
                 empty!(content)
-
+                push!(
+                    content,
+                    embed_into_cell(
+                        src_code, str
+                    )
+                )
             else
             # print code for embedding plot
             src_plot = Documenter.Documents.RawHTML(str)
