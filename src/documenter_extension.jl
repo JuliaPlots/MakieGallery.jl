@@ -1,5 +1,5 @@
 "The syntax highlighter to use when embedding plots."
-const DEFAULT_HIGHLIGHTER = Ref(Highlights.Themes.DefaultTheme)
+const DEFAULT_HIGHLIGHTER = Ref(Highlights.Themes.GithubTheme)
 
 struct DatabaseLookup <: Expanders.ExpanderPipeline end
 
