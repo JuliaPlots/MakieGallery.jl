@@ -289,6 +289,7 @@ end
 
 function embed_into_cell(source, media)
     return Documenter.Documents.RawHTML("""
+    <div class="panel">
         <div class="row">
             <div class="col-md-6">
                 <pre>$source</pre>
@@ -297,5 +298,6 @@ function embed_into_cell(source, media)
                $media
             </div>
         </div>
+    </div>
     """)
 end
