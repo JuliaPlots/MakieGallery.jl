@@ -77,7 +77,7 @@ function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
             hio = IOBuffer(read = true, write = true)
             highlight(hio, MIME("text/html"), source, Highlights.Lexers.JuliaLexer, DEFAULT_HIGHLIGHTER[])
             html = String(take!(hio))
-            src_code = Markdown.MD(Markdown.Code("@raw html", html))
+            src_code = Documenter.Documents.RawHTML(html)
             push!(content, src_code)
         end
         # TODO figure out a better way to not hardcode this
