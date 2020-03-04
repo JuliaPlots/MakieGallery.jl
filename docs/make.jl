@@ -121,7 +121,7 @@ mediapath = download_reference()
 ################################################################################
 
 open(joinpath(srcpath, "assets", "syntaxtheme.css"), "w") do io
-    stylesheet(io, MIME("text/css"), hltheme)
+    stylesheet(io, MIME("text/css"), MakieGallery.DEFAULT_THEME[])
 end
 
 @info("Writing highlighting stylesheet")

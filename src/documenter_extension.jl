@@ -33,7 +33,7 @@ function look_up_source(database_key)
     end
 end
 
-function Selectors.runner(::Type{DatabaseLookup}, x, page, doc)
+function basic_example_embed(::Type{DatabaseLookup}, x, page, doc)
     matched = nothing
     for elem in x.content
         if isa(elem, AbstractString)
@@ -193,7 +193,7 @@ function get_video_duration(path::AbstractString)
     end
 end
 
-function column_embed(::Type{DatabaseLookup}, x, page, doc)
+function cell_example_embed(::Type{DatabaseLookup}, x, page, doc)
 
     matched = nothing
     for elem in x.content
@@ -240,7 +240,7 @@ function column_embed(::Type{DatabaseLookup}, x, page, doc)
             hio = IOBuffer(read = true, write = true)
             highlight(hio, MIME("text/html"), source, Highlights.Lexers.JuliaLexer, DEFAULT_HIGHLIGHTER[])
             html = String(take!(hio))
-            src_code = Markdown.MD(Markdown.Code("@raw html", html))
+            src_code = Documenter.Documents.RawHTML(html)
             push!(content, src_code)
         end
         # TODO figure out a better way to not hardcode this
@@ -268,13 +268,19 @@ function column_embed(::Type{DatabaseLookup}, x, page, doc)
                 end
             end
 
-            if embedding == nothing
+            if embed == nothing
                 empty!(content)
-
+                push!(
+                    content,
+                    embed_into_cell(
+                        src_code.code, str
+                    )
+                )
             else
-            # print code for embedding plot
-            src_plot = Documenter.Documents.RawHTML(str)
-            embed == "plot" || push!(content, src_plot)
+                # print code for embedding plot
+                src_plot = Documenter.Documents.RawHTML(str)
+                embed == "plot" || push!(content, src_plot)
+            end
         end
         # finally, map the content back to the page
         page.mapping[x] = content
@@ -283,13 +289,17 @@ end
 
 function embed_into_cell(source, media)
     return Documenter.Documents.RawHTML("""
-        <div class="row">
-            <div class="col-md-6">
-                <pre>$source</pre>
-            </div>
-            <div class="col-md-6">
-               $media
-            </div>
+    <div class="columns">
+        <div class="column is-half">
+            $source
+        </div>
+        <div class="column is-half">
+           $media
+        </div>
     </div>
     """)
 end
+
+# Alias this to whichever function we want to use (default to basic)
+
+Selectors.runner(::Type{DatabaseLookup}, x, page, doc) = basic_example_embed(DatabaseLookup, x, page, doc)
