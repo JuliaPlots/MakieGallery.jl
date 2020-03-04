@@ -504,6 +504,8 @@
 
         linesegments!(scene, coords; visible = visible)
 
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
 
     end
