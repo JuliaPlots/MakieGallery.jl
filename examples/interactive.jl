@@ -45,10 +45,15 @@
         on(msize[end][:value]) do val
             p2.markersize = val
         end
-        RecordEvents(hbox(
+
+        final = hbox(
             vbox(b1, b2, msize),
             scene
-        ), @replace_with_a_path)
+        )
+
+        # Do not execute beyond this point!
+
+        RecordEvents(final, @replace_with_a_path)
     end
 
     @cell "Mouse Picking" [scatter, heatmap, interactive] begin
@@ -64,6 +69,9 @@
            return
         end
         scatter!(scene, clicks, color = :red, marker = '+', markersize = 10)
+
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
     end
 
@@ -77,10 +85,11 @@
         end
         p = scatter(data, markersize = s1[end][:value])
 
-        RecordEvents(
-            hbox(p, vbox(s1, s2), parent = Scene(resolution = (500, 500))),
-            @replace_with_a_path
-        )
+        final = hbox(p, vbox(s1, s2), parent = Scene(resolution = (500, 500)))
+
+        # Do not execute beyond this point!
+
+        RecordEvents(final, @replace_with_a_path)
     end
 
     @cell "Mouse Hover" [lines, hover, lift, poly, translate, text, popup, on] begin
@@ -114,6 +123,9 @@
             end
             return
         end
+
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
     end
 
@@ -162,6 +174,9 @@
             hbox(s1, s2, s3, s4, s5, s6),
             mesh_scene, parent = parent
         )
+
+        # Do not execute beyond this point!
+
         RecordEvents(parent, @replace_with_a_path)
     end
 
@@ -214,6 +229,9 @@
         add_move!(scene, points, pplot)
         add_remove_add!(scene, points, pplot)
         center!(scene)
+
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
     end
 
@@ -249,6 +267,9 @@
         red_clicks = scene[end]
         scatter!(scene, t, blues, color = :blue, marker = 'o')
         center!(scene)
+
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
     end
     @cell "Orbit Diagram" [scatter, slider] begin
@@ -297,6 +318,9 @@
             p,
             vbox(r1, r2)
         )
+
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
     end
 
@@ -397,6 +421,9 @@
         update_cam!(s, Vec3f0(7.0, 4.0, 6.0), Vec3f0(6.0, 2.5, 4.5))
         parent = Scene(resolution = (1000, 500))
         vbox(hbox(sliders...), s, parent = parent)
+
+        # Do not execute beyond this point!
+
         RecordEvents(parent, @replace_with_a_path)
     end
 
@@ -545,6 +572,9 @@
         universe.center = false
         task = @async spin(universe, orbit_speed, scale, moon, earth, ships)
         scene.center = false
+
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
     end
 
@@ -592,6 +622,9 @@
                 sleep(0.001)
             end
         end
+
+        # Do not execute beyond this point!
+
         RecordEvents(S, @replace_with_a_path);
     end
 
@@ -654,6 +687,9 @@
                 contour(volume, alpha = 0.1, levels = 10)
             )
         )
+
+        # Do not execute beyond this point!
+        
         RecordEvents(scene, @replace_with_a_path)
     end
 end
