@@ -398,7 +398,7 @@ end
 
         t = Node(0.0)
 
-        a_width = Animation([1, 7], [1200, 800], sineio(n=2, yoyo=true, postwait=0.5))
+        a_width = Animation([1.0, 7.0], [1200, 800], sineio(n=2, yoyo=true, postwait=0.5))
         a_height = Animation([2.5, 8.5], [1200, 800], sineio(n=2, yoyo=true, postwait=0.5))
 
         scene_area = lift(t) do t
@@ -450,5 +450,53 @@ end
         t[] = ti
         end
 
+    end
+
+    @cell "Aspect ratios stretching circles" [layout] begin
+        using Animations
+
+        # scene setup for animation
+
+        container_scene = Scene(camera = campixel!, resolution = (1200, 1200))
+
+        t = Node(0.0)
+
+        a_width = Animation([1, 7], [1200.0, 800], sineio(n=2, yoyo=true, postwait=0.5))
+        a_height = Animation([2.5, 8.5], [1200.0, 800], sineio(n=2, yoyo=true, postwait=0.5))
+
+        scene_area = lift(t) do t
+        IRect(0, 0, round(Int, a_width(t)), round(Int, a_height(t)))
+        end
+
+        scene = Scene(container_scene, scene_area, camera = campixel!)
+
+        rect = poly!(scene, scene_area,
+        raw=true, color=RGBf0(0.97, 0.97, 0.97), strokecolor=:transparent, strokewidth=0)[end]
+
+        outer_layout = GridLayout(scene, alignmode = Outside(30))
+
+        # example begins here
+
+        layout = outer_layout[1, 1] = GridLayout()
+
+        titles = ["aspect via layout", "axis aspect", "no aspect", "data aspect"]
+        axs = layout[1:2, 1:2] = [LAxis(scene, title = t) for t in titles]
+
+        # plot to all axes using an array comprehension
+        [lines!(a, Circle(Point2f0(0, 0), 100f0)) for a in axs]
+
+        rowsize!(layout, 1, Fixed(400))
+        # force the layout cell [1, 1] to be square
+        colsize!(layout, 1, Aspect(1, 1))
+
+        axs[2].aspect = 1
+        axs[4].autolimitaspect = 1
+
+        rects = layout[1:2, 1:2] = [LRect(scene, color = (:black, 0.05),
+        strokecolor = :transparent) for _ in 1:4]
+
+        record(container_scene, @replace_with_a_path(mp4), 0:1/60:9; framerate=60) do ti
+            t[] = ti
+        end
     end
 end

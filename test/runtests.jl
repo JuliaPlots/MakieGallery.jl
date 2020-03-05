@@ -10,7 +10,7 @@ MakieGallery.current_ref_version[] = "master"
 database = MakieGallery.load_database()
 
 # which one are the slowest and kicked those out!
-slow_examples = [
+slow_examples = Set([
     "Animated time series",
     "Animation",
     "Lots of Heatmaps",
@@ -37,8 +37,9 @@ slow_examples = [
     "Image on Geometry (Earth)",
     "Interaction with mouse",
     "Air Particulates",
-    "Window resizing"
-]
+    "Window resizing",
+    "Aspect ratios stretching circles"
+])
 # DIffeq errors with stackoverflow
 # The others look fine on the CI, but the measured difference is too high -.-
 # Maybe related to the axis changes, will investigate later
