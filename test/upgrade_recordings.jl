@@ -48,7 +48,7 @@ database = MakieGallery.load_database([
 
 # where is the refimage repo?
 repo = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), ".julia", "dev", "MakieReferenceImages"))
-
+repo = joinpath(homedir(), "MakieReferenceImages")
 # clone if not present
 isdir(repo) || run(`git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages $repo`)
 
@@ -83,10 +83,7 @@ preferred_order = abspath.(joinpath.(
     ]
 ))
 
-svec = sort(database, by = x -> findfirst(==(x.file), preferred_order)) |> Vector
-
-empty!(MakieGallery.database)
-append!(MakieGallery.database, svec)
+sort!(database, by = x -> findfirst(==(x.file), preferred_order))
 
 diff_uids  = Symbol.(readdir(differences))
 unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, repo)
@@ -115,7 +112,7 @@ end
 
 # generate HTML pages for the Gallery
 MakieGallery.gallery_from_recordings(
-    repo,
+    repo * "/gallery",
     joinpath(gallery, "index.html");
     hltheme = MakieGallery.Highlights.Themes.DefaultTheme
 )
