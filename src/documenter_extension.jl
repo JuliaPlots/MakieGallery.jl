@@ -302,4 +302,4 @@ end
 
 # Alias this to whichever function we want to use (default to basic)
 
-Selectors.runner(::Type{DatabaseLookup}, x, page, doc) = basic_example_embed(DatabaseLookup, x, page, doc)
+Selectors.runner(::Type{DatabaseLookup}, x, page, doc) = cell_example_embed(DatabaseLookup, x, page, doc)
