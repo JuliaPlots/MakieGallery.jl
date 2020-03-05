@@ -55,6 +55,7 @@ function load_database()
         "recipes.jl",
         "bigdata.jl",
         "layouting.jl",
+        "legends.jl",
         "statsmakie.jl",
         # "geomakie.jl",
     ])
