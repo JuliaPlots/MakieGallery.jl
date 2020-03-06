@@ -99,6 +99,30 @@ end
 If you want to animate a plot while interacting with it, check out the `async_latest` function,
 and the [Interaction](@ref) section.
 
+## Transforming a live loop to an animation
+
+You can transform a live loop to a recording using the [`record`](@ref) function very simply.  For example,
+```julia
+positions = Node(Point2f0.(rand(10), rand(10)))
+scene = Scene()
+scatter!(scene, positions)
+for i in 1:10
+    positions[] = Point2f0.(rand(10), rand(10))
+    sleep(1/4)
+end
+```
+can be recorded just by changing the for loop to a `record-do` "loop":
+
+```julia
+positions = Node(Point2f0.(rand(10), rand(10)))
+scene = Scene()
+scatter!(scene, positions)
+record(scene, "name.mp4", 1:10) do i
+    positions[] = Point2f0.(rand(10), rand(10))
+    sleep(1/4)
+end
+```
+
 ## More complex examples
 
 @example_database("Animated surface and wireframe")
