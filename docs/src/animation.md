@@ -104,3 +104,32 @@ and the [Interaction](@ref) section.
 @example_database("Animated surface and wireframe")
 
 You can see yet more complicated examples in the [Example Gallery](index.html)!
+
+## Manually recording a Scene
+
+If you want an object you can plug into FFMPEG, or something similar, then you can use the manual interface - [`VideoStream`](@ref), [`recordframe!`](@ref), and [`save`](@ref).
+
+First, you need to initialize a VideoStream:
+
+```julia
+sc = lines(rand(Point2f0, 10)) # initialize the scene
+vs = VideoStream(sc) # creates a VideoStream
+```
+
+Then, you can use the [`recordframe!`](@ref) function to record the current state of the `Scene` into the `VideoStream`:
+
+```julia
+for i in 2:20
+    sc.plots[end][1] = rand(Point2f0, i)
+    recordframe!(vs)
+end
+sc.plots[end][1] = [Point2f0(0), Point2f0(1)]
+text
+```
+
+Now, the VideoStream has some content in it.  We can save it to file, using Makie's `save` functionality:
+
+```julia
+save("test.mp4", vs; kwargs...)
+```
+You can repeatedly save with different bitrates, framerates, and other parameters.
