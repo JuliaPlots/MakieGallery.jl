@@ -106,6 +106,8 @@ end
         end
         scene = vbox(hbox(sσ, sρ, sβ, st, sr), three, parent = parent)
 
+        # Do not execute beyond this point!
+
         RecordEvents(scene, @replace_with_a_path)
 
     end
