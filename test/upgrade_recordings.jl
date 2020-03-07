@@ -54,8 +54,9 @@ repo = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), ".julia", "dev",
 isdir(repo) || run(`git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages $repo`)
 
 gallery     = joinpath(repo, "gallery")
-recordings  = joinpath(@__DIR__, "test_recordings")
-differences = joinpath(@__DIR__, "tested_different")
+test_path   = @__DIR__
+recordings  = joinpath(test_path, "test_recordings")
+differences = joinpath(test_path, "tested_different")
 
 # MakieGallery.generate_preview(recordings, joinpath(recordings, "index.html"))
 
@@ -94,7 +95,7 @@ unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, repo)
 recorded_examples = Symbol.(readdir(recordings))
 gallery_examples  = Symbol.(readdir(gallery))
 
-to_record = setdiff(unrec_uids, gallery_examples)
+to_record = union(setdiff(unrec_uids, gallery_examples), diff_uids)
 
 record_selection(database, recordings; selection = to_record, generate_thumbnail = true)
 
@@ -121,7 +122,7 @@ MakieGallery.gallery_from_recordings(
     hltheme = MakieGallery.Highlights.Themes.DefaultTheme
 )
 
-cd(repo)
-run(`git stage -A`)
-run(`git commit -am "Reference image update"`)
-run(`git push`)
+# cd(repo)
+# run(`git stage -A`)
+# run(`git commit -am "Reference image update"`)
+# run(`git push`)
