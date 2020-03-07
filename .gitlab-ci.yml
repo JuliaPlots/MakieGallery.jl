@@ -3,6 +3,7 @@ variables:
   MODERNGL_DEBUGGING: "true"
   JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
   CI_DEV_PKGS: "Makie#master AbstractPlotting#master GLMakie#master StatsMakie#master MakieLayout#master GeoMakie#master"
+  MAKIEGALLERY_REFIMG_PATH: "${CI_BUILDS_DIR}/MakieReferenceImages"
 
 stages:
   - test
@@ -59,8 +60,18 @@ deploy:
   image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
 
   before_script:
-      - apt-get -qq update
-      - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
+    - apt-get -qq update
+    - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    - eval $(ssh-agent -s)
+    - ssh-add <(echo "$GIT_SSH_KEY")
+    - git config --local user.email "ci@gitlab.com"
+    - git config --local user.name "Gitlab CI"
+    - git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages
 
   script:
     - julia --project test/upgrade_recordings.jl
+    - cd MakieReferenceImages
+    - git stage -A
+    - git commit -am "Updated reference images based off JuliaPlots.Makie.jl@${CI_COMMIT_SHORT_SHA}"
+    - git push origin master
