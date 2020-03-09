@@ -1,9 +1,9 @@
 variables:
-  CI_IMAGE_TAG: “opengl”
-  MODERNGL_DEBUGGING: “true”
-  JULIA_DEPOT_PATH: “$CI_PROJECT_DIR/.julia/”
-  CI_DEV_PKGS: “Makie#master AbstractPlotting#master GLMakie#master StatsMakie#master MakieLayout#master GeoMakie#master”
-  MAKIEGALLERY_REFIMG_PATH: “${CI_BUILDS_DIR}/MakieReferenceImages”
+  CI_IMAGE_TAG: "opengl"
+  MODERNGL_DEBUGGING: "true"
+  JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
+  CI_DEV_PKGS: "Makie#master AbstractPlotting#master GLMakie#master StatsMakie#master MakieLayout#master GeoMakie#master"
+  MAKIEGALLERY_REFIMG_PATH: "${CI_BUILDS_DIR}/MakieReferenceImages"
 
 stages:
   - test
@@ -16,7 +16,7 @@ gallerytest:
   tags:
       - xorg
 
-  image: “juliagpu/julia:v1.3-${CI_IMAGE_TAG}”
+  image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
 
   cache:
     key: ${CI_JOB_NAME}
@@ -32,9 +32,9 @@ gallerytest:
     - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
     - glxinfo | grep ‘version’
     - julia -e ‘using InteractiveUtils; versioninfo()’
-    - julia --project -e “using Pkg;
-                          pkg\“add $CI_DEV_PKGS\“”
-    - julia --project -e ‘using Pkg; pkg”test”’
+    - julia --project -e "using Pkg;
+                          pkg\"add $CI_DEV_PKGS\""
+    - julia --project -e ‘using Pkg; pkg"test"’
 
   artifacts:
     when: always
@@ -57,20 +57,20 @@ deploy:
   tags:
     - xorg
 
-  image: “juliagpu/julia:v1.3-${CI_IMAGE_TAG}”
+  image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
 
   before_script:
     - apt-get -qq update
     - apt-get install -y cmake xorg-dev mesa-utils p7zip-full openssh-client
     - eval $(ssh-agent -s) # initialize SSH agent
-    - ssh-add <(echo “$GIT_SSH_KEY” | base64 -D) # decode the SSH key from input Base64 encoding
-    - git config --local user.email “ci@gitlab.com”
-    - git config --local user.name “Gitlab CI”
+    - ssh-add <(echo "$GIT_SSH_KEY" | base64 -D) # decode the SSH key from input Base64 encoding
+    - git config --local user.email "ci@gitlab.com"
+    - git config --local user.name "Gitlab CI"
     - git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages
 
   script:
     - julia --project test/upgrade_recordings.jl
     - cd MakieReferenceImages
     - git stage -A
-    - git commit -am “Updated reference images based off JuliaPlots.Makie.jl@${CI_COMMIT_SHORT_SHA}”
+    - git commit -am "Updated reference images based off JuliaPlots.Makie.jl@${CI_COMMIT_SHORT_SHA}"
     - git push origin master
