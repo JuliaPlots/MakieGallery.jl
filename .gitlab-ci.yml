@@ -30,11 +30,11 @@ gallerytest:
 
   script:
     - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
-    - glxinfo | grep ‘version’
-    - julia -e ‘using InteractiveUtils; versioninfo()’
+    - glxinfo | grep 'version'
+    - julia -e 'using InteractiveUtils; versioninfo()'
     - julia --project -e "using Pkg;
                           pkg\"add $CI_DEV_PKGS\""
-    - julia --project -e ‘using Pkg; pkg"test"’
+    - julia --project -e 'using Pkg; pkg"test"'
 
   artifacts:
     when: always
