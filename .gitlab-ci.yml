@@ -63,7 +63,7 @@ deploy:
     - apt-get -qq update
     - apt-get install -y cmake xorg-dev mesa-utils p7zip-full openssh-client
     - eval $(ssh-agent -s) # initialize SSH agent
-    - ssh-add <(echo "$GIT_SSH_KEY" | base64 -D) # decode the SSH key from input Base64 encoding
+    - ssh-add <(echo "$GIT_SSH_KEY" | base64 --decode) # decode the SSH key from input Base64 encoding
     - git config --local user.email "ci@gitlab.com"
     - git config --local user.name "Gitlab CI"
     - git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages
