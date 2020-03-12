@@ -2,31 +2,16 @@ const makiegallery_dir = dirname(dirname(@__DIR__))
 
 const current_ref_version = Ref{String}("v0.2.6")
 """
+    ref_image_dir(version = string(current_ref_version[]))
+
 Returns the directory in which reference images are stored.
 """
 function ref_image_dir(version = string(current_ref_version[]))
     return download_reference(version)
 end
 
-shacache = Ref{Union{String, Nothing}}(nothing)
-
-"""
-Get the latest commit SHA from the given branch name in the reference image repo.
-"""
-function get_latest_sha(branchname::String)
-
-    if shacache[] === nothing
-
-        r = HTTP.get("https://api.github.com/repos/JuliaPlots/MakieReferenceImages/commits", ["User-Agent" => "MakieGallery.jl", "sha" => branchname])
-
-        resp = JSON.parse(String(r.body))
-
-        shacache[] = resp[1]["sha"]
-
-    end
-
-    return shacache[]
-end
+"Purges the reference image cache!"
+purge_refimage_cache() = rm(joinpath(makiegallery_dir, "testimages"); recursive = true)
 
 """
     download_reference(version = string(current_ref_version[]))
@@ -36,9 +21,8 @@ Downloads the reference images from ReferenceImages for a specific version
 function download_reference(version = string(current_ref_version[]))
     refpath_version = version[1] == 'v' && version[2] in '0':'9' ? version[2:end] : version
 
-    # Resolve the specific commit, if a branch is given
-    if version[1] != "v"
-        refpath_version = version = get_latest_sha(version) # set the version to the SHA
+    if isabspath(version)
+        return version
     end
 
     download_dir = joinpath(makiegallery_dir, "testimages")
