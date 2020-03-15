@@ -785,3 +785,65 @@ end
 
 
 end
+
+
+@block FredericFreyer ["3d"] begin
+
+    @cell "Lighting" ["3d", lighting, ambient, diffuse, specular, shininess, lightposition, interaction] begin
+        using FileIO, MakieGallery
+
+        # Set up sliders to control lighting attributes
+        s1, ambient = textslider(0f0:0.01f0:1f0, "ambient", start = 0.3f0)
+        s2, diffuse = textslider(0f0:0.025f0:2f0, "diffuse", start = 0.65f0)
+        s3, specular = textslider(0f0:0.025f0:2f0, "specular", start = 0.2f0)
+        s4, shininess = textslider(2f0.^(2f0:8f0), "shininess", start = 32f0)
+
+        # Set up (r, θ, ϕ) for lightposition
+        s5, radius = textslider(2f0.^(0.5f0:0.25f0:20f0), "light pos r", start = 2f0)
+        s6, theta = textslider(0:5:180, "light pos theta", start = 30f0)
+        s7, phi = textslider(0:5:360, "light pos phi", start = 45f0)
+
+        # transform signals into required types
+        la = map(Vec3f0, ambient)
+        ld = map(Vec3f0, diffuse)
+        ls = map(Vec3f0, specular)
+        lp = map(radius, theta, phi) do r, theta, phi
+            r * Vec3f0(
+                cosd(phi) * sind(theta),
+                sind(phi) * sind(theta),
+                cosd(theta)
+            )
+        end
+
+        # Set up sphere mesh and visualize light source
+        scene1 = mesh(
+            Sphere(Point3f0(0), 1f0), color=:red,
+            ambient = la, diffuse = ld, specular = ls, shininess = shininess,
+            lightposition = lp
+        )
+        scatter!(scene1, map(v -> [v], lightpos), color=:yellow, markersize=0.2f0)
+
+        # Set up surface plot + light source
+        r = range(-10, 10, length=1000)
+        zs = [sin(2x+y) for x in r, y in r]
+        scene2 = surface(
+            r, r, zs,
+            ambient = la, diffuse = ld, specular = ls, shininess = shininess,
+            lightposition = lp
+        )
+        scatter!(scene2, map(v -> [v], lightpos), color=:yellow, markersize=1f0)
+
+        # Set up textured mesh + light source
+        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"), GLNormalUVMesh)
+        scene3 = mesh(
+            catmesh, color = MakieGallery.loadasset("diffusemap.tga"),
+            ambient = la, diffuse = ld, specular = ls, shininess = shininess,
+            lightposition = lp
+        )
+        scatter!(scene3, map(v -> [v], lightpos), color=:yellow, markersize=.1f0)
+
+        # Combine scene
+        scene = vbox(hbox(s4, s3, s2, s1, s7, s6, s5), hbox(scene1, scene2), scene3)
+    end
+
+end
