@@ -793,8 +793,8 @@ end
         using FileIO, MakieGallery
 
         # Set up sliders to control lighting attributes
-        s1, ambient = textslider(0f0:0.01f0:1f0, "ambient", start = 0.3f0)
-        s2, diffuse = textslider(0f0:0.025f0:2f0, "diffuse", start = 0.65f0)
+        s1, ambient = textslider(0f0:0.01f0:1f0, "ambient", start = 0.55f0)
+        s2, diffuse = textslider(0f0:0.025f0:2f0, "diffuse", start = 0.4f0)
         s3, specular = textslider(0f0:0.025f0:2f0, "specular", start = 0.2f0)
         s4, shininess = textslider(2f0.^(2f0:8f0), "shininess", start = 32f0)
 
@@ -821,7 +821,7 @@ end
             ambient = la, diffuse = ld, specular = ls, shininess = shininess,
             lightposition = lp
         )
-        scatter!(scene1, map(v -> [v], lightpos), color=:yellow, markersize=0.2f0)
+        scatter!(scene1, map(v -> [v], lp), color=:yellow, markersize=0.2f0)
 
         # Set up surface plot + light source
         r = range(-10, 10, length=1000)
@@ -831,7 +831,7 @@ end
             ambient = la, diffuse = ld, specular = ls, shininess = shininess,
             lightposition = lp
         )
-        scatter!(scene2, map(v -> [v], lightpos), color=:yellow, markersize=1f0)
+        scatter!(scene2, map(v -> [v], lp), color=:yellow, markersize=1f0)
 
         # Set up textured mesh + light source
         catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"), GLNormalUVMesh)
@@ -840,7 +840,7 @@ end
             ambient = la, diffuse = ld, specular = ls, shininess = shininess,
             lightposition = lp
         )
-        scatter!(scene3, map(v -> [v], lightpos), color=:yellow, markersize=.1f0)
+        scatter!(scene3, map(v -> [v], lp), color=:yellow, markersize=.1f0)
 
         # Combine scene
         scene = vbox(hbox(s4, s3, s2, s1, s7, s6, s5), hbox(scene1, scene2), scene3)
