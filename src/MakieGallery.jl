@@ -16,7 +16,6 @@ using FFMPEG
 using BinaryProvider
 using FixedPointNumbers, Colors, ColorTypes
 using SyntaxTree # for prettification of code, removing linenumbernodes
-using HTTP, JSON # to get the latest SHA of a branch of the refimages
 
 include("documenter_extension.jl")
 include("database.jl")
@@ -55,6 +54,7 @@ function load_database()
         "recipes.jl",
         "bigdata.jl",
         "layouting.jl",
+        "legends.jl",
         "statsmakie.jl",
         # "geomakie.jl",
     ])

@@ -31,6 +31,7 @@ append!(MakieGallery.plotting_backends, ["Makie"])
 database = MakieGallery.load_database([
     "tutorials.jl",
     "layouting.jl",
+    "legends.jl",
     "statsmakie.jl",
     "geomakie.jl",
     "examples2d.jl",

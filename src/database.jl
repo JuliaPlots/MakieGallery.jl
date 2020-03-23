@@ -15,6 +15,8 @@ struct CellEntry
     groupid::Int
 end
 
+Base.getindex(A::Vector{CellEntry}, t1::String, titles::String...) = A[find_indices((t1, titles...))]
+
 function Base.merge(x::Vector{CellEntry})
     e1 = first(x)
     CellEntry(
@@ -48,7 +50,7 @@ function Base.show(io::IO, ::MIME"text/plain", entries::Array{CellEntry,1})
 end
 
 function Base.show(io::IO, ::MIME"text/markdown", entry::CellEntry)
-    println(io, "```")
+    println(io, "```julia")
     println(io, entry.source)
     println(io, "```")
 end
@@ -390,8 +392,14 @@ function extract_cell(cell, author, parent_tags, setup, pfile, lastline, groupid
     else
         source = string(cblock) # single cell e.g. @cell scatter(...)
     end
+
+    scene_dimen = []
+    if any(occursin.(["meshscatter", "volume", "Point3f0"], source))
+        push!(scene_dimen, "3d")
+    end
+
     CellEntry(
-        author, title, parent_tags ∪ extract_tags(ctags),
+        author, title, parent_tags ∪ extract_tags(ctags) ∪ scene_dimen,
         file, startend, toplevel, source, groupid
     )
 end

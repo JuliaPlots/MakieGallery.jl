@@ -207,7 +207,7 @@
                 lastmpos[] = mouseposition(scene)
             end
         end
-
+        # Do not execute beyond this point!
         RecordEvents(scene, @replace_with_a_path(mp4))
     end
 
