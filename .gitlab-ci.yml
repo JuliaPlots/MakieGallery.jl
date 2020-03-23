@@ -2,7 +2,7 @@ variables:
   CI_IMAGE_TAG: "opengl"
   MODERNGL_DEBUGGING: "true"
   JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
-  CI_DEV_PKGS: "Makie#master AbstractPlotting#master GLMakie#master StatsMakie#master MakieLayout#master GeoMakie#master"
+  CI_DEV_PKGS: "Makie#master AbstractPlotting#master GLMakie#master"
 
 stages:
   - test
