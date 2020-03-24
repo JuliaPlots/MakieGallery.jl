@@ -229,6 +229,10 @@
         add_move!(scene, points, pplot)
         add_remove_add!(scene, points, pplot)
         center!(scene)
+         RecordEvents(scene)
+
+         end # cell
+end # block
 
 @block FredericFreyer ["3d"] begin
 
