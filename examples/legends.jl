@@ -35,32 +35,31 @@
     end
 
     @cell "Inline legend postioning" [legend] begin
+
+        haligns = [:left, :right, :center]
+        valigns = [:top, :bottom, :center]
+
         scene, layout = layoutscene(resolution = (1400, 900))
 
         ax = layout[1, 1] = LAxis(scene)
 
         xs = 0:0.1:10
-        lins = [
-            lines!(ax, xs, sin.(xs .* i), color = color)
-            for (i, color) in zip(1:3, [:red, :blue, :green])
-        ]
+        lins = [lines!(ax, xs, sin.(xs .* i), color = color)
+            for (i, color) in zip(1:3, [:red, :blue, :green])]
 
         legends = [LLegend(
-            scene, lins, ["Line $i" for i in 1:3],
-            width = Auto(false),
-            margin = (10, 10, 10, 10),
-        ) for j in 1:3]
+                scene, lins, ["Line $i" for i in 1:3],
+                "$ha & $va",
+                width = Auto(false),
+                margin = (10, 10, 10, 10),
+                halign = ha, valign = va, orientation = :horizontal
+            ) for (j, ha, va) in zip(1:3, haligns, valigns)]
 
-        haligns = [:left, :right, :center]
-        valigns = [:top, :bottom, :center]
 
-        for (leg, hal, val) in zip(legends, haligns, valigns)
+        for leg in legends
             layout[1, 1] = leg
-            leg.title = "$hal & $val"
-            leg.halign = hal
-            leg.valign = val
-        end
-
+        end   
+        
         scene
     end
 
