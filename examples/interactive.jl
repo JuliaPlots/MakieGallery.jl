@@ -317,7 +317,7 @@
         )
 
         # Do not execute beyond this point!
-
+channel_gap
         RecordEvents(scene, @replace_with_a_path)
     end
 

@@ -1,6 +1,7 @@
 const makiegallery_dir = dirname(dirname(@__DIR__))
 
-const current_ref_version = Ref{String}("v0.2.7")
+const current_ref_version = Ref{String}("v0.3.0")
+
 """
     ref_image_dir(version = string(current_ref_version[]))
 
