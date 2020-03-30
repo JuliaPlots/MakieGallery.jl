@@ -311,13 +311,8 @@
             AbstractPlotting.update_limits!(p, FRect(r1node[], 0, r2node[] - r1node[], 1))
             AbstractPlotting.update!(p)
         end
-        scene = hbox(
-            p,
-            vbox(r1, r2)
-        )
-
+        scene = hbox(p, vbox(r1, r2))
         # Do not execute beyond this point!
-channel_gap
         RecordEvents(scene, @replace_with_a_path)
     end
 
