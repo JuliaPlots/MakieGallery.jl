@@ -6,9 +6,6 @@ using Statistics
 
 database = MakieGallery.load_database()
 
-filter!(database) do example
-    "interactive" in example.tags
-end
 # which one are the slowest and kicked those out!
 slow_examples = Set([
     "Animated time series",
