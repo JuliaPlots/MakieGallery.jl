@@ -1,14 +1,14 @@
 using Test
 using FileIO, Random, Pkg
 using MakieGallery
-using Makie, AbstractPlotting
+using AbstractPlotting, GLMakie
 using Statistics
-
-# Download reference images from master
-MakieGallery.current_ref_version[] = "master"
 
 database = MakieGallery.load_database()
 
+filter!(database) do example
+    "interactive" in example.tags
+end
 # which one are the slowest and kicked those out!
 slow_examples = Set([
     "Animated time series",
@@ -69,9 +69,10 @@ examples = MakieGallery.record_examples(test_record_path)
 
 @test length(examples) == length(database)
 
-# MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
-# MakieGallery.generate_thumbnails(test_record_path)
-# MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))
+using MakieGallery
+MakieGallery.generate_preview(test_record_path, joinpath(homedir(), "Desktop", "index.html"))
+MakieGallery.generate_thumbnails(test_record_path)
+MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))
 
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")

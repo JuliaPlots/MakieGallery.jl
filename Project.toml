@@ -67,7 +67,7 @@ ImageFiltering = "0.6"
 ImageMagick = "1.1"
 ImageTransformations = "0.8"
 KernelDensity = "0.5.1"
-MakieLayout = "=0.3.0"
+MakieLayout = "=0.5.0"
 MeshIO = "0.3"
 ModernGL = "1.1"
 Observables = "0.3"
@@ -84,7 +84,6 @@ julia = "1"
 [extras]
 GLFW = "f7f18e0c-5ee9-5ccd-a5bf-e8befd85ed98"
 GLMakie = "e9467ef8-e4e7-5192-8a1a-b1aee30e663a"
-Makie = "ee78f7c6-11fb-53f2-987a-cfe4a2b5a57a"
 
 [targets]
-test = ["GLFW", "Makie", "GLMakie"]
+test = ["GLFW", "GLMakie"]

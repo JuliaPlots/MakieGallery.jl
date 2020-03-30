@@ -9,20 +9,6 @@ function tourl(path)
     return repr(path)
 end
 
-
-const preeval_hook = Ref{Function}(_ -> 1)
-
-const preeval_cache = Ref{Any}(nothing)
-
-const posteval_hook = Ref{Function}(_ -> 1)
-
-# For Makie:
-# preeval_hook[] = _ -> begin preeval_cache[] = AbstractPlotting.use_display[]; global display; AbstractPlotting.inline!(!display) end
-# posteval_hook[] = _ -> AbstractPlotting.use_display[] = last
-
-# For Plots:
-# preeval_hook[] = _ -> begin global display; default(show = display) end
-
 # NOTE: `save_media` is the function you want to overload
 # if you want to create a Gallery with custom types.
 # Simply overloading the function should do the trick
@@ -65,17 +51,6 @@ function save_media(entry, results::AbstractVector, path::String)
     end
     paths
 end
-
-# TODO: Figure out the issue which prevents this generic method from working
-# function save_media(entry, results::AbstractVector, path::String)
-#     paths = String[]
-#     for (i, res) in enumerate(results)
-#         newpath = joinpath(path, "item$i")
-#         save_media(entry, res, newpath)
-#         push!(paths, newpath)
-#     end
-#     paths
-# end
 
 function save_media(example, events::RecordEvents, path::String)
     # the path is fixed at record time to be stored relative to the example
@@ -295,8 +270,6 @@ function record_examples(
         display_output_toplevel = true
     )
 
-    preeval_hook[](display)
-
     function output_path(entry, ending)
         joinpath(folder, "tmp", string(entry.unique_name, ending))
     end
@@ -312,7 +285,7 @@ function record_examples(
     end
     @info("starting from index $start")
     backend_reset_theme!(resolution = resolution)
-
+    AbstractPlotting.inline!(true)
     @testset "Full Gallery recording" begin
         eval_examples(outputfile = output_path, start = start) do example, value
             uname = example.unique_name
@@ -325,13 +298,14 @@ function record_examples(
                     push!(result, subfolder)
                     set_last_evaled!(uname)
                     backend_reset_theme!(resolution = resolution) # reset before next example
+                    AbstractPlotting.inline!(true)
                     @test true
                     if generate_thumbnail && !isfile(outfolder) && ispath(outfolder)
                         sample = joinpath(outfolder, first(readdir(outfolder)))
                         generate_thumbnail(sample, joinpath(outfolder, "thumb.jpg"))
                     end
                 catch e
-                    @warn "Error thrown when evaluating $(example.title)" exception=e
+                    @warn "Error thrown when evaluating $(example.title)" exception=CapturedException(e, Base.catch_backtrace())
                     @test false
                 end
             end
@@ -339,7 +313,6 @@ function record_examples(
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
     gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
-    posteval_hook[](display)
     result
 end
 
@@ -454,6 +427,7 @@ function generate_thumbnails(media_root)
     for folder in readdir(media_root)
         media = joinpath(media_root, folder, "media")
         if !isfile(media) && ispath(media)
+            isempty(readdir(media)) && error("Media $(media) doesn't contain anything")
             sample = joinpath(media, first(readdir(media)))
             generate_thumbnail(sample, joinpath(media, "thumb.jpg"))
         end
