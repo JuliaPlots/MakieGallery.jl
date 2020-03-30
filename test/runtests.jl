@@ -1,11 +1,8 @@
 using Test
 using FileIO, Random, Pkg
 using MakieGallery
-using Makie, AbstractPlotting
+using AbstractPlotting, GLMakie
 using Statistics
-
-# Download reference images from master
-MakieGallery.current_ref_version[] = "master"
 
 database = MakieGallery.load_database()
 

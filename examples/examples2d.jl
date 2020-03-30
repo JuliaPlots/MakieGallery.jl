@@ -1,4 +1,3 @@
-
 @block SimonDanisch ["2d"] begin
     @cell "Animated time series" [lines, record] begin
         f0 = 1/2; fs = 100;
