@@ -556,7 +556,7 @@
             xr,                   # ys
             linestyle = :dash,    # style of line
             linewidth = 3,        # width of line
-            color = :blue         # colour of line
+            color = :blue        # colour of line
         )
 
         sc[Axis][:names][:axisnames] = ("x(t)", "x(t+1)") # set axis names
@@ -564,6 +564,9 @@
         lines!(sc, xr, fs) # plot the curve
 
         lines!(sc, cw) # plot the cobweb
+        
+        xlims!(sc, (0, 1))
+        ylims!(sc, (0, 1))
 
         final = hbox(sc, vbox(sx, sr))
 
