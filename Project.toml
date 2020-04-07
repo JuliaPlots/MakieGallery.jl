@@ -79,7 +79,7 @@ StatsMakie = "0.1.4"
 SyntaxTree = "1"
 ZipFile = "0.8, 0.9"
 julia = "1"
-GeometryBasics = "0.2.0"
+GeometryBasics = "1, 0.2.0"
 
 [extras]
 GLFW = "f7f18e0c-5ee9-5ccd-a5bf-e8befd85ed98"
