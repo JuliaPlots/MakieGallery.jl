@@ -1,8 +1,7 @@
 @block SimonDanisch ["dataset_examples"] begin
     @cell "WorldClim visualization" [visualization, dataset, bigdata, camera, download] begin
-        # fixes for GDAL messing with LD library path and therefore using wrong curl
-        # for downloads
-        using FileIO, GeometryTypes, Colors, GDAL, ZipFile
+        using FileIO, GeometryBasics, Colors, GDAL, ZipFile
+        using GeometryBasics: Vec2f0, Rect3D
         env = get(ENV, "LD_LIBRARY_PATH", "")
         #=
         This example requires the GDAL package, from https://github.com/JuliaGeo/GDAL.jl
@@ -70,10 +69,15 @@
         temperature = load_dataset("tmax")
 
         # calculate geometries
-        m = GLNormalUVMesh(Sphere(Point3f0(0), 1f0), 200)
+        m = uv_normal_mesh(Sphere(Point3f0(0), 1f0), nvertices=200)
+
+        points = GeometryBasics.coordinates(m)
+        GeometryBasics.pointmeta(m, color=rand(length(points)))
+        GeometryBasics.pop_pointmeta(m, :uv)
+
         p = decompose(Point3f0, m)
-        uv = decompose(UV{Float32}, m)
-        norms = decompose(Normal{3, Float32}, m)
+        uv = decompose_uv(m)
+        norms = decompose_normals(m)
 
         # plot the temperature as color map on the globe
         cmap = [:darkblue, :deepskyblue2, :deepskyblue, :gold, :tomato3, :red, :darkred]
@@ -88,6 +92,7 @@
                 val < 0.0 ? -1f0 : val
             end
         end
+
 
         scene = Scene(resolution = (800, 800))
         scene = mesh!(m, color = temperature[10], colorrange = (-50, 50), colormap = cmap, shading = true, show_axis = false)
@@ -111,7 +116,7 @@
         scene
         scene.center = false
         # save animation
-        r = record(scene, @replace_with_a_path(mp4), 0:(11*4)) do i
+        r = record(scene, "worldclim_visualization.mp4", 0:(11*4)) do i
            # Make simulation slower. TODO figure out how do this nicely with ffmpeg
            if i % 4 == 0
                i2 = (i ÷ 4) + 1
@@ -125,6 +130,7 @@
         end
         ENV["LD_LIBRARY_PATH"] = ""
         r
+
     end
 
 end

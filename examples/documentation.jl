@@ -191,7 +191,7 @@
     # end
 
     @cell "Axis theming" [stepper, axis, lines, stepper] begin
-        using GeometryTypes
+        using GeometryBasics
         scene = Scene()
         points = decompose(Point2f0, Circle(Point2f0(10), 10f0), 9)
         lines!(

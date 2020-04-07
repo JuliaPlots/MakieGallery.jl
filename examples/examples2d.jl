@@ -226,14 +226,14 @@
     end
 
     @cell "Polygons" [poly, polygon, linesegments] begin
-        using GeometryTypes
+        using GeometryBasics
         scene = Scene(resolution = (500, 500))
         points = decompose(Point2f0, Circle(Point2f0(50), 50f0))
         pol = poly!(scene, points, color = :gray, strokewidth = 10, strokecolor = :red)
         # Optimized forms
         poly!(scene, [Circle(Point2f0(50+300), 50f0)], color = :gray, strokewidth = 10, strokecolor = :red)
         poly!(scene, [Circle(Point2f0(50+i, 50+i), 10f0) for i = 1:100:400], color = :red)
-        poly!(scene, [Rectangle{Float32}(50+i, 50+i, 20, 20) for i = 1:100:400], strokewidth = 2, strokecolor = :green)
+        poly!(scene, [FRect2D(50+i, 50+i, 20, 20) for i = 1:100:400], strokewidth = 2, strokecolor = :green)
         linesegments!(scene,
             [Point2f0(50 + i, 50 + i) => Point2f0(i + 70, i + 70) for i = 1:100:400], linewidth = 8, color = :purple
         )
@@ -389,6 +389,7 @@
 
     @cell "Parallel Prefix Sum" [lines, scatter] begin
         # credits to [jiahao chen](https://github.com/jiahao)
+        using GeometryBasics
 
         function prefix_sum(y, func)
             l = length(y)
@@ -430,7 +431,6 @@
         +(a::Nothing, b::Nothing)=a
         A = prefix_sum(AccessArray(8), +)
 
-        using GeometryTypes
         function render(A::AccessArray)
             olast = depth = 0
             for y in A.history

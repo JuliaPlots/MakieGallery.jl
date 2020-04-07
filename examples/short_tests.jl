@@ -75,12 +75,12 @@
         scatter!(pos, markersize = 0.02, color = :red, scale_plot = false)
     end
     @cell begin
-        using GeometryTypes
-        s1 = GLNormalUVMesh(Sphere(Point3f0(0), 1f0))
-        mesh(GLNormalUVMesh(Sphere(Point3f0(0), 1f0)), color = rand(50, 50))
+        using GeometryBasics
+        s1 = uv_mesh(Sphere(Point3f0(0), 1f0))
+        mesh(uv_mesh(Sphere(Point3f0(0), 1f0)), color = rand(50, 50))
         # ugh, bug In GeometryTypes for UVs of non unit spheres.
-        s2 = GLNormalUVMesh(Sphere(Point3f0(0), 1f0))
-        s2.vertices .= s2.vertices .+ (Point3f0(0, 2, 0),)
+        s2 = uv_mesh(Sphere(Point3f0(0), 1f0))
+        s2.position .= s2.position .+ (Point3f0(0, 2, 0),)
         mesh!(s2, color = rand(RGBAf0, 50, 50))
     end
     @cell heatmap(rand(50, 50), colormap = :RdBu, alpha = 0.2)
