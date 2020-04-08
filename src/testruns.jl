@@ -1,4 +1,4 @@
-raconst makiegallery_dir = dirname(dirname(@__DIR__))
+const makiegallery_dir = dirname(dirname(@__DIR__))
 
 const current_ref_version = Ref{String}("v0.4.1")
 
