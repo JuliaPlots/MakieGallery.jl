@@ -415,7 +415,7 @@ end
         # example backend agnostic. If you need to use a certain backend,
         # include the backend name as a tag!
 
-        using GeometryTypes, Colors
+        using GeometryBasics, Colors
 
         # a cell with additional tags. The tags will get merged with tags from outer block
         @cell "Sample 1" ["heatmap"] begin
@@ -508,14 +508,6 @@ macro replace_with_a_path(ending = :mp4)
     string(output_fallback, ending)
 end
 
-# if VERSION < v"1.3"
-    macro loopmacro(ex)
-        :($(esc(ex)))
-    end
-# else
-#     var"@loopmacro" = Threads.var"@threads"
-# end
-
 """
 Walks through every example matching `tags`, and calls `f` on the example.
 Merges groups of examples into one example entry.
@@ -525,7 +517,7 @@ function enumerate_examples(f, tags...; start = 1, exclude_tags = nothing)
     sort!(database, by = (x)-> x.groupid)
     group_tmp = CellEntry[]
     last_id = NO_GROUP
-    @loopmacro for i in start:length(database)
+    for i in start:length(database)
         entry = database[i]
         all(x-> string(x) in entry.tags, tags) || continue
         if exclude_tags != nothing && !isempty(exclude_tags)
@@ -589,7 +581,7 @@ function eval_example(
         try
             return include_string(temp_mod, source, string(uname))
         catch e
-            @warn "Example $(entry.title) failed" exception=e
+            @warn "Example $(entry.title) failed" exception=CapturedException(e, Base.catch_backtrace())
             println("with source:")
             for line in split(source, "\n")
                 println(stderr, "    ", line)

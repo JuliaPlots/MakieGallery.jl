@@ -1,5 +1,5 @@
 @block SimonDanisch [interaction, record_events] begin
-    @cell "Interaction with Mouse" [interactive, camera, scatter, lines, marker, record] begin
+    @cell "Interaction with Mouse" [interactive, camera, button, scatter, lines, marker, record] begin
         using LinearAlgebra
         scene = Scene(raw = true, camera = cam2d!, resolution = (500, 500))
         r = LinRange(0, 3, 4)
@@ -229,6 +229,7 @@
         add_move!(scene, points, pplot)
         add_remove_add!(scene, points, pplot)
         center!(scene)
+        RecordEvents(scene, @replace_with_a_path)
     end
 
     @cell "Add and change points" [heatmap, on, ispressed, to_world, scatter, center] begin
@@ -318,11 +319,12 @@
 
     @cell "Robot Arm" [slider, interactive, linesegments, vbox] begin
 
+        using AbstractPlotting
         using AbstractPlotting: Mesh, Scene, LineSegments, translate!, rotate!, vbox, hbox, qrotation, mesh!
-        using GeometryTypes: HyperRectangle, Vec3f0, Point3f0, Sphere
-        using StaticArrays: SVector
+        using GeometryBasics: Vec3f0, Point3f0, Sphere
         using AbstractPlotting: textslider
         using Observables: on
+        using GLMakie
 
         """
           example by @pbouffard from JuliaPlots/Makie.jl#307
@@ -421,8 +423,9 @@
     @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox, download] begin
 
         using AbstractPlotting: textslider
-        using GeometryTypes, FileIO
+        using GeometryBasics, FileIO
         using LinearAlgebra
+
 
         """
             example by @pbouffard from JuliaPlots/Makie.jl#307
@@ -444,7 +447,7 @@
             position_m::Vec3f0
             velocity_mps::Vec3f0
             color::Symbol
-            mesh::Mesh
+            mesh::AbstractPlotting.Mesh
         end
 
 
@@ -729,7 +732,7 @@ end
         scatter!(scene2, map(v -> [v], lp), color=:yellow, markersize=1f0)
 
         # Set up textured mesh + light source
-        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"), GLNormalUVMesh)
+        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"))
         scene3 = mesh(
             catmesh, color = MakieGallery.loadasset("diffusemap.tga"),
             ambient = la, diffuse = ld, specular = ls, shininess = shininess,
@@ -754,11 +757,14 @@ function record_example_events()
     end
 end
 
-function record_example(title = "Orbit Diagram")
-    set_theme!(resolution = (500, 500))
+function record_example(title::String)
     idx = findfirst(x-> x.title == title, database)
-    entry = database[idx]
-    value = MakieGallery.eval_example(entry, outputfile = MakieGallery.event_path)
+    record_example(database[idx])
+end
+
+function record_example(example)
+    set_theme!(resolution = (500, 500))
+    value = MakieGallery.eval_example(example, outputfile = MakieGallery.event_path)
     last = AbstractPlotting.use_display[]
     AbstractPlotting.inline!(false)
     record_events(value.scene, value.path) do
@@ -767,5 +773,8 @@ function record_example(title = "Orbit Diagram")
     AbstractPlotting.use_display[] = last
 end
 
-
-# record_example("Lighting")
+# interactive = filter(database) do x
+#     occursin("RecordEvents", MakieGallery.example2source(x))
+# end
+#
+# record_example("Add and change points")

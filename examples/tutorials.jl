@@ -50,12 +50,12 @@
         st = Stepper(scene, @replace_with_a_path)
         step!(st)
 
-        pop!(scene.plots)
+        # remove last plot in scene
+        delete!(scene, scene[end])
         step!(st)
-
-        pop!(scene.plots)
+        # remove second plot in scene
+        delete!(scene, scene[2])
         step!(st)
-
         st
     end
 
@@ -94,8 +94,8 @@
             Point2f0(0, 0) => Point2f0(5, 5);
             Point2f0(15, 15) => Point2f0(25, 25);
             Point2f0(0, 15) => Point2f0(35, 5);
-            ]
-        scene = linesegments(points, color = :red, linewidth = 2)
+        ]
+        linesegments(points, color = :red, linewidth = 2)
     end
 
     @cell "Tutorial barplot" [tutorial, barplot] begin
@@ -104,13 +104,13 @@
     end
 
     @cell "Tutorial title" [tutorial, title] begin
+        scene = lines(rand(10), axis=(names=(title="Random lines",),))
+    end
 
+    @cell "Tutorial title function" [tutorial, title] begin
         scene = lines(rand(10))
-
         sc_t = title(scene, "Random lines")
-
         sc_t
-
     end
 
     @cell "Tutorial plot transformation" [tutorial, transformation] begin

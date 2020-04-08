@@ -13,29 +13,35 @@
         scene.center = false # prevent to recenter on display
         scene
     end
+
     @cell "Image on Geometry (Earth)" [mesh, image, download] begin
-        using FileIO, Colors
+        using FileIO, Colors, GeometryBasics
         earth = try
             load(download("https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/bluemarble-2048.png"))
         catch e
             @warn("Downloadinging the earth failed. Using random image, so this test will fail! (error: $e)")
             rand(RGBAf0, 100, 100) # don't error test when e.g. offline
         end
-        m = GLNormalUVMesh(Sphere(Point3f0(0), 1f0), 60)
-        mesh(m, color = earth, shading = false)
+        m = uv_mesh(Sphere(Point3f0(0), 1f0); nvertices=60)
+        mesh(m, color=earth, shading = false)
     end
 
     @cell "Orthographic Camera" [meshscatter, cameracontrols, update_cam] begin
-
-        using GeometryTypes
-        x = Vec3f0(0); baselen = 0.2f0; dirlen = 1f0
+        using GeometryBasics
+        function colormesh((geometry, color))
+            mesh1 = normal_mesh(geometry)
+            npoints = length(GeometryBasics.coordinates(mesh1))
+            return GeometryBasics.pointmeta(mesh1; color=fill(color, npoints))
+        end
         # create an array of differently colored boxes in the direction of the 3 axes
+        x = Vec3f0(0); baselen = 0.2f0; dirlen = 1f0
         rectangles = [
-            (FRect3D(Vec3f0(x), Vec3f0(dirlen, baselen, baselen)), RGBAf0(1,0,0,1)),
-            (FRect3D(Vec3f0(x), Vec3f0(baselen, dirlen, baselen)), RGBAf0(0,1,0,1)),
-            (FRect3D(Vec3f0(x), Vec3f0(baselen, baselen, dirlen)), RGBAf0(0,0,1,1))
+            (Rect(Vec3f0(x), Vec3f0(dirlen, baselen, baselen)), RGBAf0(1,0,0,1)),
+            (Rect(Vec3f0(x), Vec3f0(baselen, dirlen, baselen)), RGBAf0(0,1,0,1)),
+            (Rect(Vec3f0(x), Vec3f0(baselen, baselen, dirlen)), RGBAf0(0,0,1,1))
         ]
-        meshes = map(GLNormalMesh, rectangles)
+
+        meshes = map(colormesh, rectangles)
         scene = mesh(merge(meshes))
         center!(scene)
         cam = cameracontrols(scene)
@@ -60,8 +66,7 @@
     end
     @cell "Textured Mesh" [mesh, texture, cat] begin
         using FileIO
-        scene = Scene(@resolution)
-        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"), GLNormalUVMesh)
+        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"))
         mesh(catmesh, color = MakieGallery.loadasset("diffusemap.tga"))
     end
     @cell "Load Mesh" [mesh, cat] begin
@@ -131,7 +136,7 @@
     end
 
     @cell "Meshscatter Function" [meshscatter] begin
-        using GeometryTypes
+        using GeometryBasics
         large_sphere = Sphere(Point3f0(0), 1f0)
         positions = decompose(Point3f0, large_sphere)
         colS = [RGBAf0(rand(), rand(), rand(), 1.0) for i = 1:length(positions)]
@@ -277,10 +282,10 @@
     end
 
     @cell "FEM mesh 3D" [mesh, fem] begin
-        using GeometryTypes
+        using GeometryBasics
         cat = MakieGallery.loadasset("cat.obj")
         vertices = decompose(Point3f0, cat)
-        faces = decompose(Face{3, Int}, cat)
+        faces = decompose(TriangleFace{Int}, cat)
         coordinates = [vertices[i][j] for i = 1:length(vertices), j = 1:3]
         connectivity = [faces[i][j] for i = 1:length(faces), j = 1:3]
         mesh(
@@ -310,7 +315,6 @@
         tstyle[:textcolor] = (:red, :green, :black)
         tstyle[:font] = "helvetica"
 
-
         psurf[:colormap] = :RdYlBu
         wh = widths(scene)
         t = text!(
@@ -331,11 +335,12 @@
     end
 
     @cell "Fluctuation 3D" [animated, mesh, meshscatter, axis] begin
-        using GeometryTypes, Colors
-        scene = Scene()
+        using GeometryBasics, Colors
+        using GeometryBasics: Cylinder, rotation
         # define points/edges
         perturbfactor = 4e1
         N = 3; nbfacese = 30; radius = 0.02
+
         large_sphere = Sphere(Point3f0(0), 1f0)
         positions = decompose(Point3f0, large_sphere, 30)
         np = length(positions)
@@ -343,47 +348,44 @@
         pts = vcat(pts, 1.1 .* pts + randn(size(pts)) / perturbfactor) # light position influence ?
         edges = hcat(collect(1:np), collect(1:np) .+ np)
         ne = size(edges, 1); np = size(pts, 1)
+        cylinder = Cylinder(Point3f0(0), Point3f0(0, 0, 1.0), 1f0)
         # define markers meshes
-        meshC = GLNormalMesh(
-            Cylinder{3, Float32}(
-                Point3f0(0., 0., 0.),
-                Point3f0(0., 0, 1.),
-                Float32(1)
-            ), nbfacese
-        )
-        meshS = GLNormalMesh(large_sphere, 20)
+        meshC = normal_mesh(cylinder; nvertices=nbfacese)
+        meshS = normal_mesh(large_sphere; nvertices=20)
         # define colors, markersizes and rotations
         pG = [Point3f0(pts[k, 1], pts[k, 2], pts[k, 3]) for k = 1:np]
         lengthsC = sqrt.(sum((pts[edges[:,1], :] .- pts[edges[:, 2], :]) .^ 2, dims = 2))
         sizesC = [Vec3f0(radius, radius, lengthsC[i]) for i = 1:ne]
-        sizesC = [Vec3f0(1., 1., 1.) for i = 1:ne]
-        colorsp = [RGBA{Float32}(rand(), rand(), rand(), 1.) for i = 1:np]
+        sizesC = [Vec3f0(1) for i = 1:ne]
+        colorsp = [RGBA{Float32}(rand(), rand(), rand(), 1.0) for i = 1:np]
         colorsC = [(colorsp[edges[i, 1]] .+ colorsp[edges[i, 2]]) / 2.0 for i = 1:ne]
         sizesC = [Vec3f0(radius, radius, lengthsC[i]) for i = 1:ne]
         Qlist = zeros(ne, 4)
         for k = 1:ne
-            ct = GeometryTypes.Cylinder{3, Float32}(
+            ct = Cylinder(
                 Point3f0(pts[edges[k, 1], 1], pts[edges[k, 1], 2], pts[edges[k, 1], 3]),
                 Point3f0(pts[edges[k, 2], 1], pts[edges[k, 2], 2], pts[edges[k, 2], 3]),
-                Float32(1)
+                1f0
             )
-            Q = GeometryTypes.rotation(ct)
+            Q = rotation(ct)
             r = 0.5 * sqrt(1 .+ Q[1, 1] .+ Q[2, 2] .+ Q[3, 3]); Qlist[k, 4] = r
             Qlist[k, 1] = (Q[3, 2] .- Q[2, 3]) / (4 .* r)
             Qlist[k, 2] = (Q[1, 3] .- Q[3, 1]) / (4 .* r)
             Qlist[k, 3] = (Q[2, 1] .- Q[1, 2]) / (4 .* r)
         end
+
         rotationsC = [Vec4f0(Qlist[i, 1], Qlist[i, 2], Qlist[i, 3], Qlist[i, 4]) for i = 1:ne]
         # plot
-        hm = meshscatter!(
-            scene, pG[edges[:, 1]],
+        scene = meshscatter(
+            pG[edges[:, 1]],
             color = colorsC, marker = meshC,
             markersize = sizesC,  rotations = rotationsC,
         )
-        hp = meshscatter!(
+        meshscatter!(
             scene, pG,
             color = colorsp, marker = meshS, markersize = radius,
         )
+        scene
     end
 
     @cell "Connected Sphere" [lines, views, scatter, axis] begin
@@ -438,12 +440,14 @@
     end
 
     @cell "Normals of a Cat" [mesh, linesegment, cat] begin
-        using LinearAlgebra
+        using LinearAlgebra, GeometryBasics
+
         x = MakieGallery.loadasset("cat.obj")
         mesh(x, color = :black)
-        pos = map(x.vertices, x.normals) do p, n
+        pos = map(decompose(Point3f0, x), GeometryBasics.normals(x)) do p, n
             p => p .+ (normalize(n) .* 0.05f0)
         end
+
         linesegments!(pos, color = :blue)
     end
 
@@ -473,15 +477,21 @@
     end
 
     @cell "Merged color Mesh" [mesh, color] begin
-        using GeometryTypes
-        x = Vec3f0(0); baselen = 0.2f0; dirlen = 1f0
+        using GeometryBasics
+        function colormesh((geometry, color))
+            mesh1 = normal_mesh(geometry)
+            npoints = length(GeometryBasics.coordinates(mesh1))
+            return GeometryBasics.pointmeta(mesh1; color=fill(color, npoints))
+        end
         # create an array of differently colored boxes in the direction of the 3 axes
+        x = Vec3f0(0); baselen = 0.2f0; dirlen = 1f0
         rectangles = [
-            (HyperRectangle(Vec3f0(x), Vec3f0(dirlen, baselen, baselen)), RGBAf0(1,0,0,1)),
-            (HyperRectangle(Vec3f0(x), Vec3f0(baselen, dirlen, baselen)), RGBAf0(0,1,0,1)),
-            (HyperRectangle(Vec3f0(x), Vec3f0(baselen, baselen, dirlen)), RGBAf0(0,0,1,1))
+            (Rect(Vec3f0(x), Vec3f0(dirlen, baselen, baselen)), RGBAf0(1,0,0,1)),
+            (Rect(Vec3f0(x), Vec3f0(baselen, dirlen, baselen)), RGBAf0(0,1,0,1)),
+            (Rect(Vec3f0(x), Vec3f0(baselen, baselen, dirlen)), RGBAf0(0,0,1,1))
         ]
-        meshes = map(GLNormalMesh, rectangles)
+
+        meshes = map(colormesh, rectangles)
         mesh(merge(meshes))
     end
 
@@ -690,16 +700,15 @@
     end
 
     # @cell "2D text in 3D" [text, annotations] begin
-        # TODO this has a world age problem!?!??
-        # using GeometryTypes
-        # import AbstractPlotting: project
-        # scene = meshscatter(rand(10), rand(10), rand(10), markersize = 0.02)
-        # scat = scene[end]
-        # project_pos(pv, res, x) = AbstractPlotting.project.((pv,), (res,), x .+ 0.1)
-        # cam = camera(scene)
-        # projected = lift(project_pos, cam.projectionview, cam.resolution, scat[1])
-        # annotations!(campixel(scene), ["point $i" for i in 1:10], projected, raw = true)
-        # scene
+    #     using GeometryBasics
+    #     import AbstractPlotting: project
+    #     scene = meshscatter(rand(10), rand(10), rand(10), markersize = 0.02)
+    #     scat = scene[end]
+    #     project_pos(pv, res, x) = AbstractPlotting.project.((pv,), (res,), x .+ 0.1)
+    #     cam = camera(scene)
+    #     projected = lift(project_pos, cam.projectionview, cam.resolution, scat[1])
+    #     annotations!(campixel(scene), ["point $i" for i in 1:10], projected, raw = true)
+    #     scene
     # end
 end
 
