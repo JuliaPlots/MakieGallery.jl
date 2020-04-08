@@ -1,5 +1,5 @@
 @block SimonDanisch [interaction, record_events] begin
-    @cell "Interaction with Mouse" [interactive, camera, scatter, lines, marker, record] begin
+    @cell "Interaction with Mouse" [interactive, camera, button, scatter, lines, marker, record] begin
         using LinearAlgebra
         scene = Scene(raw = true, camera = cam2d!, resolution = (500, 500))
         r = LinRange(0, 3, 4)
@@ -777,4 +777,4 @@ end
 #     occursin("RecordEvents", MakieGallery.example2source(x))
 # end
 #
-# record_example("Edit Polygon")
+# record_example("Add and change points")

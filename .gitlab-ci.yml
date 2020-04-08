@@ -2,7 +2,7 @@ variables:
   CI_IMAGE_TAG: "opengl"
   MODERNGL_DEBUGGING: "true"
   JULIA_DEPOT_PATH: "$CI_PROJECT_DIR/.julia/"
-  CI_DEV_PKGS: "GeometryBasics#master ShaderAbstractions#sd/geometrybasics FreeTypeAbstraction#sd/geometrybasics Packing#sd/geometrybasics MeshIO#sd/geometrybasics Makie#master AbstractPlotting#sd/geometrybasics GLMakie#sd/geometrybasics StatsMakie#sd/geometrybasics https://github.com/SimonDanisch/GridLayoutBase.jl#sd/geometrybasics"
+  CI_DEV_PKGS: "ShaderAbstractions#sd/geometrybasics FreeTypeAbstraction#sd/geometrybasics Packing#sd/geometrybasics MeshIO#sd/geometrybasics Makie#master AbstractPlotting#sd/geometrybasics GLMakie#sd/geometrybasics StatsMakie#sd/geometrybasics https://github.com/SimonDanisch/GridLayoutBase.jl#sd/geometrybasics"
 
 stages:
   - test
