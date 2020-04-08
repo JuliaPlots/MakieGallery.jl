@@ -42,7 +42,7 @@ slow_examples = Set([
 # Maybe related to the axis changes, will investigate later
 filter!(MakieGallery.database) do entry
     !("diffeq" in entry.tags) &&
-    !(entry.unique_name in (:analysis, :colormap_collection, :lots_of_heatmaps, :interaction_with_mouse, :normals_of_a_cat)) &&
+    !(entry.unique_name in (:cobweb_plot, :analysis, :colormap_collection, :lots_of_heatmaps, :interaction_with_mouse, :normals_of_a_cat)) &&
     !(entry.title in slow_examples)
  end
 
