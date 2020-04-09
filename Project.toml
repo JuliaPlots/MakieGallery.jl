@@ -1,6 +1,6 @@
 name = "MakieGallery"
 uuid = "dbd62bd0-c9f5-5087-a2e1-f5c4bb0cec90"
-version = "0.2.1"
+version = "0.2.0"
 
 [deps]
 AbstractPlotting = "537997a7-5e4e-5d89-9595-2241ea00577e"
@@ -47,9 +47,10 @@ ZipFile = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
 
 [compat]
 julia = "1"
-
+MeshIO = "0.4"
+GeometryBasics = "0.2.0"
 AbstractPlotting = "0.10"
-
+StatsMakie = "0.1.5"
 BinaryProvider = "0.4, 0.5"
 ColorSchemes = "3.5"
 ColorTypes = "0.8, 0.9, 0.10"
