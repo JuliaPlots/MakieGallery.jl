@@ -1,9 +1,5 @@
 name: Documentation
 
-branding:
-  icon: 'book-open'  
-  color: 'blue'
-
 on: 
   push:
     branches: master
