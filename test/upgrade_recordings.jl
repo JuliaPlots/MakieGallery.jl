@@ -1,5 +1,5 @@
 using MakieGallery
-
+MakieGallery.load_database()
 function record_selection(
     database, dir;
     selection = MakieGallery.get_unrecorded_examples(MakieGallery.database, dir),
@@ -50,6 +50,7 @@ database = MakieGallery.load_database([
 # where is the refimage repo?
 repo = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), ".julia", "dev", "MakieReferenceImages"))
 repo = joinpath(homedir(), "MakieReferenceImages")
+
 # clone if not present
 isdir(repo) || run(`git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages $repo`)
 
@@ -109,7 +110,7 @@ for uid in union(diff_uids, unrec_uids)
 end
 
 # generate `thumb.jpg` for every directory in `recordings`
-# MakieGallery.generate_thumbnails(repo)
+MakieGallery.generate_thumbnails(gallery)
 
 # generate HTML pages for the Gallery
 MakieGallery.gallery_from_recordings(
