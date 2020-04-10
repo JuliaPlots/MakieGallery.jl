@@ -29,3 +29,11 @@ jobs:
           DOCUMENTER_KEY: ${{ secrets.DocumenterDeployKey }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: julia --project=docs/ docs/make.jl
+      - name: PR comment
+        uses: mshick/add-pr-comment@v1
+        if: github.event_name == 'pull_request'
+        with:
+          message: |
+            Documentation preview: https://makie.juliaplots.org/previews/PR${{ github.event.number }}/
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          allow-repeats: false
