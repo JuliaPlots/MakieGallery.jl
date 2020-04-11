@@ -283,7 +283,7 @@ end
 
 
 for file in ("juliadynamics-lightdefs.scss", "juliadynamics-darkdefs.scss", "juliadynamics-style.scss")
-    download("https://raw.githubusercontent.com/JuliaDynamics/doctheme/master/$file", joinpath(@__DIR__, file))
+    download("https://raw.githubusercontent.com/asinghvi17/doctheme/patch-1/$file", joinpath(@__DIR__, file))
 end
 # create the themes
 for w in ("light", "dark")
