@@ -283,19 +283,24 @@ end
 
 @info("Compiling themes")
 
+tarpath = joinpath(@__DIR__, "theme.tar")
+tardir = joinpath(@__DIR__, "theme")
+
+download("https://github.com/asinghvi17/doctheme/tarball/patch-1", tarpath)
+run(`tar -xf $tarpath`)
 
 for file in ("juliadynamics-lightdefs.scss", "juliadynamics-darkdefs.scss", "juliadynamics-style.scss")
     download("https://raw.githubusercontent.com/asinghvi17/doctheme/patch-1/$file", joinpath(@__DIR__, file))
 end
 # create the themes
 for w in ("light", "dark")
-    header = read(joinpath(@__DIR__, "juliadynamics-style.scss"), String)
-    theme = read(joinpath(@__DIR__, "juliadynamics-$(w)defs.scss"), String)
-    write(joinpath(@__DIR__, "juliadynamics-$(w).scss"), header*"\n"*theme)
+    header = read(joinpath(tardir, "juliadynamics-style.scss"), String)
+    theme = read(joinpath(tardir, "juliadynamics-$(w)defs.scss"), String)
+    write(joinpath(tardir, "juliadynamics-$(w).scss"), header*"\n"*theme)
 end
 # compile the themes
-Themes.compile(joinpath(@__DIR__, "juliadynamics-light.scss"), joinpath(@__DIR__, "src/assets/themes/documenter-light.css"))
-Themes.compile(joinpath(@__DIR__, "juliadynamics-dark.scss"), joinpath(@__DIR__, "src/assets/themes/documenter-dark.css"))
+Themes.compile(joinpath(tardir, "juliadynamics-light.scss"), joinpath(@__DIR__, "src/assets/themes/documenter-light.css"))
+Themes.compile(joinpath(tardir, "juliadynamics-dark.scss"), joinpath(@__DIR__, "src/assets/themes/documenter-dark.css"))
 
 
 @info("Running `makedocs` with Documenter.")
