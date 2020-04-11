@@ -5,7 +5,7 @@
 #      Generic imports       #
 ##############################
 
-using Documenter, Markdown, Pkg, Random, FileIO, JSON, HTTP, GitHub
+using Documenter, Markdown, Pkg, Random, FileIO, JSON, HTTP, GitHub, DocumenterTools
 using D3TypeTrees, D3Trees
 
 
@@ -20,6 +20,8 @@ import AbstractPlotting: to_string
 using MakieGallery: eval_examples, generate_thumbnail, master_url,
                     print_table, download_reference,
                     @cell, @block, @substep
+
+using DocumenterTools: Themes
 
 
 ################################################################################
