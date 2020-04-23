@@ -1,6 +1,6 @@
 const makiegallery_dir = dirname(dirname(@__DIR__))
 
-const current_ref_version = Ref{String}("v0.4.2")
+const current_ref_version = Ref{String}("v0.4.3")
 
 """
     ref_image_dir(version = string(current_ref_version[]))
@@ -100,7 +100,7 @@ Compares all media recursively in two recorded folders!
 function run_comparison(
         test_record_path, test_diff_path,
         reference = MakieGallery.download_reference();
-        maxdiff = 10.032
+        maxdiff = 0.032
     )
     @testset "Reference Image Tests" begin
         folders = joinpath.(test_record_path, readdir(test_record_path))
