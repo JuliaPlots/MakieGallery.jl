@@ -132,4 +132,3 @@ Now, the VideoStream has some content in it.  We can save it to file, using Maki
 ```julia
 save("test.mp4", vs; kwargs...)
 ```
-You can repeatedly save with different bitrates, framerates, and other parameters.
