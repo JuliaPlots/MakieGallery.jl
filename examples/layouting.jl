@@ -488,29 +488,34 @@ end
 
     @cell "markers, an arraow, and ellipses in CairoMakie" [layout] begin
 
-        using DataFrames, Distributions, Colors
-        using CairoMakie, MakieLayout
-        import AbstractPlotting:px
-        CairoMakie.activate!()
+        # here we plot some grouped coordinates, find their mean and variance which
+        # we plot as ellipses, plot their actual means, and some additional details. 
 
-        # create data
+        using DataFrames, Distributions, Colors
+        using MakieLayout
+        import AbstractPlotting:px
+
+        # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of 
+        # the groups are distributed equally around the unit circle. The coordinates
+        # are drawn from a normal distribution (with standard deviation σ). 
         ngrp = 4
         groups = Symbol.(Iterators.take('a':'z', ngrp))
         n = 5
         σ = [0.2, 0.4]
         intended = (; Dict(g => Point2f0(Iterators.reverse(sincos(θ))...) for (g, θ) in zip(groups, range(0, step = 2π/ngrp, length = ngrp)))...)
         df = DataFrame(group = Symbol[], x = Point2f0[])
-        for g in Symbol.('a':'d')
+        for g in groups
             d = MvNormal(intended[g], σ)
             for _ in 1:n
                 push!(df, (group = g, x = rand(d)))
             end
         end
 
-        # assign colors
+        # assign colors to each group
         colors = Dict(zip(groups, distinguishable_colors(ngrp, [colorant"white", colorant"black"], dropseed = true)))
 
-        # calculate the ellipses
+        # calculate the mean of each group, and the FWHM of a Gaussian fit to the 
+        # data. We later use the mean and FWHM to plot ellipses.
         ellipses = by(df, :group) do g
             n = length(g.x)
             X = Array{Float64}(undef, 2, n)
@@ -524,8 +529,12 @@ end
         end
 
         # some helper functions
+
+        # return a vector of coordinates of an ellipse
         mydecompose(origin, radii) = [origin + radii .* Iterators.reverse(sincos(t)) for t in range(0, stop = 2π, length = 51)]
+        # brighten a color 
         brighten(c, p = 0.5) = weighted_color_mean(p, c, colorant"white")
+        # darken a color
         darken(c, p = 0.5) = weighted_color_mean(p, c, colorant"black")
 
         scene, layout = layoutscene(0, fontsize = 10, font = "arial", resolution = (500,400));
@@ -551,8 +560,9 @@ end
         for g in groupby(df, :group)
             scatter!(ax, g.x, color = RGBA(colors[g.group[1]], 0.75), marker = '●', markersize = 5px)
         end
-
-        # stuff for the manual legend
+        # Here, we manually construct a list of legend entries to be provided to the 
+        # LLegend constructor. This allows us a larger degree of control over how 
+        # the legend looks.
         polys = [PolyElement(color = colors[k], strokecolor = :transparent) for k in unique(df.group)]
         shapes = [MarkerElement(color = :black, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
                   MarkerElement(color = :white, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
@@ -561,7 +571,7 @@ end
                    MarkerElement(color = :white, marker = '+', strokecolor = :transparent, markersize = 10px), 
                   ]]
 
-        leg = ([polys, shapes], [string.(unique(df.group)), ["nest", "fictive nest", "point", "μ ± FWHM"]], ["Colors", "Shapes"])
+        leg = ([polys, shapes], [string.(unique(df.group)), ["center", "intended means", "coordinates", "μ ± FWHM"]], ["Groups", "Shapes"])
         layout[1, 2] = LLegend(scene, leg..., markersize = 10px, markerstrokewidth = 1, patchsize = (10, 10), rowgap = Fixed(0), titlegap = Fixed(5), groupgap = Fixed(10), titlehalign = :left, gridshalign = :left)
 
         # draw an arrow with some text
@@ -570,7 +580,7 @@ end
             xy = widths(w)
             xy .- 0.05max(xy...)
         end
-        text!(textlayer, "feeder", position = topright, align = (:right, :top), textsize = 10, font = "noto sans")
+        text!(textlayer, "arrow", position = topright, align = (:right, :top), textsize = 10, font = "noto sans")
         lines!(textlayer, @lift([$topright, $topright .- (30, 0)]))
         scatter!(textlayer, @lift([$topright]), marker = '►', markersize = 10px)
 
