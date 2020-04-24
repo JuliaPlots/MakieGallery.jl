@@ -486,7 +486,7 @@ end
 
     end
 
-    @cell "markers, an arraow, and ellipses in CairoMakie" [layout] begin
+    @cell "Ellipse markers and arrows" [layout, "2d"] begin
 
         # here we plot some grouped coordinates, find their mean and variance which
         # we plot as ellipses, plot their actual means, and some additional details. 
