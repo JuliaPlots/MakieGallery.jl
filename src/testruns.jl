@@ -138,6 +138,19 @@ function run_comparison(
                 end
             end
         end
+
+        # Write out overview of what got tested different as html
+        folders = readdir(test_diff_path)
+        open(joinpath(test_diff_path, "index.html"), "w") do io
+            for elem in folders
+                folder = joinpath(test_diff_path, elem)
+                if isdir(folder)
+                    images = joinpath.(folder, readdir(folder))
+                    println(io, "<h1> $elem </h1>")
+                    MakieGallery.embed_media(io, images)
+                end
+            end
+        end
     end
 end
 
