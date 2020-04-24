@@ -287,7 +287,7 @@
         step!(st)
         st
     end
-    @cell "Color Legend" [surface, colorlegend, camera, "2d"] begin
+    @cell "Color Legend" [surface, colorlegend, camera, "3d"] begin
         s = surface(0..1, 0..1, rand(100, 100))
         ls = colorlegend(s[end], raw = true, camera = campixel!)
         st = Stepper(vbox(s, ls), @replace_with_a_path)
