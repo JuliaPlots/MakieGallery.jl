@@ -1,4 +1,4 @@
-@block SimonDanisch ["short tests"] begin
+@block SimonDanisch ["short tests", "2d"] begin
     @cell begin
         scene = Scene(raw = true, camera = campixel!)
         text!(
@@ -24,13 +24,6 @@
 
     # @cell mesh(IRect(0, 0, 200, 200))
 
-    @cell begin
-        r = range(-3pi, stop = 3pi, length = 100)
-        s = volume(r, r, r, (x, y, z)-> cos(x) + sin(y) + cos(z), algorithm = :iso, isorange = 0.1f0, show_axis = false)
-        v2 = volume!(r, r, r, (x, y, z)-> cos(x) + sin(y) + cos(z), algorithm = :mip, show_axis = false)[end]
-        translate!(v2, Vec3f0(6pi, 0, 0))
-        s
-    end
     @cell poly(IRect(0, 0, 200, 200), strokewidth = 20, strokecolor = :red, color = (:black, 0.4))
 
     @cell begin
@@ -47,8 +40,6 @@
 
     @cell lines(rand(10), rand(10), color = rand(10), linewidth = 10)
     @cell lines(rand(10), rand(10), color = rand(RGBAf0, 10), linewidth = 10)
-    @cell meshscatter(rand(10), rand(10), rand(10), color = rand(10))
-    @cell meshscatter(rand(10), rand(10), rand(10), color = rand(RGBAf0, 10))
     @cell scatter(0..1, rand(10), markersize = rand(10) .* 0.1)
     @cell scatter(LinRange(0, 1, 10), rand(10))
     @cell scatter(rand(10), LinRange(0, 1, 10))
@@ -73,15 +64,6 @@
         pos = Point2f0.(sin.(angles), cos.(angles))
         scatter(pos, rotations = -angles , marker = '▲', scale_plot = false)
         scatter!(pos, markersize = 0.02, color = :red, scale_plot = false)
-    end
-    @cell begin
-        using GeometryBasics
-        s1 = uv_mesh(Sphere(Point3f0(0), 1f0))
-        mesh(uv_mesh(Sphere(Point3f0(0), 1f0)), color = rand(50, 50))
-        # ugh, bug In GeometryTypes for UVs of non unit spheres.
-        s2 = uv_mesh(Sphere(Point3f0(0), 1f0))
-        s2.position .= s2.position .+ (Point3f0(0, 2, 0),)
-        mesh!(s2, color = rand(RGBAf0, 50, 50))
     end
     @cell heatmap(rand(50, 50), colormap = :RdBu, alpha = 0.2)
 
@@ -119,8 +101,31 @@
     @cell scatter(-1..1, x -> x^2)
 end
 
+@block SimonDanisch ["short tests", "3d"] begin
+
+    @cell begin
+        r = range(-3pi, stop = 3pi, length = 100)
+        s = volume(r, r, r, (x, y, z)-> cos(x) + sin(y) + cos(z), algorithm = :iso, isorange = 0.1f0, show_axis = false)
+        v2 = volume!(r, r, r, (x, y, z)-> cos(x) + sin(y) + cos(z), algorithm = :mip, show_axis = false)[end]
+        translate!(v2, Vec3f0(6pi, 0, 0))
+        s
+    end
 
 
+    @cell meshscatter(rand(10), rand(10), rand(10), color = rand(10))
+    @cell meshscatter(rand(10), rand(10), rand(10), color = rand(RGBAf0, 10))
+
+
+    @cell begin
+        using GeometryBasics
+        s1 = uv_mesh(Sphere(Point3f0(0), 1f0))
+        mesh(uv_mesh(Sphere(Point3f0(0), 1f0)), color = rand(50, 50))
+        # ugh, bug In GeometryTypes for UVs of non unit spheres.
+        s2 = uv_mesh(Sphere(Point3f0(0), 1f0))
+        s2.position .= s2.position .+ (Point3f0(0, 2, 0),)
+        mesh!(s2, color = rand(RGBAf0, 50, 50))
+    end
+end
 #
 # a = Point2f0.(200, 150:50:offset)
 # b = Point2f0.(0, 150:50:offset)

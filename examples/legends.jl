@@ -1,4 +1,4 @@
-@block JuliusKrumbiegel ["legend"] begin
+@block JuliusKrumbiegel ["legend", "2d"] begin
     using MakieLayout
     using AbstractPlotting: px
     @cell "Basic legend" [legend] begin
@@ -16,7 +16,7 @@
 
         leg = LLegend(scene, [lin, sca, [lin, sca]], ["a line", "some dots", "both together"])
         layout[1, 2] = leg
-        
+
         scene
     end
 
@@ -58,8 +58,8 @@
 
         for leg in legends
             layout[1, 1] = leg
-        end   
-        
+        end
+
         scene
     end
 
@@ -74,9 +74,9 @@
         lins = [lines!(ax, xs, sin.(xs .+ 3v), color = RGBf0(v, 0, 1-v)) for v in 0:0.1:1]
 
         leg = LLegend(scene, lins, string.(1:length(lins)), ncols = 3)
-        
+
         layout[1, 2] = leg
-        
+
         scene
     end
 
@@ -106,7 +106,7 @@
         leg = layout[1, 2] = LLegend(scene,
             [elem_1, elem_2, elem_3, elem_4, elem_5],
             ["Line & Marker", "Poly & Line", "Line", "Marker", "Poly"])
-        
+
         scene
     end
 
@@ -130,13 +130,13 @@
         layout[2, 1] = leg_horizontal
         scene
     end
-    
+
     @cell "Multi-bank legend" [legend] begin
-        
-        # You can control the number of banks with the `nbanks` attribute. 
-        # Banks are columns when in vertical mode, 
+
+        # You can control the number of banks with the `nbanks` attribute.
+        # Banks are columns when in vertical mode,
         # and rows when in horizontal mode.
-        
+
         scene, layout = layoutscene(resolution = (1400, 900))
 
         ax = layout[1, 1] = LAxis(scene)
@@ -146,13 +146,13 @@
 
         leg = LLegend(scene, lins, string.(1:length(lins)), nbanks = 3)
         layout[1, 2] = leg
-        
+
         scene
-        
+
     end
-    
+
     @cell "Multi-group legends" [legend] begin
-        
+
         scene, layout = layoutscene(resolution = (1400, 900))
 
         ax = layout[1, 1] = LAxis(scene)

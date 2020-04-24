@@ -35,7 +35,7 @@
     end
 end
 
-@block JuliusKrumbiegel ["layout"] begin
+@block JuliusKrumbiegel ["layout", "2d"] begin
     using MakieLayout
 
     @cell "Faceting" [faceting, grid] begin
@@ -383,7 +383,7 @@ end
         container_scene = Scene(camera = campixel!, resolution = (1200, 1200))
 
         t = Node(0.0)
-        
+
         a_width = Animation([1.0, 7.0], [1200.0, 800.0], sineio(n=2, yoyo=true, postwait=0.5))
         a_height = Animation([2.5, 8.5], [1200.0, 800.0], sineio(n=2, yoyo=true, postwait=0.5))
         scene_area = lift(t) do t

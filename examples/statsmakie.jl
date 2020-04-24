@@ -94,7 +94,7 @@
 
     end
 
-    @cell "Analysis"  [Group, Style, scatter, plot, wireframe, statistics] begin
+    @cell "Analysis"  [Group, Style, scatter, plot, wireframe, statistics, "2d"] begin
 
         ## setup
 
@@ -160,7 +160,7 @@
 
     end
 
-    @cell "Violin plot" [violin, statistics] begin
+    @cell "Violin plot" [violin, statistics, "2d"] begin
 
         using RDatasets, StatsMakie
 
@@ -170,7 +170,7 @@
 
     end
 
-    @cell "Violin and box plot" [boxplot, violin, statistics] begin
+    @cell "Violin and box plot" [boxplot, violin, statistics, "2d"] begin
 
         using RDatasets, StatsMakie
 
@@ -181,7 +181,7 @@
 
     end
 
-    @cell "Errorbar" [errorbar] begin
+    @cell "Errorbar" [errorbar, "2d"] begin
         using StatsMakie
         x = [1:4;]
         y =  [1:4;]
@@ -190,7 +190,7 @@
         p = errorbar(x,y,Δx,Δy,xcolor=:green, ycolor=:red)
     end
 
-    @cell "histogram 2d" [histogram] begin
+    @cell "histogram 2d" [histogram, "2d"] begin
         # This cell was contributed by Kim Fung (@fungktt) during GCI'19
         using StatsMakie
         plot(histogram(nbins = 20), randn(10000), randn(10000))
