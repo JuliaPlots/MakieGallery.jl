@@ -28,7 +28,7 @@ gallerytest:
       - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
 
   script:
-    - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
+#     - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
     - glxinfo | grep 'version'
     - julia -e 'using InteractiveUtils; versioninfo()'
     - julia --project -e 'using Pkg; pkg"test"'
