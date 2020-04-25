@@ -537,7 +537,7 @@ end
         # darken a color
         darken(c, p = 0.5) = weighted_color_mean(p, c, colorant"black")
 
-        scene, layout = layoutscene(0, fontsize = 10, font = "arial", resolution = (500,400));
+        scene, layout = layoutscene(0, fontsize = 10, font = "helvetica", resolution = (500,400));
 
         ax = layout[1,1] = LAxis(scene, 
                                  xlabel = "X (cm)",
