@@ -777,4 +777,7 @@ end
 #     occursin("RecordEvents", MakieGallery.example2source(x))
 # end
 #
-# record_example("Add and change points")
+#
+# for elem in interactive
+#     record_example(elem)
+# end
