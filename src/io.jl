@@ -302,7 +302,7 @@ function record_examples(
                     @test true
                     if generate_thumbnail && !isfile(outfolder) && ispath(outfolder)
                         sample = joinpath(outfolder, first(readdir(outfolder)))
-                        generate_thumbnail(sample, joinpath(outfolder, "thumb.jpg"))
+                        MakieGallery.generate_thumbnail(sample, joinpath(outfolder, "thumb.jpg"))
                     end
                 catch e
                     @warn "Error thrown when evaluating $(example.title)" exception=CapturedException(e, Base.catch_backtrace())
