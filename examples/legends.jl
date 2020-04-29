@@ -28,7 +28,8 @@
         ls = [lines!(ax, 1:10, (1:10) .* i, color = rand(RGBf0)) for i in 1:5]
 
         leg = layout[1, 1] = LLegend(scene, ls, ["line $i" for i in 1:5];
-            width = Auto(false), height = Auto(false), halign = :left, valign = :top,
+            width = Auto(), height = Auto(), halign = :left, valign = :top,
+            tellwidth = false, tellheight = false,
             margin = (10, 10, 10, 10))
 
         scene
@@ -50,7 +51,8 @@
         legends = [LLegend(
                 scene, lins, ["Line $i" for i in 1:3],
                 "$ha & $va",
-                width = Auto(false),
+                width = Auto(),
+                tellwidth = false,
                 margin = (10, 10, 10, 10),
                 halign = ha, valign = va, orientation = :horizontal
             ) for (j, ha, va) in zip(1:3, haligns, valigns)]
@@ -126,7 +128,9 @@
         layout[1, 2] = leg
 
         leg_horizontal = LLegend(scene, [lin, sca, lin], ["a line", "some dots", "line again"],
-        orientation = :horizontal, width = Auto(false), height = Auto(true))
+        orientation = :horizontal, width = Auto(), height = Auto(),
+        tellwidth = false, tellheight = true,
+        )
         layout[2, 1] = leg_horizontal
         scene
     end
@@ -180,8 +184,10 @@
 
         for l in legends[4:6]
             l.orientation = :horizontal
-            l.height = Auto(true)
-            l.width = Auto(false)
+            l.height = Auto()
+            l.tellheight = true
+            l.width = Auto()
+            l.tellwidth = false
         end
 
         legends[2].titleposition = :left
