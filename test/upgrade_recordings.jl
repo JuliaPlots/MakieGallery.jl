@@ -87,7 +87,7 @@ preferred_order = abspath.(joinpath.(
 sort!(database, by = x -> findfirst(==(x.file), preferred_order));
 
 diff_uids  = Symbol.(readdir(differences))
-unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, repo)
+unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, gallery)
 recorded_examples = Symbol.(readdir(recordings))
 gallery_examples  = Symbol.(readdir(gallery))
 
