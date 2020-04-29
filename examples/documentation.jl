@@ -1,5 +1,5 @@
 @block AnthonyWang [documentation] begin
-    @cell "pong" [animated, scatter, updating, record] begin
+    @cell "pong" [animated, scatter, updating, record, "2d"] begin
         # init speed and velocity vector
         xyvec = rand(Point2f0, (2)) .* 5 .+ 1
         velvec = rand(Point2f0, (2)) .* 10
@@ -33,7 +33,7 @@
         end
     end
 
-    @cell "pulsing marker" [animated, scatter, markersize, updating, record] begin
+    @cell "pulsing marker" [animated, scatter, markersize, updating, record, "2d"] begin
         N = 100
         scene = scatter([0], [0], marker = '❤', markersize = 0.5, color = :red, raw = true)
         s = scene[end] # last plot in scene
@@ -42,7 +42,7 @@
         end
     end
 
-    @cell "Travelling wave" [animated, lines, updating, interaction, record] begin
+    @cell "Travelling wave" [animated, lines, updating, interaction, record, "2d"] begin
         scene = Scene()
         mytime = Node(0.0)
         f(v, t) = sin(v + t)
@@ -81,7 +81,7 @@
         )
     end
 
-    @cell "Marker offset" [scatter, marker_offset] begin
+    @cell "Marker offset" [scatter, marker_offset, "2d"] begin
         scene = Scene()
         points = Point2f0[(0,0), (1,1), (2,2)]
         offset = rand(Point2f0, 3)./5
@@ -89,7 +89,7 @@
         scatter!(scene, points, marker_offset = offset, color = :red)
     end
 
-    @cell "colormaps" [image, translate, colormap, meta, camera] begin
+    @cell "colormaps" [image, translate, colormap, meta, camera, "2d"] begin
         h = 0.0
         offset = 0.1
         scene = Scene()
@@ -118,7 +118,7 @@
         scene
     end
 
-    @cell "Available markers" [annotations, markers, meta] begin
+    @cell "Available markers" [annotations, markers, meta, "2d"] begin
         marker = collect(AbstractPlotting._marker_map)
         positions = Point2f0.(0, 1:length(marker))
         scene = scatter(
@@ -190,7 +190,7 @@
     #     st
     # end
 
-    @cell "Axis theming" [stepper, axis, lines, stepper] begin
+    @cell "Axis theming" [stepper, axis, lines, stepper, "2d"] begin
         using GeometryBasics
         scene = Scene()
         points = decompose(Point2f0, Circle(Point2f0(10), 10f0), 9)
@@ -230,7 +230,7 @@
         step!(st)
     end
 
-    @cell "Stepper demo" [stepper, text, annotation] begin
+    @cell "Stepper demo" [stepper, text, annotation, "2d"] begin
         function stepper_demo()
             scene = Scene()
             pos = (50, 50)
@@ -259,7 +259,7 @@
         stepper_demo()
     end
 
-    @cell "Legend" [legend, linesegments, vbox] begin
+    @cell "Legend" [legend, linesegments, vbox, "2d"] begin
         scene = Scene(resolution = (500, 500))
         x = map([:dot, :dash, :dashdot], [2, 3, 4]) do ls, lw
             linesegments!(
@@ -287,7 +287,7 @@
         step!(st)
         st
     end
-    @cell "Color Legend" [surface, colorlegend, camera] begin
+    @cell "Color Legend" [surface, colorlegend, camera, "3d"] begin
         s = surface(0..1, 0..1, rand(100, 100))
         ls = colorlegend(s[end], raw = true, camera = campixel!)
         st = Stepper(vbox(s, ls), @replace_with_a_path)
