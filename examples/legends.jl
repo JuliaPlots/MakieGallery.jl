@@ -1,4 +1,4 @@
-@block JuliusKrumbiegel ["legend"] begin
+@block JuliusKrumbiegel ["legend", "2d"] begin
     using MakieLayout
     using AbstractPlotting: px
     @cell "Basic legend" [legend] begin
@@ -16,7 +16,7 @@
 
         leg = LLegend(scene, [lin, sca, [lin, sca]], ["a line", "some dots", "both together"])
         layout[1, 2] = leg
-        
+
         scene
     end
 
@@ -28,7 +28,8 @@
         ls = [lines!(ax, 1:10, (1:10) .* i, color = rand(RGBf0)) for i in 1:5]
 
         leg = layout[1, 1] = LLegend(scene, ls, ["line $i" for i in 1:5];
-            width = Auto(false), height = Auto(false), halign = :left, valign = :top,
+            width = Auto(), height = Auto(), halign = :left, valign = :top,
+            tellwidth = false, tellheight = false,
             margin = (10, 10, 10, 10))
 
         scene
@@ -50,7 +51,8 @@
         legends = [LLegend(
                 scene, lins, ["Line $i" for i in 1:3],
                 "$ha & $va",
-                width = Auto(false),
+                width = Auto(),
+                tellwidth = false,
                 margin = (10, 10, 10, 10),
                 halign = ha, valign = va, orientation = :horizontal
             ) for (j, ha, va) in zip(1:3, haligns, valigns)]
@@ -58,8 +60,8 @@
 
         for leg in legends
             layout[1, 1] = leg
-        end   
-        
+        end
+
         scene
     end
 
@@ -74,9 +76,9 @@
         lins = [lines!(ax, xs, sin.(xs .+ 3v), color = RGBf0(v, 0, 1-v)) for v in 0:0.1:1]
 
         leg = LLegend(scene, lins, string.(1:length(lins)), ncols = 3)
-        
+
         layout[1, 2] = leg
-        
+
         scene
     end
 
@@ -106,7 +108,7 @@
         leg = layout[1, 2] = LLegend(scene,
             [elem_1, elem_2, elem_3, elem_4, elem_5],
             ["Line & Marker", "Poly & Line", "Line", "Marker", "Poly"])
-        
+
         scene
     end
 
@@ -126,17 +128,19 @@
         layout[1, 2] = leg
 
         leg_horizontal = LLegend(scene, [lin, sca, lin], ["a line", "some dots", "line again"],
-        orientation = :horizontal, width = Auto(false), height = Auto(true))
+        orientation = :horizontal, width = Auto(), height = Auto(),
+        tellwidth = false, tellheight = true,
+        )
         layout[2, 1] = leg_horizontal
         scene
     end
-    
+
     @cell "Multi-bank legend" [legend] begin
-        
-        # You can control the number of banks with the `nbanks` attribute. 
-        # Banks are columns when in vertical mode, 
+
+        # You can control the number of banks with the `nbanks` attribute.
+        # Banks are columns when in vertical mode,
         # and rows when in horizontal mode.
-        
+
         scene, layout = layoutscene(resolution = (1400, 900))
 
         ax = layout[1, 1] = LAxis(scene)
@@ -146,13 +150,13 @@
 
         leg = LLegend(scene, lins, string.(1:length(lins)), nbanks = 3)
         layout[1, 2] = leg
-        
+
         scene
-        
+
     end
-    
+
     @cell "Multi-group legends" [legend] begin
-        
+
         scene, layout = layoutscene(resolution = (1400, 900))
 
         ax = layout[1, 1] = LAxis(scene)
@@ -180,8 +184,10 @@
 
         for l in legends[4:6]
             l.orientation = :horizontal
-            l.height = Auto(true)
-            l.width = Auto(false)
+            l.height = Auto()
+            l.tellheight = true
+            l.width = Auto()
+            l.tellwidth = false
         end
 
         legends[2].titleposition = :left

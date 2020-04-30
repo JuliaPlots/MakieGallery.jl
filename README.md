@@ -38,6 +38,9 @@ julia> using Makie
 julia> MakieGallery.eval_example(database[1]) # run it!
 ```
 
+## Issues
+Please file all issues in the [Makie.jl](https://github.com/JuliaPlots/Makie.jl/issues/new), and mention GLMakie in the issue text!
+
 # Developing this package
 
 ## Adding an example

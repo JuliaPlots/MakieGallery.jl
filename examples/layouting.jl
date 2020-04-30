@@ -35,7 +35,7 @@
     end
 end
 
-@block JuliusKrumbiegel ["layout"] begin
+@block JuliusKrumbiegel ["layout", "2d"] begin
     using MakieLayout
 
     @cell "Faceting" [faceting, grid] begin
@@ -327,11 +327,13 @@ end
         end
 
         for (j, label) in enumerate(["Fixed(200)", "Relative(0.25)", "Auto()", "Auto()", "Auto(2)"])
-            layout[1, j] = LText(scene, width = Auto(false), text = label)
+            layout[1, j] = LText(scene, width = Auto(), text = label,
+            tellwidth = false
+            )
         end
 
         for (i, label) in enumerate(["Fixed(100)", "Relative(0.25)", "Aspect(2, 1)", "Auto()", "Auto()"])
-            layout[i + 1, 6] = LText(scene, height = Auto(false), text = label)
+            layout[i + 1, 6] = LText(scene, height = Auto(), text = label, tellwidth = false)
         end
 
         scene
@@ -383,7 +385,7 @@ end
         container_scene = Scene(camera = campixel!, resolution = (1200, 1200))
 
         t = Node(0.0)
-        
+
         a_width = Animation([1.0, 7.0], [1200.0, 800.0], sineio(n=2, yoyo=true, postwait=0.5))
         a_height = Animation([2.5, 8.5], [1200.0, 800.0], sineio(n=2, yoyo=true, postwait=0.5))
         scene_area = lift(t) do t
@@ -427,7 +429,7 @@ end
 
         agl3 = gridnest!(inner_gl, 2, 1:2)
         agl3[:, 3] = LColorbar(scene, h3, width = 30, height=200, label = "fixed height bar")
-        rowsize!(agl3, 1, Auto(false, 1.0))
+        rowsize!(agl3, 1, Auto(1.0))
 
         inner_gl[0, :] = LText(scene, text = "MakieLayout", textsize = 50)
 
@@ -489,7 +491,7 @@ end
     @cell "Ellipse markers and arrows" [layout, "2d"] begin
 
         # here we plot some grouped coordinates, find their mean and variance which
-        # we plot as ellipses, plot their actual means, and some additional details. 
+
 
         using DataFrames, Distributions, Colors
         using MakieLayout
@@ -532,14 +534,14 @@ end
 
         # return a vector of coordinates of an ellipse
         mydecompose(origin, radii) = [origin + radii .* Iterators.reverse(sincos(t)) for t in range(0, stop = 2π, length = 51)]
-        # brighten a color 
+        # brighten a color
         brighten(c, p = 0.5) = weighted_color_mean(p, c, colorant"white")
         # darken a color
         darken(c, p = 0.5) = weighted_color_mean(p, c, colorant"black")
 
-        scene, layout = layoutscene(0, fontsize = 10, font = "helvetica", resolution = (500,400));
+        scene, layout = layoutscene(0, fontsize = 10, resolution = (500,400));
 
-        ax = layout[1,1] = LAxis(scene, 
+        ax = layout[1,1] = LAxis(scene,
                                  xlabel = "X (cm)",
                                  ylabel = "Y (cm)",
                                  xticklabelsize = 8,
@@ -560,15 +562,16 @@ end
         for g in groupby(df, :group)
             scatter!(ax, g.x, color = RGBA(colors[g.group[1]], 0.75), marker = '●', markersize = 5px)
         end
-        # Here, we manually construct a list of legend entries to be provided to the 
-        # LLegend constructor. This allows us a larger degree of control over how 
+    
+        # Here, we manually construct a list of legend entries to be provided to the
+        # LLegend constructor. This allows us a larger degree of control over how
         # the legend looks.
         polys = [PolyElement(color = colors[k], strokecolor = :transparent) for k in unique(df.group)]
         shapes = [MarkerElement(color = :black, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
                   MarkerElement(color = :white, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
                   MarkerElement(color = :black, marker = '●', strokecolor = :transparent, markersize = 5px),
                   [PolyElement(color = brighten(colorant"black", 0.75), strokecolor = :transparent, polypoints = mydecompose(Point2f0(0.5, 0.5), Vec2f0(0.75, 0.5))),
-                   MarkerElement(color = :white, marker = '+', strokecolor = :transparent, markersize = 10px), 
+                   MarkerElement(color = :white, marker = '+', strokecolor = :transparent, markersize = 10px),
                   ]]
 
         leg = ([polys, shapes], [string.(unique(df.group)), ["center", "intended means", "coordinates", "μ ± FWHM"]], ["Groups", "Shapes"])

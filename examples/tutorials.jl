@@ -1,28 +1,28 @@
 
 @block AnthonyWang [tutorials] begin
 
-    @cell "Tutorial simple scatter" [tutorial, scatter] begin
+    @cell "Tutorial simple scatter" [tutorial, scatter, "2d"] begin
         x = rand(10)
         y = rand(10)
         colors = rand(10)
         scene = scatter(x, y, color = colors)
     end
 
-    @cell "Tutorial markersize" [tutorial, scatter, markersize] begin
+    @cell "Tutorial markersize" [tutorial, scatter, markersize, "2d"] begin
         x = 1:10
         y = 1:10
         sizevec = x ./ 10
         scene = scatter(x, y, markersize = sizevec)
     end
 
-    @cell "Tutorial simple line" [tutorial, line] begin
+    @cell "Tutorial simple line" [tutorial, line, "2d"] begin
         x = range(0, stop = 2pi, length = 40)
         f(x) = sin.(x)
         y = f(x)
         scene = lines(x, y, color = :blue)
     end
 
-    @cell "Tutorial adding to a scene" [tutorial, line, scene, markers] begin
+    @cell "Tutorial adding to a scene" [tutorial, line, scene, markers, "2d"] begin
         x = range(0, stop = 2pi, length = 80)
         f1(x) = sin.(x)
         f2(x) = exp.(-x) .* cos.(2pi*x)
@@ -36,7 +36,7 @@
         scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
     end
 
-    @cell "Tutorial removing from a scene" [tutorial, line, scene, markers] begin
+    @cell "Tutorial removing from a scene" [tutorial, line, scene, markers, "2d"] begin
         x = range(0, stop = 2pi, length = 80)
         y1 = sin.(x)
         y2 = exp.(-x) .* cos.(2pi * x)
@@ -59,7 +59,7 @@
         st
     end
 
-    @cell "Tutorial adjusting scene limits" [tutorial, scene, limits] begin
+    @cell "Tutorial adjusting scene limits" [tutorial, scene, limits, "2d"] begin
         x = range(0, stop = 10, length = 40)
         y = x
         #= specify the scene limits, note that the arguments for FRect are
@@ -72,7 +72,7 @@
 
     end
 
-    @cell "Tutorial basic theming" [tutorial, scene, limits] begin
+    @cell "Tutorial basic theming" [tutorial, scene, limits, "2d"] begin
         x = range(0, stop = 2pi, length = 40)
         y = cos.(x)
         scene = lines(x, y, color = :blue)
@@ -84,12 +84,12 @@
         scene
     end
 
-    @cell "Tutorial heatmap" [tutorial, heatmap] begin
+    @cell "Tutorial heatmap" [tutorial, heatmap, "2d"] begin
         data = rand(50, 50)
         scene = heatmap(data)
     end
 
-    @cell "Tutorial linesegments" [tutorial, linesegments] begin
+    @cell "Tutorial linesegments" [tutorial, linesegments, "2d"] begin
         points = [
             Point2f0(0, 0) => Point2f0(5, 5);
             Point2f0(15, 15) => Point2f0(25, 25);
@@ -98,22 +98,22 @@
         linesegments(points, color = :red, linewidth = 2)
     end
 
-    @cell "Tutorial barplot" [tutorial, barplot] begin
+    @cell "Tutorial barplot" [tutorial, barplot, "2d"] begin
         data = sort(randn(100))
         barplot(data)
     end
 
-    @cell "Tutorial title" [tutorial, title] begin
+    @cell "Tutorial title" [tutorial, title, "2d"] begin
         scene = lines(rand(10), axis=(names=(title="Random lines",),))
     end
 
-    @cell "Tutorial title function" [tutorial, title] begin
+    @cell "Tutorial title function" [tutorial, title, "2d"] begin
         scene = lines(rand(10))
         sc_t = title(scene, "Random lines")
         sc_t
     end
 
-    @cell "Tutorial plot transformation" [tutorial, transformation] begin
+    @cell "Tutorial plot transformation" [tutorial, transformation, "2d"] begin
         data = rand(10)
 
         scene = Scene()

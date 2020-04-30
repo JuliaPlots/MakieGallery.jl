@@ -1,5 +1,5 @@
 using MakieGallery
-MakieGallery.load_database()
+
 function record_selection(
     database, dir;
     selection = MakieGallery.get_unrecorded_examples(MakieGallery.database, dir),
@@ -26,7 +26,6 @@ append!(MakieGallery.plotting_backends, ["Makie"])
 
 # we need to clone the repo - this means git must be installed on the user system.
 
-# load the database.  TODO this is a global and should be changed.
 # Here, we reorder the database, to make it easier to see.
 database = MakieGallery.load_database([
     "tutorials.jl",
@@ -49,7 +48,6 @@ database = MakieGallery.load_database([
 
 # where is the refimage repo?
 repo = get(ENV, "MAKIEGALLERY_REFIMG_PATH", joinpath(homedir(), ".julia", "dev", "MakieReferenceImages"))
-repo = joinpath(homedir(), "MakieReferenceImages")
 
 # clone if not present
 isdir(repo) || run(`git clone --depth=1 https://github.com/JuliaPlots/MakieReferenceImages $repo`)
@@ -71,8 +69,9 @@ preferred_order = abspath.(joinpath.(
     "statsmakie.jl",
     "examples2d.jl",
     "examples3d.jl",
-    "layouting.jl",
     "interactive.jl",
+    "layouting.jl",
+    "legends.jl",
     "diffeq.jl",
     "implicits.jl",
     "geomakie.jl",
@@ -85,10 +84,10 @@ preferred_order = abspath.(joinpath.(
     ]
 ))
 
-sort!(database, by = x -> findfirst(==(x.file), preferred_order))
+sort!(database, by = x -> findfirst(==(x.file), preferred_order));
 
 diff_uids  = Symbol.(readdir(differences))
-unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, repo)
+unrec_uids = MakieGallery.get_unrecorded_examples(MakieGallery.database, gallery)
 recorded_examples = Symbol.(readdir(recordings))
 gallery_examples  = Symbol.(readdir(gallery))
 

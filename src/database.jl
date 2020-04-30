@@ -653,7 +653,7 @@ function get_unrecorded_examples(database, dir)
 
     uids = getproperty.(database, :unique_name)
 
-    repos = readdir(dir) .|> Symbol
+    repos = Symbol.(readdir(dir))
 
     return setdiff(uids, repos)
 

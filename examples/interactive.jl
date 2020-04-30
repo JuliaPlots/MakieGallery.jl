@@ -75,7 +75,7 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "sliders" [scatter, slider, vbox] begin
+    @cell "sliders" [scatter, slider, vbox, "2d"] begin
         s1 = slider(LinRange(0.01, 1, 100), raw = true, camera = campixel!, start = 0.3)
         s2 = slider(LinRange(-2pi, 2pi, 100), raw = true, camera = campixel!)
         data = lift(s2[end][:value]) do v
@@ -129,7 +129,7 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "GUI for exploring Lorenz equation" [vbox, hbox, meshscatter, slider, textslider, colorswatch] begin
+    @cell "GUI for exploring Lorenz equation" [vbox, hbox, meshscatter, slider, textslider, colorswatch, "3d"] begin
         using Colors
         using AbstractPlotting: textslider, colorswatch
         s1, a = textslider(0f0:50f0, "a", start = 13)
@@ -180,7 +180,7 @@
         RecordEvents(parent, @replace_with_a_path)
     end
 
-    @cell "Edit Polygon" [poly, node, on, events] begin
+    @cell "Edit Polygon" [poly, node, on, events, "2d"] begin
         points = Node(Point2f0[(0, 0), (0.5, 0.5), (1.0, 0.0)])
         scene = Scene(resolution = (500, 500))
         poly!(scene, points, strokewidth = 2, strokecolor = :black, color = :skyblue2, show_axis = false, scale_plot = false)
@@ -232,7 +232,7 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "Add and change points" [heatmap, on, ispressed, to_world, scatter, center] begin
+    @cell "Add and change points" [heatmap, on, ispressed, to_world, scatter, center, "2d"] begin
         using LinearAlgebra
         img = rand(100, 100)
         scene = Scene(scale_plot = false, resolution = (500, 500))
@@ -270,7 +270,7 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "Orbit Diagram" [scatter, slider] begin
+    @cell "Orbit Diagram" [scatter, slider, "2d"] begin
         # example by @datseris
         using Observables
         growth(🐇, 🥕) = 🐇 * 🥕 * (1.0 - 🐇)
@@ -317,7 +317,7 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "Robot Arm" [slider, interactive, linesegments, vbox] begin
+    @cell "Robot Arm" [slider, interactive, linesegments, vbox, "3d"] begin
 
         using AbstractPlotting
         using AbstractPlotting: Mesh, Scene, LineSegments, translate!, rotate!, vbox, hbox, qrotation, mesh!
@@ -420,7 +420,7 @@
         RecordEvents(parent, @replace_with_a_path)
     end
 
-    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox, download] begin
+    @cell "Earth & Ships" [slider, interactive, lines, mesh, vbox, download, "3d"] begin
 
         using AbstractPlotting: textslider
         using GeometryBasics, FileIO
@@ -572,7 +572,7 @@
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "Animation with slider control" [interaction, animation, slider] begin
+    @cell "Animation with slider control" [interaction, animation, slider, "2d"] begin
         """
         This example is courtesy of @neuralian through the Julia Discourse.
         https://discourse.julialang.org/t/makie-interaction-slider-with-animation/25179/10
@@ -622,7 +622,7 @@
         RecordEvents(S, @replace_with_a_path);
     end
 
-    @cell "Volume slider" [heatmap, contour, transform] begin
+    @cell "Volume slider" [heatmap, contour, transform, "3d"] begin
         using Observables
         scene3d = Scene()
         rs = LinRange.(0, (6, 4, 10), 150)
@@ -777,4 +777,7 @@ end
 #     occursin("RecordEvents", MakieGallery.example2source(x))
 # end
 #
-# record_example("Add and change points")
+#
+# for elem in interactive
+#     record_example(elem)
+# end

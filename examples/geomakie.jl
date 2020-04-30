@@ -2,7 +2,7 @@
 
     using GeoMakie
 
-    @cell "Geographical axes" [geoaxis, projection] begin
+    @cell "Geographical axes" [geoaxis, projection, "2d"] begin
 
         projections = [
             Projection("+proj=longlat") => "Standard lon-lat",
