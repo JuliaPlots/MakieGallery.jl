@@ -491,6 +491,7 @@ end
     @cell "Ellipse markers and arrows" [layout, "2d"] begin
 
         # here we plot some grouped coordinates, find their mean and variance which
+        # we plot as ellipses, plot their actual means, and some additional details.
 
 
         using DataFrames, Distributions, Colors
