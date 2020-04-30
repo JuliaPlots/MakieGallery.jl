@@ -493,13 +493,14 @@ end
         # here we plot some grouped coordinates, find their mean and variance which
         # we plot as ellipses, plot their actual means, and some additional details.
 
+
         using DataFrames, Distributions, Colors
         using MakieLayout
         import AbstractPlotting:px
 
-        # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of
+        # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of 
         # the groups are distributed equally around the unit circle. The coordinates
-        # are drawn from a normal distribution (with standard deviation σ).
+        # are drawn from a normal distribution (with standard deviation σ). 
         ngrp = 4
         groups = Symbol.(Iterators.take('a':'z', ngrp))
         n = 5
@@ -516,7 +517,7 @@ end
         # assign colors to each group
         colors = Dict(zip(groups, distinguishable_colors(ngrp, [colorant"white", colorant"black"], dropseed = true)))
 
-        # calculate the mean of each group, and the FWHM of a Gaussian fit to the
+        # calculate the mean of each group, and the FWHM of a Gaussian fit to the 
         # data. We later use the mean and FWHM to plot ellipses.
         ellipses = by(df, :group) do g
             n = length(g.x)
@@ -539,7 +540,7 @@ end
         # darken a color
         darken(c, p = 0.5) = weighted_color_mean(p, c, colorant"black")
 
-        scene, layout = layoutscene(0, fontsize = 10, font = "arial", resolution = (500,400));
+        scene, layout = layoutscene(0, fontsize = 10, resolution = (500,400));
 
         ax = layout[1,1] = LAxis(scene,
                                  xlabel = "X (cm)",
@@ -562,6 +563,7 @@ end
         for g in groupby(df, :group)
             scatter!(ax, g.x, color = RGBA(colors[g.group[1]], 0.75), marker = '●', markersize = 5px)
         end
+    
         # Here, we manually construct a list of legend entries to be provided to the
         # LLegend constructor. This allows us a larger degree of control over how
         # the legend looks.
