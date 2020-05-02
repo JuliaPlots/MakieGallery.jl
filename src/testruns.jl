@@ -192,9 +192,10 @@ function load_test_database()
     # Maybe related to the axis changes, will investigate later
     filter!(database) do entry
         !("diffeq" in entry.tags) &&
-        !(entry.unique_name in (:cobweb_plot, :analysis, :colormap_collection, :lots_of_heatmaps, :interaction_with_mouse, :normals_of_a_cat)) &&
+        !(entry.unique_name in (:inline_legend, :cobweb_plot, :analysis, :colormap_collection, :lots_of_heatmaps, :interaction_with_mouse, :normals_of_a_cat)) &&
         !(entry.title in slow_examples) &&
-        !("download" in entry.tags)
+        !("download" in entry.tags) &&
+        ("Multi-group legends" != entry.title)
      end
      return database
 end
