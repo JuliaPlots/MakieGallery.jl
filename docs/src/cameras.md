@@ -34,10 +34,10 @@ In addition, the camera can be configured by setting the fields of `cam = camera
 
 The other fields control camera positioning, and the camera needs to be updated (with [`update_cam!`](@ref)) after changing these:
 
-`lookat`: The camera is directed at this point.
-`eyeposition`: The camera is at this point.
-`upvector`: The camera up direction follows this vector (normalized internally).
-`fov`: Field of view of the camera (not used for zooming internally).
+- `lookat`: The camera is directed at this point.
+- `eyeposition`: The camera is at this point.
+- `upvector`: The camera's "up" direction follows this vector (normalized internally).
+- `fov`: The field of view of the camera (not used for zooming internally).
 
 As an example, to set the rotation speed of the camera, simply execute `cam.rotationspeed[] = 0.05`.
 
