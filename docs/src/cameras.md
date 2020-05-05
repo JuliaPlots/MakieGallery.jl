@@ -24,15 +24,8 @@ rotate_cam!
 zoom!
 ```
 
-## 3D Camera
 
-To force a plot to be visualized in 3D, you can set the limits to have a nonzero \(z\)-axis interval, or ensure that a 3D camera type is used.
-For example, you could pass the keyword argument `limits = Rect([0,0,0],[1,1,1])`, or `camera = cam3d!`.
-
-You can use the camera given by `campixel!` (also called a pixel camera), to create a plot which looks like a 2D plot from the user perspective (it generates a subscene with an orthographic view, aligned to pixel space).
-To ensure that the camera's view is not modified, you can pass the attribute `raw = true`.
-
-The camera can be configured by setting the fields of `cam = cameracontrols(scene)`:
+In addition, the camera can be configured by setting the fields of `cam = cameracontrols(scene)`:
 
 - `pan_button`: The mouse button used for panning.
 - `rotate_button`: The mouse button used for rotating the camera.
@@ -47,6 +40,14 @@ The other fields control camera positioning, and the camera needs to be updated 
 `fov`: Field of view of the camera (not used for zooming internally).
 
 As an example, to set the rotation speed of the camera, simply execute `cam.rotationspeed[] = 0.05`.
+
+## 3D Camera
+
+To force a plot to be visualized in 3D, you can set the limits to have a nonzero \(z\)-axis interval, or ensure that a 3D camera type is used.
+For example, you could pass the keyword argument `limits = Rect([0,0,0],[1,1,1])`, or `camera = cam3d!`.
+
+You can use the camera given by `campixel!` (also called a pixel camera), to create a plot which looks like a 2D plot from the user perspective (it generates a subscene with an orthographic view, aligned to pixel space).
+To ensure that the camera's view is not modified, you can pass the attribute `raw = true`.
 
 ## Updating the camera
 
