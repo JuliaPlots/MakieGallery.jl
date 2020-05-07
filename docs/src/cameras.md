@@ -24,6 +24,31 @@ rotate_cam!
 zoom!
 ```
 
+
+In addition, the camera can be configured by setting the fields of `cam = cameracontrols(scene)`:
+
+- `pan_button`: The mouse button used for panning.
+- `rotate_button`: The mouse button used for rotating the camera.
+- `translationspeed`: This parameter allows to customize the panning speed.
+- `rotationspeed`: This parameter allows to customize the camera rotation speed
+
+The other fields control camera positioning, and the camera needs to be updated (with [`update_cam!`](@ref)) after changing these:
+
+- `lookat`: The camera is directed at this point.
+- `eyeposition`: The camera is at this point.
+- `upvector`: The camera's "up" direction follows this vector (normalized internally).
+- `fov`: The field of view of the camera (not used for zooming internally).
+
+As an example, to set the rotation speed of the camera, simply execute `cam.rotationspeed[] = 0.05`.
+
+## 3D Camera
+
+To force a plot to be visualized in 3D, you can set the limits to have a nonzero \(z\)-axis interval, or ensure that a 3D camera type is used.
+For example, you could pass the keyword argument `limits = Rect([0,0,0],[1,1,1])`, or `camera = cam3d!`.
+
+You can use the camera given by `campixel!` (also called a pixel camera), to create a plot which looks like a 2D plot from the user perspective (it generates a subscene with an orthographic view, aligned to pixel space).
+To ensure that the camera's view is not modified, you can pass the attribute `raw = true`.
+
 ## Updating the camera
 
 Often, when modifying the Scene, the camera can get "out of sync" with the Scene.  To fix this, you can call the `update_cam!` function on the Scene:
