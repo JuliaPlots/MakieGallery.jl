@@ -27,82 +27,13 @@ using MakieGallery: eval_examples, generate_thumbnail, master_url,
 ################################################################################
 
 
-"""
-    isPR()::Bool
-
-Detects whether the commit being built is in a pull request or not.
-"""
-function isPR()::Bool
-    if haskey(ENV, "CI")
-        if haskey(ENV, "TRAVIS")
-            @info "Travis CI detected"
-            return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
-        end
-    end
-    if haskey(ENV, "GITHUB_TOKEN")
-        @info "Github Actions detected"
-        return !occursin("master", get(ENV, "GITHUB_REF", "nothing"))
-    end
-    return false
-end
-
-function isGHActions(user::GitHub.Owner)
-    return (
-        user.login    == "github-actions[bot]" &&
-        user.id       == 41898282 &&
-        user.url      == HTTP.URI("https://api.github.com/users/github-actions%5Bbot%5D") &&
-        user.html_url == HTTP.URI("https://github.com/apps/github-actions")
-    )
-end
-
-function hasGHAPRComment(cs::Vector{GitHub.Comment}, msg::AbstractString)
-    return any(cs) do comment
-        isGHActions(comment.user) && cs[1].body == msg
-    end
-end
-
-function hasGHAPRComment(repo::AbstractString, pr::Int, msg::AbstractString)
-    return hasGHAPRComment(
-        GitHub.comments(repo, pr, :pr)[1],
-        msg
-    )
-end
-
-function getPR(repo, commit_sha; ind = 1)
-    r = HTTP.get(
-            "https://api.github.com/repos/$repo/commits/$commit_sha/pulls",
-            [
-                # necessary because this is a preview feature
-                "Accept" => "application/vnd.github.groot-preview+json",
-                # Github needs a User-Agent
-                "User-Agent" => "GitHub-jl"
-            ]
-        )
-
-    url = JSON.parse(String(r.body))[ind]["html_url"] # get the URL of the PR
-    return splitpath(url)[end] # get the PR number
-end
-
-# if hasGHAPRComment(repo, PR, msg)
-#     @info "No previous comment detected - commenting with doc URL!"
-#     cmd = `curl -X POST`
-#     push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
-#     push!(cmd.exec, "-H", "Content-Type: application/json")
-#     push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
-#     push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
-#     try
-#         success(cmd)
-#     catch e
-#         @warn "Curl errored when pushing comment!" exception=e
-#     end
-# end
-
-
 ################################################################################
 #                                    Setup                                     #
 ################################################################################
 
 MakieGallery.current_ref_version[] = "master"
+
+const GENDIR = joinpath(@__DIR__, "src", "generated")
 
 empty!(MakieGallery.plotting_backends)
 append!(MakieGallery.plotting_backends, ["Makie"])
