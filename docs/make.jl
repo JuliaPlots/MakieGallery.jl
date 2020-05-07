@@ -46,6 +46,8 @@ buildpath = joinpath(docspath, "build")
 genpath   = joinpath(docspath, "generated")
 mediapath = download_reference()
 
+mkpath(genpath)
+
 ################################################################################
 #                          Syntax highlighting theme                           #
 ################################################################################
@@ -267,7 +269,7 @@ makedocs(
             "convenience.md",
             "signatures.md",
             "plot-attributes.md",
-            "colors.md",
+            "generated/colors.md",
             "theming.md",
             "cameras.md",
             "recipes.md",
