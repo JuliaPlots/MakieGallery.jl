@@ -33,18 +33,17 @@ using MakieGallery: eval_examples, generate_thumbnail, master_url,
 
 MakieGallery.current_ref_version[] = "master"
 
-const GENDIR = joinpath(@__DIR__, "src", "generated")
-
 empty!(MakieGallery.plotting_backends)
 append!(MakieGallery.plotting_backends, ["Makie"])
 
 cd(@__DIR__)
 database = MakieGallery.load_database()
 
-pathroot = normpath(@__DIR__, "..")
-docspath = joinpath(pathroot, "docs")
-srcpath = joinpath(docspath, "src")
+pathroot  = normpath(@__DIR__, "..")
+docspath  = joinpath(pathroot, "docs")
+srcpath   = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
+genpath   = joinpath(docspath, "generated")
 mediapath = download_reference()
 
 ################################################################################
@@ -190,6 +189,18 @@ open(path, "w") do io
     println(io, "See [Plot attributes](@ref) for the available plot attributes.")
 end
 
+########################################
+#          Colormap reference          #
+########################################
+
+@info "Generating colormap reference"
+
+MakieGallery.generate_colorschemes_markdown(; GENDIR = genpath)
+
+########################################
+#              Type trees              #
+########################################
+
 @info "Generating type trees"
 open(joinpath(srcpath, "typetrees.md"), "w") do f
 
@@ -232,7 +243,7 @@ makedocs(
         "scenes.md",
         "signatures.md",
         "plot-attributes.md",
-        "colors.md",
+        "generated/colors.md",
         "theming.md",
         "cameras.md",
         "backends.md",

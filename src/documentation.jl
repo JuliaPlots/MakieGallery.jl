@@ -1,4 +1,8 @@
-using AbstractPlotting.PlotUtils
+using AbstractPlotting.PlotUtils, AbstractPlotting.Colors
+
+################################################################################
+#                              Colormap reference                              #
+################################################################################
 
 
 function colors_svg(cs, w, h)
@@ -50,9 +54,9 @@ end
 
 
 function generate_colorschemes_markdown(; GENDIR = joinpath(dirname(@__DIR__), "docs", "src", "generated"))
-    md = open(joinpath(GENDIR, "colorschemes.md"), "w")
+    md = open(joinpath(GENDIR, "colors.md"), "w")
 
-    for line in readlines(normpath(@__DIR__, "..", "docs", "src", "colorschemes.md"))
+    for line in readlines(normpath(@__DIR__, "..", "docs", "src", "colors.md"))
         write(md, line)
         write(md, "\n")
     end
@@ -60,7 +64,7 @@ function generate_colorschemes_markdown(; GENDIR = joinpath(dirname(@__DIR__), "
     write(md, """
     ## misc
     These colorschemes are not defined or provide different colors in ColorSchemes.jl
-    They are kept for compatibility with Plots behavior before v1.1.0.
+    They are kept for compatibility with the old behaviour of Makie, before v0.10.
     """)
     write(md, "```@raw html\n")
     write(
