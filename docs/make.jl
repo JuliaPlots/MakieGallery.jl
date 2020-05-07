@@ -43,7 +43,7 @@ pathroot  = normpath(@__DIR__, "..")
 docspath  = joinpath(pathroot, "docs")
 srcpath   = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
-genpath   = joinpath(docspath, "generated")
+genpath   = joinpath(srcpath, "generated")
 mediapath = download_reference()
 
 mkpath(genpath)
