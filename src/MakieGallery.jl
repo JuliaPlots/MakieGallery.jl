@@ -18,6 +18,7 @@ using FixedPointNumbers, Colors, ColorTypes
 using SyntaxTree # for prettification of code, removing linenumbernodes
 
 include("documenter_extension.jl")
+include("documentation.jl")
 include("database.jl")
 include("io.jl")
 include("gallery.jl")

@@ -13,6 +13,7 @@ signatures.md
 typetrees.md
 src/typetrees.md
 atomics_examples/
+src/generated
 
 # Build artifacts
 *.png

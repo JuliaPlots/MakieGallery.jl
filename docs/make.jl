@@ -27,77 +27,6 @@ using MakieGallery: eval_examples, generate_thumbnail, master_url,
 ################################################################################
 
 
-"""
-    isPR()::Bool
-
-Detects whether the commit being built is in a pull request or not.
-"""
-function isPR()::Bool
-    if haskey(ENV, "CI")
-        if haskey(ENV, "TRAVIS")
-            @info "Travis CI detected"
-            return get(ENV, "TRAVIS_PULL_REQUEST", "false") != "false"
-        end
-    end
-    if haskey(ENV, "GITHUB_TOKEN")
-        @info "Github Actions detected"
-        return !occursin("master", get(ENV, "GITHUB_REF", "nothing"))
-    end
-    return false
-end
-
-function isGHActions(user::GitHub.Owner)
-    return (
-        user.login    == "github-actions[bot]" &&
-        user.id       == 41898282 &&
-        user.url      == HTTP.URI("https://api.github.com/users/github-actions%5Bbot%5D") &&
-        user.html_url == HTTP.URI("https://github.com/apps/github-actions")
-    )
-end
-
-function hasGHAPRComment(cs::Vector{GitHub.Comment}, msg::AbstractString)
-    return any(cs) do comment
-        isGHActions(comment.user) && cs[1].body == msg
-    end
-end
-
-function hasGHAPRComment(repo::AbstractString, pr::Int, msg::AbstractString)
-    return hasGHAPRComment(
-        GitHub.comments(repo, pr, :pr)[1],
-        msg
-    )
-end
-
-function getPR(repo, commit_sha; ind = 1)
-    r = HTTP.get(
-            "https://api.github.com/repos/$repo/commits/$commit_sha/pulls",
-            [
-                # necessary because this is a preview feature
-                "Accept" => "application/vnd.github.groot-preview+json",
-                # Github needs a User-Agent
-                "User-Agent" => "GitHub-jl"
-            ]
-        )
-
-    url = JSON.parse(String(r.body))[ind]["html_url"] # get the URL of the PR
-    return splitpath(url)[end] # get the PR number
-end
-
-# if hasGHAPRComment(repo, PR, msg)
-#     @info "No previous comment detected - commenting with doc URL!"
-#     cmd = `curl -X POST`
-#     push!(cmd.exec, "-H", "Authorization: token $(ENV["GITHUB_TOKEN"])")
-#     push!(cmd.exec, "-H", "Content-Type: application/json")
-#     push!(cmd.exec, "-d", "{\"body\":\"$(msg)\"}")
-#     push!(cmd.exec, "https://api.github.com/repos/JuliaPlots/MakieGallery.jl/issues/$(PR)/comments")
-#     try
-#         success(cmd)
-#     catch e
-#         @warn "Curl errored when pushing comment!" exception=e
-#     end
-# end
-
-
 ################################################################################
 #                                    Setup                                     #
 ################################################################################
@@ -110,11 +39,14 @@ append!(MakieGallery.plotting_backends, ["Makie"])
 cd(@__DIR__)
 database = MakieGallery.load_database()
 
-pathroot = normpath(@__DIR__, "..")
-docspath = joinpath(pathroot, "docs")
-srcpath = joinpath(docspath, "src")
+pathroot  = normpath(@__DIR__, "..")
+docspath  = joinpath(pathroot, "docs")
+srcpath   = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
+genpath   = joinpath(srcpath, "generated")
 mediapath = download_reference()
+
+mkpath(genpath)
 
 ################################################################################
 #                          Syntax highlighting theme                           #
@@ -259,6 +191,18 @@ open(path, "w") do io
     println(io, "See [Plot attributes](@ref) for the available plot attributes.")
 end
 
+########################################
+#          Colormap reference          #
+########################################
+
+@info "Generating colormap reference"
+
+MakieGallery.generate_colorschemes_markdown(; GENDIR = genpath)
+
+########################################
+#              Type trees              #
+########################################
+
 @info "Generating type trees"
 open(joinpath(srcpath, "typetrees.md"), "w") do f
 
@@ -301,7 +245,7 @@ makedocs(
         "scenes.md",
         "signatures.md",
         "plot-attributes.md",
-        "colors.md",
+        "generated/colors.md",
         "theming.md",
         "cameras.md",
         "backends.md",
@@ -325,7 +269,7 @@ makedocs(
             "convenience.md",
             "signatures.md",
             "plot-attributes.md",
-            "colors.md",
+            "generated/colors.md",
             "theming.md",
             "cameras.md",
             "recipes.md",
