@@ -29,20 +29,21 @@ end
 function generate_colorschemes_table(ks)
     extra_dir = get(ENV, "CI", "false") == "true" ? "../" : ""
     html = "<head><link type=\"text/css\" rel=\"stylesheet\" href=\"$(extra_dir)../assets/tables.css\" /></head><body><table><tr class=\"headerrow\">"
-    for header in ["NAME", "cgrad(NAME)"]
+    for header in ["NAME", "Categorical variant", "Continuous variant"]
         html *= "<th>$header</th>"
     end
     html *= "</tr>"
-    w, h = 60, 5
+    w, h = 70, 5
     for k in ks
-#         p = palette(k)
-        cg = cgrad(k)[range(0, 1, length = 100)]
-#         cp = length(p) <= 100 ? color_list(p) : cg
+        grad = cgrad(k)
+        p = color_list(grad)
+        cg = grad[range(0, 1, length = 100)]
+        cp = length(p) <= 100 ? p : cg
         # cp7 = color_list(palette(k, 7))
 
         html *= "<tr><td class=\"attr\">:$k</td><td>"
-#         html *= colors_svg(cp, w, h)
-#         html *= "</td><td>"
+        html *= colors_svg(cp, w, h)
+        html *= "</td><td>"
         html *= colors_svg(cg, w, h)
         # html *= "</td><td>"
         # html *= colors_svg(cp7, 35, h)
