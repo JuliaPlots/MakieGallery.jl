@@ -124,7 +124,7 @@ for i in 2:20
     recordframe!(vs)
 end
 sc.plots[end][1] = [Point2f0(0), Point2f0(1)]
-text
+recordframe!(io)
 ```
 
 Now, the VideoStream has some content in it.  We can save it to file, using Makie's `save` functionality:
