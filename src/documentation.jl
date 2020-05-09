@@ -33,7 +33,7 @@ function generate_colorschemes_table(ks)
         html *= "<th>$header</th>"
     end
     html *= "</tr>"
-    w, h = 70, 7
+    w, h = 70, 5
     for k in ks
         grad = cgrad(k)
         p = color_list(grad)
