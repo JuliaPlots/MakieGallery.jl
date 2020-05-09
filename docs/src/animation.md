@@ -130,5 +130,5 @@ recordframe!(io)
 Now, the VideoStream has some content in it.  We can save it to file, using Makie's `save` functionality:
 
 ```julia
-save("test.mp4", vs; kwargs...)
+save("test.mp4", vs; compression = 30) # smaller video with lower quality
 ```
