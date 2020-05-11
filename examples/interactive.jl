@@ -57,10 +57,7 @@
     end
 
     @cell "Mouse hover with MakieLayout" [interactive] begin
-        import GLMakie
-        import GLMakie: AbstractPlotting
-        import .AbstractPlotting: lift, Point2f0
-        import .AbstractPlotting: Scene, mouseposition
+        using AbstractPlotting
         import MakieLayout
         import MakieLayout: LAxis, GridLayout
         scene, layout = let nrows=1, ncols=1
@@ -79,7 +76,7 @@
             return r
         end
         AbstractPlotting.scatter!(laxis, mousemarker; markersize=3)
-        display(scene)
+        scene
 
         # Do not execute beyond this point!
 
