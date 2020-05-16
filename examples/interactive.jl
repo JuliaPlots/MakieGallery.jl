@@ -746,6 +746,50 @@ end
         # Do not execute beyond this point!
         RecordEvents(scene, @replace_with_a_path)
     end
+
+    @cell "Ambient Occlusion" [SSAO, shading, interaction] begin
+        using AbstractPlotting
+
+        # SSAO (Screen Space Ambient Occlusion) has a couple of per-scene
+        # attributes.
+        # - `radius` sets the range of SSAO. You may want to scale this up or
+        #   down depending on the limits of your coordinate system
+        # - `bias` sets the minimum difference in depth required for a pixel to
+        #   be occluded. Increasing this will typically make the occlusion
+        #   effect stronger.
+        # - `blur` sets the range of the blur applied to the occlusion texture.
+        #   The texture contains a (random) pattern, which is washed out by
+        #   blurring. Small `blur` will be faster, sharper and more patterend.
+        #   Large `blur` will be slower and smoother. Typically `blur = 2` is
+        #   a good compromise.
+        s1, radius = textslider(0.0f0:0.1f0:2f0, "Radius", start = 0.2f0)
+        s2, bias = textslider(0f0:0.005f0:0.1f0, "Bias", start = 0.015f0)
+        s3, blur = textslider(Int32(0):Int32(1):Int32(5), "Blur", start = Int32(2))
+        ssao_attrib = Attributes(radius=radius, bias=bias, blur=blur)
+
+        floor_pos = [
+            Point3f0(x + 0.05rand(), y + 0.05rand(), 0.08rand())
+            for x in 0.05:0.1:1.0 for y in 0.05:0.1:1.0
+        ]
+        tile = Rect3D(Point3f0(-0.8, -0.8, -0.3), Vec3f0(1.6, 1.6, 0.6))
+
+        sphere_pos = 0.8rand(Point3f0, 50) .+ [Point3f0(0.1, 0.1, 0.2)]
+        sphere_colors = rand(RGBf0, length(sphere_pos))
+        sphere = Sphere(Point3f0(0), 1f0)
+
+        scene1 = Scene(SSAO=ssao_attrib)
+        meshscatter!(scene1, floor_pos, marker=tile, color=:lightgray, ssao=true, shading=false)
+        meshscatter!(scene1, sphere_pos, marker=sphere, color=sphere_colors, ssao=true)
+
+        scene2 = Scene()
+        meshscatter!(scene2, floor_pos, marker=tile, color=:lightgray, ssao=false, shading=false)
+        meshscatter!(scene2, sphere_pos, marker=sphere, color=sphere_colors, ssao=false)
+
+        scene = Scene(resolution=(900, 500))
+        hbox(vbox(s1, s2, s3), vbox(scene1, scene2), parent=scene)
+        # Do not execute beyond this point!
+        RecordEvents(scene, @replace_with_a_path)
+    end
 end
 
 
