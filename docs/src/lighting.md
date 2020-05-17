@@ -1,12 +1,16 @@
 # Lighting
 
-For 3-D scenes, GLMakie offers several attributes to control the lighting of the scene.  These are set per Scene.
+For 3-D scenes, GLMakie offers several attributes to control the lighting of the scene.  These are set per plot.
 
-- `ambient::Vec3f0`: The intensity of the ambient lighting.  Each element of the vector represents the intensity of color in R, G or B respectively.
-- `diffuse::Vec3f0`: The intensity of the diffuse lighting.  Each element of the vector represents the intensity of color in R, G or B respectively.
-- `specular::Vec3f0`: The intensity of the specular lighting.  Each element of the vector represents the intensity of color in R, G or B respectively.
-- `shininess::Vec3f0`: The intensity of the shiny lighting.  Each element of the vector represents the intensity of color in R, G or B respectively.
+- `ambient::Vec3f0`: Objects should never be completely dark; we use an ambient light to simulate background lighting, and give the object some color.  Each element of the vector represents the intensity of color in R, G or B respectively.
+- `diffuse::Vec3f0`: Simulates the directional impact which the light source has on the plot object. This is the most visually significant component of the lighting model; the more a part of an object faces the light source, the brighter it becomes.  Each element of the vector represents the intensity of color in R, G or B respectively.
+- `specular::Vec3f0`: Simulates the bright spot of a light that appears on shiny objects. Specular highlights are more inclined to the color of the light than the color of the object..  Each element of the vector represents the intensity of color in R, G or B respectively.
+
+
+- `shininess::Vec3f0`: Controls the shininess of the object.  Each element of the vector represents the intensity of color in R, G or B respectively.
 - `lightposition::Vec3f0`: The location of the main light source; by default, the light source is at the location of the camera.
+
+You can find more information on how these were implemented [here](https://learnopengl.com/Lighting/Basic-Lighting).
 
 ## SSAO
 
