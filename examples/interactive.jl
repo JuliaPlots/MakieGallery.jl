@@ -757,11 +757,11 @@ end
         # - `bias` sets the minimum difference in depth required for a pixel to
         #   be occluded. Increasing this will typically make the occlusion
         #   effect stronger.
-        # - `blur` sets the range of the blur applied to the occlusion texture.
-        #   The texture contains a (random) pattern, which is washed out by
-        #   blurring. Small `blur` will be faster, sharper and more patterend.
-        #   Large `blur` will be slower and smoother. Typically `blur = 2` is
-        #   a good compromise.
+        # - `blur` sets the range (in pixels) of the blur applied to the
+        #   occlusion texture. The texture contains a (random) pattern, which is
+        #   washed out by blurring. Small `blur` will be faster, sharper and
+        #   more patterned. Large `blur` will be slower and smoother. Typically
+        #   `blur = 2` is a good compromise.
         s1, radius = textslider(0.0f0:0.1f0:2f0, "Radius", start = 0.2f0)
         s2, bias = textslider(0f0:0.005f0:0.1f0, "Bias", start = 0.015f0)
         s3, blur = textslider(Int32(0):Int32(1):Int32(5), "Blur", start = Int32(2))
