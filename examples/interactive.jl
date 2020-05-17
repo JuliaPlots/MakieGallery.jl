@@ -749,35 +749,3 @@ end
 end
 
 
-function record_example_events()
-    eval_examples(:record_events, :scatter, :slider, :interactive, outputfile = event_path) do example, value
-        record_events(value.scene, value.path) do
-            wait(value.scene)
-        end
-    end
-end
-
-function record_example(title::String)
-    idx = findfirst(x-> x.title == title, database)
-    record_example(database[idx])
-end
-
-function record_example(example)
-    set_theme!(resolution = (500, 500))
-    value = MakieGallery.eval_example(example, outputfile = MakieGallery.event_path)
-    last = AbstractPlotting.use_display[]
-    AbstractPlotting.inline!(false)
-    record_events(value.scene, value.path) do
-        wait(value.scene)
-    end
-    AbstractPlotting.use_display[] = last
-end
-
-# interactive = filter(database) do x
-#     occursin("RecordEvents", MakieGallery.example2source(x))
-# end
-#
-#
-# for elem in interactive
-#     record_example(elem)
-# end
