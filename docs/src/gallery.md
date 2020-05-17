@@ -41,4 +41,4 @@ If you want to add a single example, it's probably best to find a file it fits w
 If you want to add multiple examples, you may want to create a block in the appropriate file.
 
 Adding interactive examples will mean you need to create a serialized file which stores the input events.
-This can be done using MakieGallery. First, load the database of examples using `MakieGallery.load_database()`. Next, call `MakieGallery.record_example(title::String)` (where title is the string following `@cell` in the example), wait for the scene to appear and interact with it. All interactions will be recorded while the scene is open and, after closing, saved to an appropriate file.
+This can be done using MakieGallery. First, load the database of examples using `MakieGallery.load_database()`. Next, call `MakieGallery.record_example(title::String)` (where title is the string following `\@cell` in the example), wait for the scene to appear and interact with it. All interactions will be recorded while the scene is open and, after closing, saved to an appropriate file.
