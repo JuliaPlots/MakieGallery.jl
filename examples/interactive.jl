@@ -748,8 +748,6 @@ end
     end
 
     @cell "Ambient Occlusion" [SSAO, shading, interaction] begin
-        using AbstractPlotting
-
         # SSAO (Screen Space Ambient Occlusion) has a couple of per-scene
         # attributes.
         # - `radius` sets the range of SSAO. You may want to scale this up or
