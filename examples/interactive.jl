@@ -56,6 +56,33 @@
         RecordEvents(final, @replace_with_a_path)
     end
 
+    @cell "Mouse hover with MakieLayout" [interactive] begin
+        using AbstractPlotting
+        import MakieLayout
+        import MakieLayout: LAxis, GridLayout
+        scene, layout = let nrows=1, ncols=1
+            scene = Scene(; camera = AbstractPlotting.campixel!,
+                resolution = (800, 800),
+                backgroundcolor = :white)
+            gl = GridLayout(scene, nrows, ncols, alignmode = MakieLayout.Outside(30))
+            scene, gl
+        end
+        layout[1,1] = laxis = LAxis(scene, title="workspace")
+        mouseposition(laxis.scene)
+        mousemarker = lift(laxis.scene.events.mouseposition) do mp
+            area = pixelarea(laxis.scene)[]
+            mp = Point2f0(mp) .- minimum(area)
+            r = [Point2f0(AbstractPlotting.to_world(laxis.scene, mp))]
+            return r
+        end
+        AbstractPlotting.scatter!(laxis, mousemarker; markersize=3)
+        scene
+
+        # Do not execute beyond this point!
+
+        RecordEvents(scene, @replace_with_a_path)
+    end
+
     @cell "Mouse Picking" [scatter, heatmap, interactive] begin
         img = rand(100, 100)
         scene = Scene(resolution = (500, 500))
