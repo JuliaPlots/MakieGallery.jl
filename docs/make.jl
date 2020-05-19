@@ -270,6 +270,7 @@ makedocs(
             "signatures.md",
             "plot-attributes.md",
             "generated/colors.md",
+            "lighting.md",
             "theming.md",
             "cameras.md",
             "recipes.md",
