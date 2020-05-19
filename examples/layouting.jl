@@ -498,9 +498,9 @@ end
         using MakieLayout
         import AbstractPlotting:px
 
-        # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of 
+        # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of
         # the groups are distributed equally around the unit circle. The coordinates
-        # are drawn from a normal distribution (with standard deviation σ). 
+        # are drawn from a normal distribution (with standard deviation σ).
         ngrp = 4
         groups = Symbol.(Iterators.take('a':'z', ngrp))
         n = 5
@@ -517,9 +517,9 @@ end
         # assign colors to each group
         colors = Dict(zip(groups, distinguishable_colors(ngrp, [colorant"white", colorant"black"], dropseed = true)))
 
-        # calculate the mean of each group, and the FWHM of a Gaussian fit to the 
+        # calculate the mean of each group, and the FWHM of a Gaussian fit to the
         # data. We later use the mean and FWHM to plot ellipses.
-        ellipses = by(df, :group) do g
+        function gen_ellipses(g)
             n = length(g.x)
             X = Array{Float64}(undef, 2, n)
             for i in 1:n
@@ -530,6 +530,8 @@ end
             ellipse = (origin = Point2f0(mean(dis)), radius = Vec2f0(radii))
             (ellipse = ellipse, )
         end
+
+        ellipses = combine(groupby(d, cols), gen_ellipses)
 
         # some helper functions
 
@@ -563,7 +565,7 @@ end
         for g in groupby(df, :group)
             scatter!(ax, g.x, color = RGBA(colors[g.group[1]], 0.75), marker = '●', markersize = 5px)
         end
-    
+
         # Here, we manually construct a list of legend entries to be provided to the
         # LLegend constructor. This allows us a larger degree of control over how
         # the legend looks.
