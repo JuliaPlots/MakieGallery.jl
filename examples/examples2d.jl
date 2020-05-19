@@ -690,27 +690,27 @@ end
 
     end
 
-    @cell "Colormap collection" [colormaps, colors] begin
-
-        showlibrary(:Plots)
-
-        @substep
-
-        showlibrary(:cmocean)
-
-        @substep
-
-        showlibrary(:colorcet)
-
-        @substep
-
-        showlibrary(:colorbrewer)
-
-        @substep
-
-        showlibrary(:misc)
-
-    end
+    # @cell "Colormap collection" [colormaps, colors] begin
+    #
+    #     AbstractPlotting.showlibrary(:Plots)
+    #
+    #     @substep
+    #
+    #     AbstractPlotting.showlibrary(:cmocean)
+    #
+    #     @substep
+    #
+    #     AbstractPlotting.showlibrary(:colorcet)
+    #
+    #     @substep
+    #
+    #     AbstractPlotting.showlibrary(:colorbrewer)
+    #
+    #     @substep
+    #
+    #     AbstractPlotting.showlibrary(:misc)
+    #
+    # end
     @cell "streamplot" [arrows, lines, streamplot] begin
         struct FitzhughNagumo{T}
             ϵ::T

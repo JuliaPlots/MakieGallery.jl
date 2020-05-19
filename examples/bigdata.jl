@@ -69,7 +69,7 @@
         temperature = load_dataset("tmax")
 
         # calculate geometries
-        m = uv_normal_mesh(Sphere(Point3f0(0), 1f0), nvertices=200)
+        m = uv_normal_mesh(Tesselation(Sphere(Point3f0(0), 1f0), 200))
 
         points = GeometryBasics.coordinates(m)
         GeometryBasics.pointmeta(m, color=rand(length(points)))

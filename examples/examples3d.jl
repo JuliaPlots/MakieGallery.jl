@@ -22,7 +22,7 @@
             @warn("Downloadinging the earth failed. Using random image, so this test will fail! (error: $e)")
             rand(RGBAf0, 100, 100) # don't error test when e.g. offline
         end
-        m = uv_mesh(Sphere(Point3f0(0), 1f0); nvertices=60)
+        m = uv_mesh(Tesselation(Sphere(Point3f0(0), 1f0), 60))
         mesh(m, color=earth, shading = false)
     end
 
