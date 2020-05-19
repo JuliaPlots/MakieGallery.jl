@@ -2,8 +2,8 @@
 
 `MakieGallery.jl` is the repo which hosts these docs, as well as the source code for the examples in the Example Gallery.
 
-Docs are built using [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl), and are located in the `docs` folder.  
-The raw markdown files from which documentation is generated are located in `docs/src`, but not all the pages are there; some, like [`Plotting functions overview`](@ref), are generated during the documentation build.  
+Docs are built using [Documenter.jl](https://github.com/JuliaDocs/Documenter.jl), and are located in the `docs` folder.
+The raw markdown files from which documentation is generated are located in `docs/src`, but not all the pages are there; some, like [`Plotting functions overview`](@ref), are generated during the documentation build.
 Those markdown pages have a `src-` prefix.
 
 ## Tests
@@ -40,4 +40,5 @@ If you want to add a single example, it's probably best to find a file it fits w
 
 If you want to add multiple examples, you may want to create a block in the appropriate file.
 
-Adding interactive examples will mean you need to create a serialized file which stores the input events; this can be done by using the `MakieGallery.record_example(title::String)` function, and interacting with (and then closing) the Scene.
+Adding interactive examples will mean you need to create a serialized file which stores the input events.
+This can be done using MakieGallery. First, load the database of examples using `MakieGallery.load_database()`. Next, call `MakieGallery.record_example(title::String)` (where title is the string following `@cell` in the example), wait for the scene to appear and interact with it. All interactions will be recorded while the scene is open and, after closing, saved to an appropriate file.
