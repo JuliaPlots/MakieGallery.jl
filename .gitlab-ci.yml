@@ -31,7 +31,7 @@ gallerytest:
     - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
     - glxinfo | grep 'version'
     - julia -e 'using InteractiveUtils; versioninfo()'
-    - julia --project -e 'using Pkg; pkg"add AbstractPlotting#master"; pkg"test"'
+    - julia --project -e 'using Pkg; pkg"add AbstractPlotting#master GLMakie#master"; pkg"test"'
 
   artifacts:
     when: always
