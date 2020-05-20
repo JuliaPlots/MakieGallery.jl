@@ -7,7 +7,7 @@ For 3-D scenes, GLMakie offers several attributes to control the lighting of the
 - `specular::Vec3f0`: Simulates the bright spot of a light that appears on shiny objects. Specular highlights are more inclined to the color of the light than the color of the object.  Each element of the vector represents the intensity of color in R, G or B respectively.
 
 
-- `shininess::Float32`: Controls the shininess of the object.   This value must be positive. 
+- `shininess::Float32`: Controls the shininess of the object.  Higher shininess reduces the size of the highlight, and makes it sharper.  This value must be positive. 
 - `lightposition::Vec3f0`: The location of the main light source; by default, the light source is at the location of the camera.
 
 You can find more information on how these were implemented [here](https://learnopengl.com/Lighting/Basic-Lighting).
