@@ -19,14 +19,13 @@ examples = MakieGallery.record_examples(test_record_path)
 
 @test length(examples) == length(database)
 
-
 printstyled("Running ", color = :green, bold = true)
 println("visual regression tests")
 
 MakieGallery.run_comparison(test_record_path, tested_diff_path)
 
-cd(test_record_path) do 
-  MakieGallery.generate_preview(test_record_path, "index.html")
-end
+# cd(test_record_path) do
+#   MakieGallery.generate_preview(test_record_path, "index.html")
+# end
 # MakieGallery.generate_thumbnails(test_record_path)
 # MakieGallery.gallery_from_recordings(test_record_path, joinpath(test_record_path, "index.html"))

@@ -195,7 +195,8 @@ function load_test_database()
         !(entry.unique_name in (:inline_legend, :cobweb_plot, :analysis, :colormap_collection, :lots_of_heatmaps, :interaction_with_mouse, :normals_of_a_cat)) &&
         !(entry.title in slow_examples) &&
         !("download" in entry.tags) &&
-        ("Multi-group legends" != entry.title)
+        ("Multi-group legends" != entry.title) &&
+        !("makielayout" in lowercase.(entry.tags))
      end
      return database
 end
