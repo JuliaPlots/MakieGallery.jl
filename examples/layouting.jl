@@ -35,7 +35,7 @@
     end
 end
 
-@block JuliusKrumbiegel ["layout", "2d"] begin
+@block JuliusKrumbiegel ["makielayout", "layout", "2d"] begin
     using MakieLayout
 
     @cell "Faceting" [faceting, grid] begin

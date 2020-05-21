@@ -30,4 +30,5 @@ GLMakie also implements [_screen-space ambient occlusion_](https://learnopengl.c
 ## Examples
 
 @example_database("Lighting")
+
 @example_database("Ambient Occlusion")
