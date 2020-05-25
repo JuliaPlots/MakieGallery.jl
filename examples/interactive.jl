@@ -488,10 +488,6 @@
             return [Point3f0(r*cos(x), r*sin(x), 0) for x in range(0, stop=2pi, length=steps)]
         end
 
-        function loadordownload(localfname, url)
-            return isfile(localfname) ? load(localfname) : load(download(url, localfname))
-        end
-
         # http://corysimon.github.io/articles/uniformdistn-on-sphere/
         function makestars(n)
             return map(1:n) do i
@@ -522,14 +518,10 @@
         end
 
         function makeobjects(scene)
-            earthfname = "bluemarble-2048.png"
-            earthurl = "https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/" * earthfname
-            earthbitmap = loadordownload(earthfname, earthurl)
+            earthbitmap = load(MakieGallery.assetpath("earth.png"))
             earth = mesh!(scene, Sphere(Point3f0(0), rearth_km*radius_mult), color=earthbitmap)[end]
 
-            moonfname = "phases.0001_print.jpg"
-            moonurl = "https://svs.gsfc.nasa.gov/vis/a000000/a004600/a004675/" * moonfname
-            moonbitmap = loadordownload(moonfname, moonurl)
+            moonbitmap = load(MakieGallery.assetpath("moon.png"))
             moon = mesh!(scene, Sphere(Point3f0(0), rmoon_km*radius_mult), color=moonbitmap)[end]
             translate!(moon, Vec3f0(0, dbetween_km, 0))
             orb = lines!(scene, orbit(dbetween_km), color=:gray)
@@ -816,5 +808,3 @@ end
         RecordEvents(scene, @replace_with_a_path)
     end
 end
-
-
