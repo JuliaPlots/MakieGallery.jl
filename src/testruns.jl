@@ -56,7 +56,7 @@ end
 is_image_file(path) = lowercase(splitext(path)[2]) in (".png", ".jpg", ".jpeg")
 
 function extract_frames(video, frame_folder)
-    path = joinpath(frame_folder, "frames%04d.jpg")
+    path = joinpath(frame_folder, "frames%04d.png")
     FFMPEG.ffmpeg_exe(`-loglevel quiet -i $video -y $path`)
 end
 
@@ -113,8 +113,8 @@ function run_comparison(
                 media = joinpath(folder, "media")
                 ref_folder = joinpath(reference, basename(folder), "media")
                 test_folder = joinpath(test_record_path, media)
-                ref_media = filter(x-> x != "thumb.jpg", sort(readdir(ref_folder)))
-                test_media = filter(x-> x != "thumb.jpg", sort(readdir(test_folder)))
+                ref_media = filter(x-> x != "thumb.png", sort(readdir(ref_folder)))
+                test_media = filter(x-> x != "thumb.png", sort(readdir(test_folder)))
                 @testset "$(basename(folder))" begin
                     if isempty(test_media)
                         @warn("recodings are missing for $folder")

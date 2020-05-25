@@ -15,8 +15,8 @@ end
 # and MakieGallery will take care of the rest.
 
 function save_media(entry, x::Scene, path::String)
-    path = joinpath(path, "image.jpg")
-    save(FileIO.File(DataFormat{:JPEG}, path), x) # work around FileIO bug for now
+    path = joinpath(path, "image.png")
+    save(FileIO.File(DataFormat{:PNG}, path), x) # work around FileIO bug for now
     [path]
 end
 
@@ -30,7 +30,7 @@ end
 
 function save_media(entry, x::AbstractPlotting.Stepper, path::String)
     # return a list of all file names
-    images = filter(x-> endswith(x, ".jpeg") || endswith(x, ".jpg"), readdir(x.folder))
+    images = filter(x-> endswith(x, ".png"), readdir(x.folder))
     return map(images) do img
         p = joinpath(x.folder, img)
         out = joinpath(path, basename(p))
@@ -44,8 +44,8 @@ function save_media(entry, results::AbstractVector, path::String)
     for (i, res) in enumerate(results)
         # Only save supported results
         if res isa Union{Scene, String}
-            img = joinpath(path, "image$i.jpg")
-            save(FileIO.File(DataFormat{:JPEG}, img), res) # work around FileIO
+            img = joinpath(path, "image$i.png")
+            save(FileIO.File(DataFormat{:PNG}, img), res) # work around FileIO
             push!(paths, img)
         end
     end
@@ -302,7 +302,7 @@ function record_examples(
                     @test true
                     if generate_thumbnail && !isfile(outfolder) && ispath(outfolder)
                         sample = joinpath(outfolder, first(readdir(outfolder)))
-                        MakieGallery.generate_thumbnail(sample, joinpath(outfolder, "thumb.jpg"))
+                        MakieGallery.generate_thumbnail(sample, joinpath(outfolder, "thumb.png"))
                     end
                 catch e
                     @warn "Error thrown when evaluating $(example.title)" exception=CapturedException(e, Base.catch_backtrace())
@@ -429,7 +429,7 @@ function generate_thumbnails(media_root)
         if !isfile(media) && ispath(media)
             isempty(readdir(media)) && error("Media $(media) doesn't contain anything")
             sample = joinpath(media, first(readdir(media)))
-            generate_thumbnail(sample, joinpath(media, "thumb.jpg"))
+            generate_thumbnail(sample, joinpath(media, "thumb.png"))
         end
     end
 end

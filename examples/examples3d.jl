@@ -2,12 +2,7 @@
 @block SimonDanisch ["3d"] begin
     @cell "Image on Geometry (Moon)" [mesh, image, camera, download] begin
         using FileIO
-        moon = try
-            load(download("https://svs.gsfc.nasa.gov/vis/a000000/a004600/a004675/phases.0001_print.jpg"))
-        catch e
-            @warn("Downloading the moon failed. Using random image, so this test will fail! (error: $e)")
-            rand(RGBAf0, 100, 100) # don't error test when e.g. offline
-        end
+        moon = load(MakieGallery.assetpath("moon.png"))
         scene = mesh(Sphere(Point3f0(0), 1f0), color = moon, shading = false, show_axis = false, center = false)
         update_cam!(scene, Vec3f0(-2, 2, 2), Vec3f0(0))
         scene.center = false # prevent to recenter on display
@@ -16,12 +11,7 @@
 
     @cell "Image on Geometry (Earth)" [mesh, image, download] begin
         using FileIO, Colors, GeometryBasics
-        earth = try
-            load(download("https://svs.gsfc.nasa.gov/vis/a000000/a002900/a002915/bluemarble-2048.png"))
-        catch e
-            @warn("Downloadinging the earth failed. Using random image, so this test will fail! (error: $e)")
-            rand(RGBAf0, 100, 100) # don't error test when e.g. offline
-        end
+        earth = load(MakieGallery.assetpath("earth.png"))
         m = uv_mesh(Tesselation(Sphere(Point3f0(0), 1f0), 60))
         mesh(m, color=earth, shading = false)
     end
