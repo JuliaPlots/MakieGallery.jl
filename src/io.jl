@@ -312,7 +312,7 @@ function record_examples(
         end
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
-    gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
+    # gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
     result
 end
 

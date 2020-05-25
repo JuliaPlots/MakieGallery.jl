@@ -103,7 +103,7 @@ end
         poly!(la, BBox(1, 2, 7, 0), color=:red)
         poly!(la, BBox(2, 3, 1, 0), color=:green)
 
-        la.attributes.xticks = ManualTicks([0.5, 1.5, 2.5], ["blue", "red", "green"])
+        la.attributes.xticks = ([0.5, 1.5, 2.5], ["blue", "red", "green"])
         la.attributes.xlabel = "Color"
         la.attributes.ylabel = "Value"
 
@@ -488,109 +488,110 @@ end
 
     end
 
-    @cell "Ellipse markers and arrows" [layout, "2d"] begin
-
-        # here we plot some grouped coordinates, find their mean and variance which
-        # we plot as ellipses, plot their actual means, and some additional details.
-
-
-        using DataFrames, Distributions, Colors
-        using MakieLayout
-        import AbstractPlotting:px
-
-        # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of
-        # the groups are distributed equally around the unit circle. The coordinates
-        # are drawn from a normal distribution (with standard deviation σ).
-        ngrp = 4
-        groups = Symbol.(Iterators.take('a':'z', ngrp))
-        n = 5
-        σ = [0.2, 0.4]
-        intended = (; Dict(g => Point2f0(Iterators.reverse(sincos(θ))...) for (g, θ) in zip(groups, range(0, step = 2π/ngrp, length = ngrp)))...)
-        df = DataFrame(group = Symbol[], x = Point2f0[])
-        for g in groups
-            d = MvNormal(intended[g], σ)
-            for _ in 1:n
-                push!(df, (group = g, x = rand(d)))
-            end
-        end
-
-        # assign colors to each group
-        colors = Dict(zip(groups, distinguishable_colors(ngrp, [colorant"white", colorant"black"], dropseed = true)))
-
-        # calculate the mean of each group, and the FWHM of a Gaussian fit to the
-        # data. We later use the mean and FWHM to plot ellipses.
-        function gen_ellipses(g)
-            n = length(g.x)
-            X = Array{Float64}(undef, 2, n)
-            for i in 1:n
-                X[:,i] = g.x[i]
-            end
-            dis = fit(DiagNormal, X)
-            radii = sqrt(2log(2))*sqrt.(var(dis)) # half the FWHM
-            ellipse = (origin = Point2f0(mean(dis)), radius = Vec2f0(radii))
-            (ellipse = ellipse, )
-        end
-
-        ellipses = combine(groupby(d, cols), gen_ellipses)
-
-        # some helper functions
-
-        # return a vector of coordinates of an ellipse
-        mydecompose(origin, radii) = [origin + radii .* Iterators.reverse(sincos(t)) for t in range(0, stop = 2π, length = 51)]
-        # brighten a color
-        brighten(c, p = 0.5) = weighted_color_mean(p, c, colorant"white")
-        # darken a color
-        darken(c, p = 0.5) = weighted_color_mean(p, c, colorant"black")
-
-        scene, layout = layoutscene(0, fontsize = 10, resolution = (500,400));
-
-        ax = layout[1,1] = LAxis(scene,
-                                 xlabel = "X (cm)",
-                                 ylabel = "Y (cm)",
-                                 xticklabelsize = 8,
-                                 yticklabelsize = 8,
-                                 aspect = DataAspect()
-                                )
-
-        for r in eachrow(ellipses)
-            c = r.ellipse
-            xy = mydecompose(c...)
-            poly!(ax, xy, color = brighten(colors[r.group], 0.25))
-        end
-
-        scatter!(ax, getfield.(ellipses.ellipse, :origin), color = :white, marker = '+', markersize = 10px)
-        scatter!(ax, [zero(Point2f0)], color = :black, strokecolor = :black, marker = '⋆', strokewidth = 0.5, markersize = 15px)
-        scatter!(ax, [intended[k] for k in keys(colors)], color = :white, strokecolor = collect(values(colors)), marker = '⋆', strokewidth = 0.5, markersize = 15px)
-
-        for g in groupby(df, :group)
-            scatter!(ax, g.x, color = RGBA(colors[g.group[1]], 0.75), marker = '●', markersize = 5px)
-        end
-
-        # Here, we manually construct a list of legend entries to be provided to the
-        # LLegend constructor. This allows us a larger degree of control over how
-        # the legend looks.
-        polys = [PolyElement(color = colors[k], strokecolor = :transparent) for k in unique(df.group)]
-        shapes = [MarkerElement(color = :black, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
-                  MarkerElement(color = :white, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
-                  MarkerElement(color = :black, marker = '●', strokecolor = :transparent, markersize = 5px),
-                  [PolyElement(color = brighten(colorant"black", 0.75), strokecolor = :transparent, polypoints = mydecompose(Point2f0(0.5, 0.5), Vec2f0(0.75, 0.5))),
-                   MarkerElement(color = :white, marker = '+', strokecolor = :transparent, markersize = 10px),
-                  ]]
-
-        leg = ([polys, shapes], [string.(unique(df.group)), ["center", "intended means", "coordinates", "μ ± FWHM"]], ["Groups", "Shapes"])
-        layout[1, 2] = LLegend(scene, leg..., markersize = 10px, markerstrokewidth = 1, patchsize = (10, 10), rowgap = Fixed(0), titlegap = Fixed(5), groupgap = Fixed(10), titlehalign = :left, gridshalign = :left)
-
-        # draw an arrow with some text
-        textlayer = Scene(scene, ax.scene.px_area, camera = campixel!, raw = true)
-        topright = lift(textlayer.px_area) do w
-            xy = widths(w)
-            xy .- 0.05max(xy...)
-        end
-        text!(textlayer, "arrow", position = topright, align = (:right, :top), textsize = 10, font = "noto sans")
-        lines!(textlayer, @lift([$topright, $topright .- (30, 0)]))
-        scatter!(textlayer, @lift([$topright]), marker = '►', markersize = 10px)
-
-        scene
-
-    end
+    # d isn't defined!?
+    # @cell "Ellipse markers and arrows" [layout, "2d"] begin
+    #
+    #     # here we plot some grouped coordinates, find their mean and variance which
+    #     # we plot as ellipses, plot their actual means, and some additional details.
+    #
+    #
+    #     using DataFrames, Distributions, Colors
+    #     using MakieLayout
+    #     import AbstractPlotting:px
+    #
+    #     # Here we create `ngrp` groups of `n` coordinates. The mean coordinates of
+    #     # the groups are distributed equally around the unit circle. The coordinates
+    #     # are drawn from a normal distribution (with standard deviation σ).
+    #     ngrp = 4
+    #     groups = Symbol.(Iterators.take('a':'z', ngrp))
+    #     n = 5
+    #     σ = [0.2, 0.4]
+    #     intended = (; Dict(g => Point2f0(Iterators.reverse(sincos(θ))...) for (g, θ) in zip(groups, range(0, step = 2π/ngrp, length = ngrp)))...)
+    #     df = DataFrame(group = Symbol[], x = Point2f0[])
+    #     for g in groups
+    #         d = MvNormal(intended[g], σ)
+    #         for _ in 1:n
+    #             push!(df, (group = g, x = rand(d)))
+    #         end
+    #     end
+    #
+    #     # assign colors to each group
+    #     colors = Dict(zip(groups, distinguishable_colors(ngrp, [colorant"white", colorant"black"], dropseed = true)))
+    #
+    #     # calculate the mean of each group, and the FWHM of a Gaussian fit to the
+    #     # data. We later use the mean and FWHM to plot ellipses.
+    #     function gen_ellipses(g)
+    #         n = length(g.x)
+    #         X = Array{Float64}(undef, 2, n)
+    #         for i in 1:n
+    #             X[:,i] = g.x[i]
+    #         end
+    #         dis = fit(DiagNormal, X)
+    #         radii = sqrt(2log(2))*sqrt.(var(dis)) # half the FWHM
+    #         ellipse = (origin = Point2f0(mean(dis)), radius = Vec2f0(radii))
+    #         (ellipse = ellipse, )
+    #     end
+    #
+    #     ellipses = combine(groupby(d, cols), gen_ellipses)
+    #
+    #     # some helper functions
+    #
+    #     # return a vector of coordinates of an ellipse
+    #     mydecompose(origin, radii) = [origin + radii .* Iterators.reverse(sincos(t)) for t in range(0, stop = 2π, length = 51)]
+    #     # brighten a color
+    #     brighten(c, p = 0.5) = weighted_color_mean(p, c, colorant"white")
+    #     # darken a color
+    #     darken(c, p = 0.5) = weighted_color_mean(p, c, colorant"black")
+    #
+    #     scene, layout = layoutscene(0, fontsize = 10, resolution = (500,400));
+    #
+    #     ax = layout[1,1] = LAxis(scene,
+    #                              xlabel = "X (cm)",
+    #                              ylabel = "Y (cm)",
+    #                              xticklabelsize = 8,
+    #                              yticklabelsize = 8,
+    #                              aspect = DataAspect()
+    #                             )
+    #
+    #     for r in eachrow(ellipses)
+    #         c = r.ellipse
+    #         xy = mydecompose(c...)
+    #         poly!(ax, xy, color = brighten(colors[r.group], 0.25))
+    #     end
+    #
+    #     scatter!(ax, getfield.(ellipses.ellipse, :origin), color = :white, marker = '+', markersize = 10px)
+    #     scatter!(ax, [zero(Point2f0)], color = :black, strokecolor = :black, marker = '⋆', strokewidth = 0.5, markersize = 15px)
+    #     scatter!(ax, [intended[k] for k in keys(colors)], color = :white, strokecolor = collect(values(colors)), marker = '⋆', strokewidth = 0.5, markersize = 15px)
+    #
+    #     for g in groupby(df, :group)
+    #         scatter!(ax, g.x, color = RGBA(colors[g.group[1]], 0.75), marker = '●', markersize = 5px)
+    #     end
+    #
+    #     # Here, we manually construct a list of legend entries to be provided to the
+    #     # LLegend constructor. This allows us a larger degree of control over how
+    #     # the legend looks.
+    #     polys = [PolyElement(color = colors[k], strokecolor = :transparent) for k in unique(df.group)]
+    #     shapes = [MarkerElement(color = :black, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
+    #               MarkerElement(color = :white, marker = '⋆', strokecolor = :black, markerstrokewidth = 0.5, markersize = 15px),
+    #               MarkerElement(color = :black, marker = '●', strokecolor = :transparent, markersize = 5px),
+    #               [PolyElement(color = brighten(colorant"black", 0.75), strokecolor = :transparent, polypoints = mydecompose(Point2f0(0.5, 0.5), Vec2f0(0.75, 0.5))),
+    #                MarkerElement(color = :white, marker = '+', strokecolor = :transparent, markersize = 10px),
+    #               ]]
+    #
+    #     leg = ([polys, shapes], [string.(unique(df.group)), ["center", "intended means", "coordinates", "μ ± FWHM"]], ["Groups", "Shapes"])
+    #     layout[1, 2] = LLegend(scene, leg..., markersize = 10px, markerstrokewidth = 1, patchsize = (10, 10), rowgap = Fixed(0), titlegap = Fixed(5), groupgap = Fixed(10), titlehalign = :left, gridshalign = :left)
+    #
+    #     # draw an arrow with some text
+    #     textlayer = Scene(scene, ax.scene.px_area, camera = campixel!, raw = true)
+    #     topright = lift(textlayer.px_area) do w
+    #         xy = widths(w)
+    #         xy .- 0.05max(xy...)
+    #     end
+    #     text!(textlayer, "arrow", position = topright, align = (:right, :top), textsize = 10, font = "noto sans")
+    #     lines!(textlayer, @lift([$topright, $topright .- (30, 0)]))
+    #     scatter!(textlayer, @lift([$topright]), marker = '►', markersize = 10px)
+    #
+    #     scene
+    #
+    # end
 end
