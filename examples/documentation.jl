@@ -202,7 +202,6 @@
         )
 
         axis = scene[Axis] # get axis
-        scene
 
         st = Stepper(scene, @replace_with_a_path)
         step!(st);
