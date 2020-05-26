@@ -18,3 +18,4 @@ docs/src/typetrees.md
 _site/
 Gemfile
 Gemfile.lock
+!assets/*
