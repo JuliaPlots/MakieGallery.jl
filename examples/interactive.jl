@@ -753,7 +753,7 @@ end
         # Set up textured mesh + light source
         catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"))
         scene3 = mesh(
-            catmesh, color = MakieGallery.loadasset("diffusemap.tga"),
+            catmesh, color = MakieGallery.loadasset("diffusemap.png"),
             ambient = la, diffuse = ld, specular = ls, shininess = shininess,
             lightposition = lp
         )
