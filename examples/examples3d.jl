@@ -56,8 +56,8 @@
     end
     @cell "Textured Mesh" [mesh, texture, cat] begin
         using FileIO
-        catmesh = FileIO.load(MakieGallery.assetpath("cat.obj"))
-        mesh(catmesh, color = MakieGallery.loadasset("diffusemap.tga"))
+        catmesh = MakieGallery.loadasset("cat.obj")
+        mesh(catmesh, color = MakieGallery.loadasset("diffusemap.png"))
     end
     @cell "Load Mesh" [mesh, cat] begin
         mesh(MakieGallery.loadasset("cat.obj"))
