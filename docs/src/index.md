@@ -15,7 +15,7 @@ See the [Tutorial](@ref) for how to plot, or the Example Gallery below for examp
 ## Example Gallery
 
 ```@raw html
- <iframe src="http://juliaplots.org/MakieReferenceImages/gallery/index.html" style = "height:800px;width:100%" frameborder="0"></iframe>
+ <iframe src="https://juliaplots.org/MakieReferenceImages/gallery/index.html" style = "height:800px;width:100%" frameborder="0"></iframe>
 ```
 
 ## I'm an expert!
