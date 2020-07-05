@@ -48,7 +48,7 @@ ZipFile = "a5390f91-8eb1-5f08-bee0-b1d1ffed6cea"
 ImageIO = "82e4d734-157c-48bb-816b-45c225c6df19"
 
 [compat]
-AbstractPlotting = "0.11"
+AbstractPlotting = "0.12"
 Animations = "0.4"
 BinaryProvider = "0.4, 0.5"
 ColorSchemes = "3.5"
