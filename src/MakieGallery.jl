@@ -53,11 +53,6 @@ function load_database()
         "implicits.jl",
         "short_tests.jl",
         "recipes.jl",
-        "bigdata.jl",
-        "layouting.jl",
-        "legends.jl",
-        "statsmakie.jl",
-        # "geomakie.jl",
     ])
 end
 

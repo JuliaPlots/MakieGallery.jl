@@ -5,7 +5,6 @@ using AbstractPlotting, GLMakie
 using Statistics
 
 database = MakieGallery.load_test_database()
-database = MakieGallery.load_database()
 # filter!(database) do x
 #     x.title == "Axis theming"
 # end

@@ -585,28 +585,7 @@
         center!(scene) # center the Scene on the display
     end
 
-    @cell "Explicit frame rendering" [opengl, render_frame, meshscatter] begin
-        using ModernGL, GLMakie
-        using GLFW
-        GLMakie.opengl_renderloop[] = (screen) -> nothing
-        function update_loop(m, buff, screen)
-            for i = 1:20
-                GLFW.PollEvents()
-                buff .= rand.(Point3f0) .* 20f0
-                m[1] = buff
-                GLMakie.render_frame(screen)
-                GLFW.SwapBuffers(GLMakie.to_native(screen))
-                glFinish()
-            end
-        end
-        scene = meshscatter(rand(Point3f0, 10^4) .* 20f0)
-        screen = AbstractPlotting.backend_display(GLMakie.GLBackend(), scene)
-        meshplot = scene[end]
-        buff = rand(Point3f0, 10^4) .* 20f0;
-        update_loop(meshplot, buff, screen)
-        GLMakie.opengl_renderloop[] = GLMakie.renderloop # restore previous loop
-        scene
-    end
+
     @cell "Streamplot 3D" [streamplot] begin
         struct FitzhughNagumo{T}
             ϵ::T
