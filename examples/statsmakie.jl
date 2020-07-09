@@ -5,8 +5,8 @@
         using DataFrames, RDatasets
         using StatsMakie: linear, smooth
         N = 1000
-        a = rand(1:2, N) # a discrete variable
-        b = rand(1:2, N) # a discrete variable
+        a = RNG.rand(1:2, N) # a discrete variable
+        b = RNG.rand(1:2, N) # a discrete variable
         x = randn(N) # a continuous variable
         y = @. x * a + 0.8*randn() # a continuous variable
         z = x .+ y # a continuous variable
@@ -47,9 +47,9 @@
         @substep
 
         N = 200
-        x = 10 .* rand(N)
-        a = rand(1:2, N)
-        y = sin.(x) .+ 0.5 .* rand(N) .+ cos.(x) .* a
+        x = 10 .* RNG.rand(N)
+        a = RNG.rand(1:2, N)
+        y = sin.(x) .+ 0.5 .* RNG.rand(N) .+ cos.(x) .* a
         @substep
 
         scatter(Group(a), x, y)
@@ -89,7 +89,7 @@
         )
         @substep
 
-        barplot(["hi", "ima", "string"], rand(3))
+        barplot(["hi", "ima", "string"], RNG.rand(3))
         @substep
 
     end
@@ -135,13 +135,13 @@
         # frequency analysis
 
         using Distributions
-        d = rand(Poisson(), 1000)
+        d = RNG.rand(Poisson(), 1000)
         plot(frequency, d)
 
         @substep
 
-        xs = 10 .* rand(100)
-        ys = sin.(xs) .+ 0.5 .* rand.()
+        xs = 10 .* RNG.rand(100)
+        ys = sin.(xs) .+ 0.5 .* RNG.rand.()
         scatter(xs, ys)
         plot!(smooth, xs, ys)
 

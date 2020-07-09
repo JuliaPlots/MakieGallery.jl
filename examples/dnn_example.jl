@@ -4,7 +4,7 @@ using Base.Iterators: repeated, partition
 using CuArrays
 using Colors, FileIO, ImageShow
 using Makie, GLMakie
-scatter(rand(10)) |> display
+scatter(RNG.rand(10)) |> display
 
 function imgviz!(scene, img)
   image!(scene, 0..16, 0..1, img, show_axis = false, scale_plot = false)

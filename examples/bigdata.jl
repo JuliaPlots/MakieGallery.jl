@@ -72,7 +72,7 @@
         m = uv_normal_mesh(Tesselation(Sphere(Point3f0(0), 1f0), 200))
 
         points = GeometryBasics.coordinates(m)
-        GeometryBasics.pointmeta(m, color=rand(length(points)))
+        GeometryBasics.pointmeta(m, color=RNG.rand(length(points)))
         GeometryBasics.pop_pointmeta(m, :uv)
 
         p = decompose(Point3f0, m)

@@ -35,7 +35,7 @@ function run_game(game, snake, newsnake, food)
         spawndiff = time() - spawntime
         if spawndiff > 0
             if (newspawn - spawndiff) < 0.1 && (newspawn - spawndiff) > 0
-                food[1][][1] = Point2f0(rand(1:cells), rand(1:cells)) .* cell
+                food[1][][1] = Point2f0(RNG.rand(1:cells), RNG.rand(1:cells)) .* cell
 
             elseif (newspawn - spawndiff) < 0.1
                 food[1][][1] = Point2f0(res + cell)
