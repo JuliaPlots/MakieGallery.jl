@@ -2,21 +2,21 @@
 
     @cell "algorithm" [vbox, volume, algorithm] begin
         sc = vbox(
-            volume(rand(32, 32, 32), algorithm = :mip), #with mip algorithm
-            volume(rand(32, 32, 32), algorithm = :absorptionrgba), #with AbsorptionRGBA algorithm
+            volume(RNG.rand(32, 32, 32), algorithm = :mip), #with mip algorithm
+            volume(RNG.rand(32, 32, 32), algorithm = :absorptionrgba), #with AbsorptionRGBA algorithm
         )
     end
 
     @cell "align" [scatter, text, align, "2d"] begin
         scene = Scene()
-        scatter!(scene, rand(10), color=:red)
+        scatter!(scene, RNG.rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, align = (:center, :center))
     end
 
     @cell "color" [lines, color, "2d"] begin
         vbox(
-            lines(rand(10), linewidth = 20, color = :blue),
-            lines(rand(10), linewidth = 20, color = to_colormap(:viridis, 10)) #mapping from a colormap to colors with 10 color points
+            lines(RNG.rand(10), linewidth = 20, color = :blue),
+            lines(RNG.rand(10), linewidth = 20, color = to_colormap(:viridis, 10)) #mapping from a colormap to colors with 10 color points
         )
     end
 
@@ -41,7 +41,7 @@
 
     @cell "font" [text, scatter, font, "2d"] begin
         scene = Scene()
-        scatter!(scene, rand(10), color=:red)
+        scatter!(scene, RNG.rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, align = (:center, :center), font = "Blackchancery")
     end
 
@@ -56,7 +56,7 @@
     end
 
     @cell "interpolate" [heatmap, colormap, interpolate, "2d"] begin
-        scene = heatmap(rand(50, 50), colormap = :colorwheel, interpolate = true)
+        scene = heatmap(RNG.rand(50, 50), colormap = :colorwheel, interpolate = true)
     end
 
     @cell "isorange, isovalue" [volume, algorithm, isorange, isovalue] begin
@@ -73,22 +73,22 @@
     end
 
     @cell "linestyle" [lines, linestyle, "2d"] begin
-        lines(rand(10), linewidth = 6, linestyle = :dashdotdot)
+        lines(RNG.rand(10), linewidth = 6, linestyle = :dashdotdot)
     end
 
     @cell "linewidth" [lines, linewidth, "2d"] begin
         scene = Scene()
         lines!(scene, randn(20), linewidth = 8)
-        lines!(scene, rand(20), linewidth = 4)
+        lines!(scene, RNG.rand(20), linewidth = 4)
     end
 
     @cell "markersize" [scatter, markersize, "2d"] begin
-        scatter(rand(50), color = :orange, markersize = 2)
+        scatter(RNG.rand(50), color = :orange, markersize = 2)
     end
 
     @cell "position" [scatter, text, position, "2d"] begin
         scene = Scene()
-        scatter!(scene, rand(10), color=:red)
+        scatter!(scene, RNG.rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, position = (5.0, 1.1))
     end
 
@@ -112,7 +112,7 @@
 
     @cell "textsize" [text, scatter, textsize, "2d"] begin
         scene = Scene()
-        scatter!(scene, rand(10), color = to_colormap(:colorwheel, 10))
+        scatter!(scene, RNG.rand(10), color = to_colormap(:colorwheel, 10))
         text!(scene, "hello world", textsize = 2)
     end
 

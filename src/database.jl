@@ -567,7 +567,6 @@ function eval_example(
 
     uname = entry.unique_name
     steps = split(source, "@substep", keepempty = false)
-    Random.seed!(42)
 
     temp_mod = MakieGallery.eval(:(module $(gensym("TempModule")) end))
 

@@ -1,8 +1,8 @@
 @block AnthonyWang [documentation] begin
     @cell "pong" [animated, scatter, updating, record, "2d"] begin
         # init speed and velocity vector
-        xyvec = rand(Point2f0, (2)) .* 5 .+ 1
-        velvec = rand(Point2f0, (2)) .* 10
+        xyvec = RNG.rand(Point2f0, (2)) .* 5 .+ 1
+        velvec = RNG.rand(Point2f0, (2)) .* 10
         # define some other parameters
         t = 0
         ts = 0.03
@@ -13,7 +13,7 @@
         scene = scatter(
             xyvec,
             markersize = balldiameter,
-            color = rand(RGBf0, 2),
+            color = RNG.rand(RGBf0, 2),
             limits = FRect(0, 0, xybounds)
         )
         s = scene[end] # last plot in scene
@@ -75,16 +75,16 @@
 
     @cell "Marker sizes + Marker colors" ["2d", scatter, markersize, color] begin
         scatter(
-            rand(20), rand(20),
-            markersize = rand(20) ./20 .+ 0.02,
-            color = rand(RGBf0, 20)
+            RNG.rand(20), RNG.rand(20),
+            markersize = RNG.rand(20) ./20 .+ 0.02,
+            color = RNG.rand(RGBf0, 20)
         )
     end
 
     @cell "Marker offset" [scatter, marker_offset, "2d"] begin
         scene = Scene()
         points = Point2f0[(0,0), (1,1), (2,2)]
-        offset = rand(Point2f0, 3)./5
+        offset = RNG.rand(Point2f0, 3)./5
         scatter!(scene, points)
         scatter!(scene, points, marker_offset = offset, color = :red)
     end
@@ -155,7 +155,7 @@
     #         ),
     #     )
     #     AbstractPlotting.set_theme!(new_theme)
-    #     scene = scatter(rand(100), rand(100))
+    #     scene = scatter(RNG.rand(100), RNG.rand(100))
     #     st = Stepper(scene, @replace_with_a_path)
     #     step!(st)
     #     new_theme[:color] = :blue
@@ -169,7 +169,7 @@
     #     new_theme[:scatter, :strokecolor] = :green
     #     step!(st)
     #     empty!(scene)
-    #     scene = scatter!(rand(100), rand(100))
+    #     scene = scatter!(RNG.rand(100), RNG.rand(100))
     #     step!(st)
     #     scene[end][:marker] = 'π'
     #     step!(st)
@@ -262,12 +262,12 @@
         scene = Scene(resolution = (500, 500))
         x = map([:dot, :dash, :dashdot], [2, 3, 4]) do ls, lw
             linesegments!(
-                range(1, stop = 5, length = 100), rand(100), rand(100),
+                range(1, stop = 5, length = 100), RNG.rand(100), RNG.rand(100),
                 linestyle = ls, linewidth = lw,
-                color = rand(RGBAf0)
+                color = RNG.rand(RGBAf0)
             )[end]
         end
-        x = [x..., scatter!(range(1, stop=5, length=100), rand(100), rand(100))[end]]
+        x = [x..., scatter!(range(1, stop=5, length=100), RNG.rand(100), RNG.rand(100))[end]]
         center!(scene)
         ls = AbstractPlotting.legend(x, ["attribute $i" for i in 1:4], camera = campixel!, raw = true)
 
@@ -287,7 +287,7 @@
         st
     end
     @cell "Color Legend" [surface, colorlegend, camera, "3d"] begin
-        s = surface(0..1, 0..1, rand(100, 100))
+        s = surface(0..1, 0..1, RNG.rand(100, 100))
         ls = colorlegend(s[end], raw = true, camera = campixel!)
         st = Stepper(vbox(s, ls), @replace_with_a_path)
         l = ls[end]
@@ -307,9 +307,9 @@ end
 #
 # using Makie
 #
-# scene = scatter(rand(100), rand(100))
+# scene = scatter(RNG.rand(100), RNG.rand(100))
 # empty!(scene)
-# scene = scatter!(rand(100), rand(100))
+# scene = scatter!(RNG.rand(100), RNG.rand(100))
 #
 # r = range(-0.5pi, stop = pi + pi/4, length = 100)
 # empty!(scene)
