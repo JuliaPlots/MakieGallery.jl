@@ -196,6 +196,7 @@ function load_test_database()
         !(entry.title in slow_examples) &&
         !("download" in entry.tags) &&
         ("Multi-group legends" != entry.title) &&
+        ("GUI for exploring Lorenz equation" != entry.title) &&
         !("makielayout" in lowercase.(entry.tags)) &&
         !("statsmakie" in lowercase.(entry.tags))
      end
