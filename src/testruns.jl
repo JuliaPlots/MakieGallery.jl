@@ -145,9 +145,9 @@ function run_comparison(
             for elem in folders
                 folder = joinpath(test_diff_path, elem)
                 if isdir(folder)
-                    images = joinpath.(folder, readdir(folder))
+                    images = joinpath.(basename(folder), readdir(folder))
                     println(io, "<h1> $elem </h1>")
-                    MakieGallery.embed_media(io, images)
+                    embed_media(io, images)
                 end
             end
         end
