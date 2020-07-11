@@ -7,8 +7,8 @@
         N = 1000
         a = RNG.rand(1:2, N) # a discrete variable
         b = RNG.rand(1:2, N) # a discrete variable
-        x = randn(N) # a continuous variable
-        y = @. x * a + 0.8*randn() # a continuous variable
+        x = RNG.randn(N) # a continuous variable
+        y = @. x * a + 0.8*RNG.randn() # a continuous variable
         z = x .+ y # a continuous variable
         @substep
 
@@ -193,6 +193,6 @@
     @cell "histogram 2d" [histogram, "2d"] begin
         # This cell was contributed by Kim Fung (@fungktt) during GCI'19
         using StatsMakie
-        plot(histogram(nbins = 20), randn(10000), randn(10000))
+        plot(histogram(nbins = 20), RNG.randn(10000), RNG.randn(10000))
     end
 end

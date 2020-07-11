@@ -25,6 +25,7 @@ using Random
 const STABLE_RNG = StableRNG(123)
 
 rand(args...) = Base.rand(STABLE_RNG, args...)
+randn(args...) = Base.randn(STABLE_RNG, args...)
 
 seed_rng!() = Random.seed!(STABLE_RNG, 123)
 

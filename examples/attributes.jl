@@ -29,7 +29,7 @@
     end
 
     @cell "colorrange" [lines, colormap, colorrange, "2d"] begin
-        lines(randn(10),color=LinRange(-1, 1, 10),colormap=:colorwheel,linewidth=8, colorrange = (-1.0,1.0))
+        lines(RNG.randn(10),color=LinRange(-1, 1, 10),colormap=:colorwheel,linewidth=8, colorrange = (-1.0,1.0))
     end
 
     @cell "fillrange" [contour, fillrange, "2d"] begin
@@ -46,7 +46,7 @@
     end
 
     @cell "glowcolor, glowwidth" [scatter, glowcolor, glowwidth, "2d"] begin
-        scatter(randn(10),color=:blue, glowcolor = :orange, glowwidth = 10)
+        scatter(RNG.randn(10),color=:blue, glowcolor = :orange, glowwidth = 10)
     end
 
     @cell "image" [image, "2d"] begin
@@ -78,7 +78,7 @@
 
     @cell "linewidth" [lines, linewidth, "2d"] begin
         scene = Scene()
-        lines!(scene, randn(20), linewidth = 8)
+        lines!(scene, RNG.randn(20), linewidth = 8)
         lines!(scene, RNG.rand(20), linewidth = 4)
     end
 
@@ -118,8 +118,8 @@
 
     @cell "visible" [scatter, visible, "2d"] begin
         vbox(
-            scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = true),
-            scatter(randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = false)
+            scatter(RNG.randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = true),
+            scatter(RNG.randn(20), color = to_colormap(:deep, 20), markersize = 1, visible = false)
         )
     end
 end

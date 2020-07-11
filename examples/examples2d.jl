@@ -15,7 +15,7 @@
         record(scene, @replace_with_a_path(mp4), 1:50) do i
             global frame_start
             aframe .= sin.(2*pi*f0.*(frame_start .+ frame_time))
-            # append!(aframe, randn(nhop)); deleteat!(aframe, 1:nhop)
+            # append!(aframe, RNG.randn(nhop)); deleteat!(aframe, 1:nhop)
             lineplot[1] = frame_start .+ frame_time
             lineplot[2] = aframe
             AbstractPlotting.update_limits!(scene)
@@ -246,7 +246,7 @@
     end
     @cell "Hbox" [lines, scatter, hbox] begin
         t = range(-122277.93103448274, stop=-14798.035304081845, length=29542)
-        x = -42 .- randn(length(t))
+        x = -42 .- RNG.randn(length(t))
         sc1 = scatter(t, x, color=:black, markersize=1.0)
         sc2 = lines(t[1:end-1], diff(x), color = :blue)
         hbox(sc2, sc1)
@@ -379,7 +379,7 @@
         using Statistics
         n, m = 100, 101
         t = range(0, 1, length=m)
-        X = cumsum(randn(n, m), dims = 2)
+        X = cumsum(RNG.randn(n, m), dims = 2)
         X = X .- X[:, 1]
         μ = vec(mean(X, dims=1)) # mean
         lines(t, μ)              # plot mean line
