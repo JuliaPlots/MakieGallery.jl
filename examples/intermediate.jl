@@ -54,7 +54,7 @@
     end
 
     @cell "barplot" [barplot, "2d"] begin
-        barplot(randn(99))
+        barplot(RNG.randn(99))
     end
 
     @cell "subplots" [lines, scatter, barplot, histogram, vbox, hbox, "2d"] begin
@@ -68,7 +68,7 @@
         scatter!(scene2, RNG.rand(10), color=:blue)
         scatter!(scene2, RNG.rand(10), color=:orange)
 
-        barplot!(scene3, randn(99))
+        barplot!(scene3, RNG.randn(99))
 
         v(x::Point2{T}) where T = Point2f0(x[2], 4*x[1])
         streamplot!(scene4, v, -2..2, -2..2)

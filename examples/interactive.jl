@@ -466,7 +466,7 @@
             return map(1:n) do i
                 v = [0, 0, 0]  # initialize so we go into the while loop
                 while norm(v) < .0001
-                    v = randn(Point3f0)
+                    v = RNG.randn(Point3f0)
                 end
                 v = v / norm(v)  # normalize to unit norm
                 v
@@ -484,8 +484,8 @@
             return map(1:N) do i
                 sm = mesh!(scene, Sphere(Point3f0(0), rship_km*radius_mult), color=:green, show_axis=false)[end]
                 ship = Ship(mship_kg, [0, 0, 0], [0, 0, 0], :green, sm)
-                moveto!(ship, (100000f0 * randn(Float32), dbetween_km/2 + randn(Float32) * 50000f0, 50000f0*randn(Float32)))
-                ship.velocity_mps = [40000*randn(Float32), -1000*randn(Float32), 1000*randn(Float32)]
+                moveto!(ship, (100000f0 * RNG.randn(Float32), dbetween_km/2 + RNG.randn(Float32) * 50000f0, 50000f0*RNG.randn(Float32)))
+                ship.velocity_mps = [40000*RNG.randn(Float32), -1000*RNG.randn(Float32), 1000*RNG.randn(Float32)]
                 ship
             end
         end

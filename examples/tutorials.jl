@@ -99,7 +99,7 @@
     end
 
     @cell "Tutorial barplot" [tutorial, barplot, "2d"] begin
-        data = sort(randn(100))
+        data = sort(RNG.randn(100))
         barplot(data)
     end
 
