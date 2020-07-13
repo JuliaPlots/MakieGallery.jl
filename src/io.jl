@@ -312,8 +312,20 @@ function record_examples(
         end
     end
     rm(joinpath(folder, "tmp"), recursive = true, force = true)
-    # gallery_from_recordings(folder, joinpath(folder, "index.html"); print_toplevel = display_output_toplevel)
-    result
+    folders = readdir(folder)
+    open(joinpath(folder, "index.html"), "w") do io
+        for elem in folders
+            f = joinpath(folder, elem, "media")
+            if isdir(f)
+                # relative paths
+                base = joinpath(elem, "media")
+                images = joinpath.(base, readdir(f))
+                println(io, "<h1> $elem </h1>")
+                embed_media(io, images)
+            end
+        end
+    end
+    return result
 end
 
 """
@@ -383,9 +395,6 @@ function gallery_from_recordings(
     end
 end
 
-
-
-
 function rescale_image(path::AbstractString, target_path::AbstractString, sz::Int = 200)
     !isfile(path) && error("Input argument must be a file!")
     img = FileIO.load(path)
@@ -404,7 +413,6 @@ function rescale_image(path::AbstractString, target_path::AbstractString, sz::In
     # save image
     FileIO.save(target_path, newimg)
 end
-
 
 """
     generate_thumbnail(path::AbstractString, target_path, thumb_size::Int = 200)

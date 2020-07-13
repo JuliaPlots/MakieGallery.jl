@@ -2,11 +2,11 @@
 
     @cell "simple line plot" [lines, "2d"] begin
         scene = Scene()
-        lines!(scene, rand(10), linewidth=3.0, color=:blue)
-        lines!(scene, rand(10), linewidth=3.0, color=:red)
-        lines!(scene, rand(10), linewidth=3.0, color=:green)
-        lines!(scene, rand(10), linewidth=3.0, color=:purple)
-        lines!(scene, rand(10), linewidth=3.0, color=:orange)
+        lines!(scene, RNG.rand(10), linewidth=3.0, color=:blue)
+        lines!(scene, RNG.rand(10), linewidth=3.0, color=:red)
+        lines!(scene, RNG.rand(10), linewidth=3.0, color=:green)
+        lines!(scene, RNG.rand(10), linewidth=3.0, color=:purple)
+        lines!(scene, RNG.rand(10), linewidth=3.0, color=:orange)
     end
 
     @cell "multiple functions" [lines, "2d"] begin
@@ -39,36 +39,36 @@
 
     @cell "attributes" [attributes, lines, color, colormap, linewidth, "2d"] begin
         scene = Scene()
-        lines!(scene, rand(10), color = to_colormap(:viridis, 10), linewidth = 5)
-        lines!(scene, rand(20), color = :red, alpha = 0.5)
+        lines!(scene, RNG.rand(10), color = to_colormap(:viridis, 10), linewidth = 5)
+        lines!(scene, RNG.rand(20), color = :red, alpha = 0.5)
     end
 
     @cell "build plot in pieces" [lines, "2d"] begin
          scene = Scene()
          # initialize the stepper and give it an output destination
          st = Stepper(scene, @replace_with_a_path)
-         lines!(scene, rand(50)/3, color = :purple, linewidth = 5)
+         lines!(scene, RNG.rand(50)/3, color = :purple, linewidth = 5)
          step!(st)
-         scatter!(scene, rand(50), color = :orange, markersize = 1)
+         scatter!(scene, RNG.rand(50), color = :orange, markersize = 1)
          step!(st)
     end
 
     @cell "barplot" [barplot, "2d"] begin
-        barplot(randn(99))
+        barplot(RNG.randn(99))
     end
 
     @cell "subplots" [lines, scatter, barplot, histogram, vbox, hbox, "2d"] begin
         scene1, scene2, scene3, scene4 = Scene(), Scene(), Scene(), Scene()
 
-        lines!(scene1, rand(10), color=:red)
-        lines!(scene1, rand(10), color=:blue)
-        lines!(scene1, rand(10), color=:green)
+        lines!(scene1, RNG.rand(10), color=:red)
+        lines!(scene1, RNG.rand(10), color=:blue)
+        lines!(scene1, RNG.rand(10), color=:green)
 
-        scatter!(scene2, rand(10), color=:red)
-        scatter!(scene2, rand(10), color=:blue)
-        scatter!(scene2, rand(10), color=:orange)
+        scatter!(scene2, RNG.rand(10), color=:red)
+        scatter!(scene2, RNG.rand(10), color=:blue)
+        scatter!(scene2, RNG.rand(10), color=:orange)
 
-        barplot!(scene3, randn(99))
+        barplot!(scene3, RNG.randn(99))
 
         v(x::Point2{T}) where T = Point2f0(x[2], 4*x[1])
         streamplot!(scene4, v, -2..2, -2..2)
@@ -78,7 +78,7 @@
 
     @cell "text" [scatter, text, "2d"] begin
         scene = Scene()
-        scatter!(scene, rand(10), color=:red)
+        scatter!(scene, RNG.rand(10), color=:red)
         text!(scene,"adding text",textsize = 0.6, position = (5.0, 1.1))
     end
 
@@ -109,7 +109,7 @@
 
     @cell "label rotation, title location" [lines, axisnames, rotation, legend, position, vbox, "2d"] begin
         scene = Scene()
-        line = lines!(scene, rand(10), linewidth=3.0, color=:red)
+        line = lines!(scene, RNG.rand(10), linewidth=3.0, color=:red)
         scene[Axis][:names, :axisnames] = ("text","")
         scene[Axis][:names, :rotation] = (1.5pi)
         leg = legend([scene[2]], ["line"], position = (1, -1))

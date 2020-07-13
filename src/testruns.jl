@@ -1,6 +1,6 @@
 const makiegallery_dir = dirname(dirname(@__DIR__))
 
-const current_ref_version = Ref{String}("v0.5.4")
+const current_ref_version = Ref{String}("v0.6.1")
 
 """
     ref_image_dir(version = string(current_ref_version[]))
@@ -145,9 +145,9 @@ function run_comparison(
             for elem in folders
                 folder = joinpath(test_diff_path, elem)
                 if isdir(folder)
-                    images = joinpath.(folder, readdir(folder))
+                    images = joinpath.(basename(folder), readdir(folder))
                     println(io, "<h1> $elem </h1>")
-                    MakieGallery.embed_media(io, images)
+                    embed_media(io, images)
                 end
             end
         end
@@ -196,7 +196,9 @@ function load_test_database()
         !(entry.title in slow_examples) &&
         !("download" in entry.tags) &&
         ("Multi-group legends" != entry.title) &&
-        !("makielayout" in lowercase.(entry.tags))
+        ("GUI for exploring Lorenz equation" != entry.title) &&
+        !("makielayout" in lowercase.(entry.tags)) &&
+        !("statsmakie" in lowercase.(entry.tags))
      end
      return database
 end

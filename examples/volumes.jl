@@ -19,7 +19,7 @@ using Random
 function one_on_f_noise(T, α, f)
     # 2α needed to convert powers to amplitudes here
     ϵ = sqrt(eps(real(T)))
-    A = randn(T)
+    A = RNG.randn(T)
     return convert(T, A / (ϵ + norm(f))^2α)
 end
 

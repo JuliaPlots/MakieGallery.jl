@@ -1,7 +1,6 @@
 # Config file
 
-A configuration file can be used to save theming options. The config file must be
-global (in `joinpath(homedir(), ".config", "makie", "theme.jl")`). This makes
+A configuration file can be used to save theming options. This makes
 it easier to have a common style for multiple plots without explicitly giving
 the desired options each time.
 
@@ -16,7 +15,11 @@ Attributes(
     linewidth = 3
 )
 ```
-then Makie will start with this theme.
+you can use it with Makie by `include`ing it before making any plots
+```julia
+theme = include("theme.jl")
+theme isa Attributes && set_theme!(theme)
+```
 
 There are other things that you can configure in this file before returning the Attributes, though.  
 

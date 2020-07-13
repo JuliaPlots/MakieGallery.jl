@@ -15,7 +15,7 @@
         record(scene, @replace_with_a_path(mp4), 1:50) do i
             global frame_start
             aframe .= sin.(2*pi*f0.*(frame_start .+ frame_time))
-            # append!(aframe, randn(nhop)); deleteat!(aframe, 1:nhop)
+            # append!(aframe, RNG.randn(nhop)); deleteat!(aframe, 1:nhop)
             lineplot[1] = frame_start .+ frame_time
             lineplot[2] = aframe
             AbstractPlotting.update_limits!(scene)
@@ -25,8 +25,8 @@
         end
     end
     @cell "Test heatmap + image overlap" [image, heatmap, transparency] begin
-        heatmap(rand(32, 32))
-        image!(map(x->RGBAf0(x,0.5, 0.5, 0.8), rand(32,32)))
+        heatmap(RNG.rand(32, 32))
+        image!(map(x->RGBAf0(x,0.5, 0.5, 0.8), RNG.rand(32,32)))
     end
 
     @cell "Animation" [scatter, linesegment, record] begin
@@ -45,10 +45,10 @@
         end
     end
     @cell "barplot" [barplot] begin
-        # barplot(1:10, rand(10))
-        # barplot(rand(10))
-        barplot(rand(10), color = rand(10))
-        # barplot(rand(3), color = [:red, :blue, :green])
+        # barplot(1:10, RNG.rand(10))
+        # barplot(RNG.rand(10))
+        barplot(RNG.rand(10), color = RNG.rand(10))
+        # barplot(RNG.rand(3), color = [:red, :blue, :green])
     end
     @cell "poly and colormap" [poly, colormap, colorrang] begin
         # example by @Paulms from JuliaPlots/Makie.jl#310
@@ -74,8 +74,8 @@
         scene = mesh(Sphere(Point3f0(0), 0.9f0), transparency=true, alpha=0.05)
 
         function cosine_weighted_sample_hemisphere()
-            θ = acos(sqrt(rand()))
-            ϕ = 2π * rand()
+            θ = acos(sqrt(RNG.rand()))
+            ϕ = 2π * RNG.rand()
 
             Point3f0(sin(θ)cos(ϕ), cos(θ), sin(θ)sin(ϕ))
         end
@@ -96,11 +96,11 @@
     @cell "image" [image] begin
         vbox(
             image(AbstractPlotting.logo(), scale_plot = false),
-            image(rand(100, 500), scale_plot = false),
+            image(RNG.rand(100, 500), scale_plot = false),
         )
     end
     @cell "scatter colormap" [scatter, colormap] begin
-        scatter(rand(10), rand(10), color = rand(10))
+        scatter(RNG.rand(10), RNG.rand(10), color = RNG.rand(10))
     end
     @cell "Lots of Heatmaps" [heatmap, performance, vbox, record] begin
         # example by @ssfrr
@@ -121,7 +121,7 @@
         N = 100
         record(scene, @replace_with_a_path(mp4), 1:N) do i
             for (hm, buf) in zip(vec(hms), vec(bufs))
-                buf .= rand.(Float32)
+                buf .= RNG.rand.(Float32)
                 hm[1] = buf
             end
             yield()
@@ -186,7 +186,7 @@
     end
     @cell "heatmap interpolation" [heatmap, interpolate, subscene, theme] begin
         using AbstractPlotting: hbox, vbox
-        data = rand(50, 100)
+        data = RNG.rand(50, 100)
         p1 = heatmap(data, interpolate = true)
         p2 = heatmap(data, interpolate = false)
         s = vbox(
@@ -202,10 +202,10 @@
         )
     end
     @cell "Subscenes" [image, scatter, subscene] begin
-        img = rand(RGBAf0, 100, 100)
+        img = RNG.rand(RGBAf0, 100, 100)
         scene = image(img, show_axis = false)
         subscene = Scene(scene, IRect(100, 100, 300, 300))
-        scatter!(subscene, rand(100) * 200, rand(100) * 200, markersize = 4)
+        scatter!(subscene, RNG.rand(100) * 200, RNG.rand(100) * 200, markersize = 4)
         scene
     end
 
@@ -245,8 +245,8 @@
     end
     @cell "Hbox" [lines, scatter, hbox] begin
         t = range(-122277.93103448274, stop=-14798.035304081845, length=29542)
-        x = -42 .- randn(length(t))
-        sc1 = scatter(t, x, color=:black, markersize=sqrt(length(t)/20))
+        x = -42 .- RNG.randn(length(t))
+        sc1 = scatter(t, x, color=:black, markersize=1.0)
         sc2 = lines(t[1:end-1], diff(x), color = :blue)
         hbox(sc2, sc1)
     end
@@ -259,16 +259,16 @@
     end
     @cell "contour" [contour] begin
         y = range(-0.997669, stop = 0.997669, length = 23)
-        contour(range(-0.99, stop = 0.99, length = 23), y, rand(23, 23), levels = 10)
+        contour(range(-0.99, stop = 0.99, length = 23), y, RNG.rand(23, 23), levels = 10)
     end
 
     @cell "Heatmap" [heatmap] begin
-        heatmap(rand(32, 32))
+        heatmap(RNG.rand(32, 32))
     end
 
     @cell "Animated Scatter" [animated, scatter, updating, record] begin
         N = 10
-        r = [(rand(7, 2) .- 0.5) .* 25 for i = 1:N]
+        r = [(RNG.rand(7, 2) .- 0.5) .* 25 for i = 1:N]
         scene = scatter(r[1][:, 1], r[1][:, 2], markersize = 1, limits = FRect(-25/2, -25/2, 25, 25))
         s = scene[end] # last plot in scene
         record(scene, @replace_with_a_path(mp4), r) do m
@@ -367,8 +367,8 @@
     @cell "linesegments + colors" [linesegments] begin
         using Colors
         linesegments(
-            [rand(Point2f0) => rand(Point2f0) for i in 1:5],
-            color = rand(RGB{Float64}, 5)
+            [RNG.rand(Point2f0) => RNG.rand(Point2f0) for i in 1:5],
+            color = RNG.rand(RGB{Float64}, 5)
         )
     end
 
@@ -378,7 +378,7 @@
         using Statistics
         n, m = 100, 101
         t = range(0, 1, length=m)
-        X = cumsum(randn(n, m), dims = 2)
+        X = cumsum(RNG.randn(n, m), dims = 2)
         X = X .- X[:, 1]
         μ = vec(mean(X, dims=1)) # mean
         lines(t, μ)              # plot mean line
@@ -660,7 +660,7 @@ end
 
     @cell "Line changing colour" [colors, lines, animation] begin
 
-        scene = lines(rand(10); linewidth=10)
+        scene = lines(RNG.rand(10); linewidth=10)
 
         record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
                scene.plots[2][:color] = RGBf0(i/255, (255 - i)/255, 0) # animate scene
@@ -681,7 +681,7 @@ end
                 RGBf0(t/255, (255 - t)/255, 0)
             end
 
-        scene = lines(rand(10); linewidth=10, color = c)
+        scene = lines(RNG.rand(10); linewidth=10, color = c)
 
         record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
             t[] = i # update `t`'s value
@@ -730,7 +730,7 @@ end
     @cell "Categorical heatmap" [heatmap, categorical, string] begin
         x = ["a", "b", "c"]
         y = ["α", "β", "γ"]
-        heatmap(x, y, rand(3, 3))
+        heatmap(x, y, RNG.rand(3, 3))
     end
 
 end

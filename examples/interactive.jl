@@ -36,11 +36,11 @@
         b2 = button(t, "marker")
         msize = slider(t, 0.1:0.01:0.5)
         on(b1[end][:clicks]) do c
-            p1.color = rand(RGBAf0)
+            p1.color = RNG.rand(RGBAf0)
         end
         markers = ('π', '😹', '⚃', '◑', '▼')
         on(b2[end][:clicks]) do c
-            p2.marker = markers[rand(1:5)]
+            p2.marker = markers[RNG.rand(1:5)]
         end
         on(msize[end][:value]) do val
             p2.markersize = val
@@ -57,7 +57,7 @@
     end
 
     @cell "Mouse Picking" [scatter, heatmap, interactive] begin
-        img = rand(100, 100)
+        img = RNG.rand(100, 100)
         scene = Scene(resolution = (500, 500))
         heatmap!(scene, img, scale_plot = false)
         clicks = Node(Point2f0[(0,0)])
@@ -234,7 +234,7 @@
 
     @cell "Add and change points" [heatmap, on, ispressed, to_world, scatter, center, "2d"] begin
         using LinearAlgebra
-        img = rand(100, 100)
+        img = RNG.rand(100, 100)
         scene = Scene(scale_plot = false, resolution = (500, 500))
         heatmap!(scene, img)
         clicks = Node(Point2f0[(0, 0)])
@@ -466,7 +466,7 @@
             return map(1:n) do i
                 v = [0, 0, 0]  # initialize so we go into the while loop
                 while norm(v) < .0001
-                    v = randn(Point3f0)
+                    v = RNG.randn(Point3f0)
                 end
                 v = v / norm(v)  # normalize to unit norm
                 v
@@ -484,8 +484,8 @@
             return map(1:N) do i
                 sm = mesh!(scene, Sphere(Point3f0(0), rship_km*radius_mult), color=:green, show_axis=false)[end]
                 ship = Ship(mship_kg, [0, 0, 0], [0, 0, 0], :green, sm)
-                moveto!(ship, (100000f0 * randn(Float32), dbetween_km/2 + randn(Float32) * 50000f0, 50000f0*randn(Float32)))
-                ship.velocity_mps = [40000*randn(Float32), -1000*randn(Float32), 1000*randn(Float32)]
+                moveto!(ship, (100000f0 * RNG.randn(Float32), dbetween_km/2 + RNG.randn(Float32) * 50000f0, 50000f0*RNG.randn(Float32)))
+                ship.velocity_mps = [40000*RNG.randn(Float32), -1000*RNG.randn(Float32), 1000*RNG.randn(Float32)]
                 ship
             end
         end
@@ -602,9 +602,9 @@
             end
             while isopen(S)
                 p = p₀((10.0 + kx[]) / 10.0)
-                gateState = rand(1)[] < p
+                gateState = RNG.rand(1)[] < p
                 HC_handle[:color] = gateState ? :gold1 : :dodgerblue1
-                D[] = -3.0 + rand() / 5.0
+                D[] = -3.0 + RNG.rand() / 5.0
                 sleep(0.001)
             end
         end
@@ -620,7 +620,7 @@
         rs = LinRange.(0, (6, 4, 10), 150)
         slider_t = slider(LinRange(0.1, 3, 100))
         # This actually needs to be pretty fast... Lucky for us, we use Julia :)
-        function make_volume!(rs, val, result = zeros(Float32, length.(rs)), r = rand(Float32, size(result)) .* 0.1)
+        function make_volume!(rs, val, result = zeros(Float32, length.(rs)), r = RNG.rand(Float32, size(result)) .* 0.1)
             @simd for idx in CartesianIndices(result)
                 @inbounds begin
                     x, y, z = getindex.(rs, Tuple(idx))
@@ -764,7 +764,7 @@ end
         tile = Rect3D(Point3f0(-0.8, -0.8, -0.3), Vec3f0(1.6, 1.6, 0.6))
 
         sphere_pos = 0.8rand(Point3f0, 50) .+ [Point3f0(0.1, 0.1, 0.2)]
-        sphere_colors = rand(RGBf0, length(sphere_pos))
+        sphere_colors = RNG.rand(RGBf0, length(sphere_pos))
         sphere = Sphere(Point3f0(0), 1f0)
 
         scene1 = Scene(SSAO=ssao_attrib)

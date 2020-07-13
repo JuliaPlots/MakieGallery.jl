@@ -2,9 +2,9 @@
 @block AnthonyWang [tutorials] begin
 
     @cell "Tutorial simple scatter" [tutorial, scatter, "2d"] begin
-        x = rand(10)
-        y = rand(10)
-        colors = rand(10)
+        x = RNG.rand(10)
+        y = RNG.rand(10)
+        colors = RNG.rand(10)
         scene = scatter(x, y, color = colors)
     end
 
@@ -85,7 +85,7 @@
     end
 
     @cell "Tutorial heatmap" [tutorial, heatmap, "2d"] begin
-        data = rand(50, 50)
+        data = RNG.rand(50, 50)
         scene = heatmap(data)
     end
 
@@ -99,22 +99,22 @@
     end
 
     @cell "Tutorial barplot" [tutorial, barplot, "2d"] begin
-        data = sort(randn(100))
+        data = sort(RNG.randn(100))
         barplot(data)
     end
 
     @cell "Tutorial title" [tutorial, title, "2d"] begin
-        scene = lines(rand(10), axis=(names=(title="Random lines",),))
+        scene = lines(RNG.rand(10), axis=(names=(title="Random lines",),))
     end
 
     @cell "Tutorial title function" [tutorial, title, "2d"] begin
-        scene = lines(rand(10))
+        scene = lines(RNG.rand(10))
         sc_t = title(scene, "Random lines")
         sc_t
     end
 
     @cell "Tutorial plot transformation" [tutorial, transformation, "2d"] begin
-        data = rand(10)
+        data = RNG.rand(10)
 
         scene = Scene()
         st = Stepper(scene, @replace_with_a_path)
@@ -129,7 +129,7 @@
 
     # @cell "Tutorial markersizes" [tutorial, markersize, scatter] begin
     #
-    #     scene = scatter(rand(10); markersize = 10px)
+    #     scene = scatter(RNG.rand(10); markersize = 10px)
     #
     # end
 

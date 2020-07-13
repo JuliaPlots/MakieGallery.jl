@@ -560,6 +560,9 @@ function eval_example(
         entry;
         kw_args...
     )
+    # Seed, to have consistent random numbers
+    RNG.seed_rng!()
+
     source = example2source(
         entry; kw_args...,
         scope_start = "", scope_end = ""
@@ -567,10 +570,8 @@ function eval_example(
 
     uname = entry.unique_name
     steps = split(source, "@substep", keepempty = false)
-    Random.seed!(42)
 
     temp_mod = MakieGallery.eval(:(module $(gensym("TempModule")) end))
-
     for backend in plotting_backends
         @eval temp_mod (using $(Symbol(backend)))
     end

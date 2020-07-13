@@ -52,7 +52,7 @@
     end
 
     @cell "Volume Function" [volume] begin
-        volume(rand(32, 32, 32), algorithm = :mip)
+        volume(RNG.rand(32, 32, 32), algorithm = :mip)
     end
     @cell "Textured Mesh" [mesh, texture, cat] begin
         using FileIO
@@ -63,16 +63,12 @@
         mesh(MakieGallery.loadasset("cat.obj"))
     end
     @cell "Colored Mesh" [mesh, axis] begin
-        x = [0, 1, 2, 0]
-        y = [0, 0, 1, 2]
-        z = [0, 2, 0, 1]
+        # You can also use an array of x, y and z-values
+        points = Point3f0[[2, 2, 2], [1, 0, 2], [2, 1, 0], [0, 2, 1]]
         color = [:red, :green, :blue, :yellow]
-        i = [0, 0, 0, 1]
-        j = [1, 2, 3, 2]
-        k = [2, 3, 1, 3]
         # indices interpreted as triangles (every 3 sequential indices)
         indices = [1, 2, 3,   1, 3, 4,   1, 4, 2,   2, 3, 4]
-        mesh(x, y, z, indices, color = color)
+        mesh(points, indices, color = color)
     end
     @cell "Wireframe of a Mesh" [mesh, wireframe, cat] begin
         wireframe(MakieGallery.loadasset("cat.obj"))
@@ -115,7 +111,7 @@
         surf_func(i) = [Float32(xy_data(x*i, y*i)) for x = r, y = r]
         surface(
             r, r, surf_func(10),
-            color = rand(RGBAf0, 124, 124)
+            color = RNG.rand(RGBAf0, 124, 124)
         )
     end
     @cell "Line Function" ["2d", lines] begin
@@ -129,17 +125,17 @@
         using GeometryBasics
         large_sphere = Sphere(Point3f0(0), 1f0)
         positions = decompose(Point3f0, large_sphere)
-        colS = [RGBAf0(rand(), rand(), rand(), 1.0) for i = 1:length(positions)]
-        sizesS = [rand(Point3f0) .* 0.05f0 for i = 1:length(positions)]
+        colS = [RGBAf0(RNG.rand(), RNG.rand(), RNG.rand(), 1.0) for i = 1:length(positions)]
+        sizesS = [RNG.rand(Point3f0) .* 0.05f0 for i = 1:length(positions)]
         meshscatter(positions, color = colS, markersize = sizesS)
     end
 
     @cell "scatter" ["2d", scatter] begin
-        scatter(rand(20), rand(20), markersize = 0.03)
+        scatter(RNG.rand(20), RNG.rand(20), markersize = 0.03)
     end
 
     @cell "Marker sizes" ["2d", scatter] begin
-        scatter(rand(20), rand(20), markersize = rand(20)./20, color = to_colormap(:Spectral, 20))
+        scatter(RNG.rand(20), RNG.rand(20), markersize = RNG.rand(20)./20, color = to_colormap(:Spectral, 20))
     end
 
 
@@ -216,8 +212,8 @@
         end
         n = 100^2 #number of points to generate
         r = ones(n);
-        θ = acos.(1 .- 2 .* rand(n))
-        φ = 2π * rand(n)
+        θ = acos.(1 .- 2 .* RNG.rand(n))
+        φ = 2π * RNG.rand(n)
         pts = SphericalToCartesian(r,θ,φ)
         arrows(pts, (normalize.(pts) .* 0.1f0), arrowsize = 0.02, linecolor = :green, arrowcolor = :darkblue)
     end
@@ -229,7 +225,7 @@
         x = [cospi(φ)*sinpi(θ) for θ in θ, φ in φ]
         y = [sinpi(φ)*sinpi(θ) for θ in θ, φ in φ]
         z = [cospi(θ) for θ in θ, φ in φ]
-        rand([-1f0, 1f0], 3)
+        RNG.rand([-1f0, 1f0], 3)
         pts = vec(Point3f0.(x, y, z))
         surface(x, y, z, color = AbstractPlotting.logo(), transparency = true)
     end
@@ -280,7 +276,7 @@
         connectivity = [faces[i][j] for i = 1:length(faces), j = 1:3]
         mesh(
             coordinates, connectivity,
-            color = rand(length(vertices))
+            color = RNG.rand(length(vertices))
         )
     end
 
@@ -335,7 +331,7 @@
         positions = decompose(Point3f0, large_sphere, 30)
         np = length(positions)
         pts = [positions[k][l] for k = 1:length(positions), l = 1:3]
-        pts = vcat(pts, 1.1 .* pts + randn(size(pts)) / perturbfactor) # light position influence ?
+        pts = vcat(pts, 1.1 .* pts + RNG.randn(size(pts)) / perturbfactor) # light position influence ?
         edges = hcat(collect(1:np), collect(1:np) .+ np)
         ne = size(edges, 1); np = size(pts, 1)
         cylinder = Cylinder(Point3f0(0), Point3f0(0, 0, 1.0), 1f0)
@@ -347,7 +343,7 @@
         lengthsC = sqrt.(sum((pts[edges[:,1], :] .- pts[edges[:, 2], :]) .^ 2, dims = 2))
         sizesC = [Vec3f0(radius, radius, lengthsC[i]) for i = 1:ne]
         sizesC = [Vec3f0(1) for i = 1:ne]
-        colorsp = [RGBA{Float32}(rand(), rand(), rand(), 1.0) for i = 1:np]
+        colorsp = [RGBA{Float32}(RNG.rand(), RNG.rand(), RNG.rand(), 1.0) for i = 1:np]
         colorsC = [(colorsp[edges[i, 1]] .+ colorsp[edges[i, 2]]) / 2.0 for i = 1:ne]
         sizesC = [Vec3f0(radius, radius, lengthsC[i]) for i = 1:ne]
         Qlist = zeros(ne, 4)
@@ -381,7 +377,7 @@
     @cell "Connected Sphere" [lines, views, scatter, axis] begin
         large_sphere = Sphere(Point3f0(0), 1f0)
         positions = decompose(Point3f0, large_sphere)
-        linepos = view(positions, rand(1:length(positions), 1000))
+        linepos = view(positions, RNG.rand(1:length(positions), 1000))
         scene = lines(linepos, linewidth = 0.1, color = :black, transparency = true)
         scatter!(
             scene, positions, markersize = 0.05,
@@ -393,8 +389,8 @@
     @cell "image scatter" [image, scatter] begin
         using LinearAlgebra
         scatter(
-            1:10, 1:10, rand(10, 10) .* 10,
-            rotations = normalize.(rand(Quaternionf0, 10*10)),
+            1:10, 1:10, RNG.rand(10, 10) .* 10,
+            rotations = normalize.(RNG.rand(Quaternionf0, 10*10)),
             markersize = 1,
             # can also be an array of images for each point
             # need to be the same size for best performance, though
@@ -450,10 +446,10 @@
         scene = Scene(backgroundcolor = :black)
         scatter!(
             scene,
-            map(i-> (randn(Point3f0) .- 0.5) .* 10, 1:stars),
-            glowwidth = 1, glowcolor = (:white, 0.1), color = rand(stars),
+            map(i-> (RNG.randn(Point3f0) .- 0.5) .* 10, 1:stars),
+            glowwidth = 1, glowcolor = (:white, 0.1), color = RNG.rand(stars),
             colormap = [(:white, 0.4), (:blue, 0.4), (:yellow, 0.4)],
-            markersize = rand(range(0.0001, stop = 0.05, length = 100), stars),
+            markersize = RNG.rand(range(0.0001, stop = 0.05, length = 100), stars),
             show_axis = false, transparency = true
         )
         update_cam!(scene, FRect3D(Vec3f0(-5), Vec3f0(10)))
@@ -511,7 +507,7 @@
         end
         rings = [(0.1f0, 1.0f0, 0.00001f0, Point2f0(0.2, 0.1)), (0.1f0, 0.0f0, 0.0002f0, Point2f0(0.052, 0.05))]
         N2 = 25000
-        t_audio = sin.(range(0, stop = 10pi, length = N2)) .+ (cos.(range(-3, stop = 7pi, length = N2)) .* 0.6) .+ (rand(Float32, N2) .* 0.1) ./ 2f0
+        t_audio = sin.(range(0, stop = 10pi, length = N2)) .+ (cos.(range(-3, stop = 7pi, length = N2)) .* 0.6) .+ (RNG.rand(Float32, N2) .* 0.1) ./ 2f0
         start = time()
         t = (time() - start) * 100
         pos = calcpositions.((rings,), 1:N2, t, (t_audio,))
@@ -585,28 +581,7 @@
         center!(scene) # center the Scene on the display
     end
 
-    @cell "Explicit frame rendering" [opengl, render_frame, meshscatter] begin
-        using ModernGL, GLMakie
-        using GLFW
-        GLMakie.opengl_renderloop[] = (screen) -> nothing
-        function update_loop(m, buff, screen)
-            for i = 1:20
-                GLFW.PollEvents()
-                buff .= rand.(Point3f0) .* 20f0
-                m[1] = buff
-                GLMakie.render_frame(screen)
-                GLFW.SwapBuffers(GLMakie.to_native(screen))
-                glFinish()
-            end
-        end
-        scene = meshscatter(rand(Point3f0, 10^4) .* 20f0)
-        screen = AbstractPlotting.backend_display(GLMakie.GLBackend(), scene)
-        meshplot = scene[end]
-        buff = rand(Point3f0, 10^4) .* 20f0;
-        update_loop(meshplot, buff, screen)
-        GLMakie.opengl_renderloop[] = GLMakie.renderloop # restore previous loop
-        scene
-    end
+
     @cell "Streamplot 3D" [streamplot] begin
         struct FitzhughNagumo{T}
             ϵ::T
@@ -660,7 +635,7 @@
          # Sample centered Gaussian noise with the right correlation by the method
          # based on the Cholesky decomposition of the precision matrix
         data = 0.1randn(d,d) + reshape(
-                cholesky(gridlaplacian(d,d) + 0.003I) \ randn(d*d),
+                cholesky(gridlaplacian(d,d) + 0.003I) \ RNG.randn(d*d),
                 d, d
         )
 
@@ -676,7 +651,7 @@
         # the high frequencies of Fourier transformed spatial white noise,
         # and (inverse) Fourier transforming the result back into the spatial domain.
         function cloud(n = 256, p = 0.75f0)
-            ωs = fft(randn(Float32, n, n, n))
+            ωs = fft(RNG.randn(Float32, n, n, n))
             r = Float32[0:n÷2; n÷2-1:-1:(iseven(n) ? 1 : 0)]
             xs, ys, zs = reshape(r, :, 1, 1), reshape(r, 1, :, 1), reshape(r, 1, 1, :)
             ωs ./= (1.0f0 .+ (xs.^2 .+ ys.^2 .+ zs.^2) .^ p)
@@ -692,7 +667,7 @@
     # @cell "2D text in 3D" [text, annotations] begin
     #     using GeometryBasics
     #     import AbstractPlotting: project
-    #     scene = meshscatter(rand(10), rand(10), rand(10), markersize = 0.02)
+    #     scene = meshscatter(RNG.rand(10), RNG.rand(10), RNG.rand(10), markersize = 0.02)
     #     scat = scene[end]
     #     project_pos(pv, res, x) = AbstractPlotting.project.((pv,), (res,), x .+ 0.1)
     #     cam = camera(scene)
@@ -754,7 +729,7 @@ end
 
         function addparticle!(particles, colors, nparticles)
             nparticles[] = nparticles[] + 1
-            particles[][nparticles[]] = normalize(randn(Point3f0))
+            particles[][nparticles[]] = normalize(RNG.randn(Point3f0))
             colors[][nparticles[]] = to_color(:green)
             particles[] = particles[]
             colors[] = colors[]
