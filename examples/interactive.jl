@@ -320,11 +320,11 @@
     @cell "Robot Arm" [slider, interactive, linesegments, vbox, "3d"] begin
 
         using AbstractPlotting
-        using AbstractPlotting: Mesh, Scene, LineSegments, translate!, rotate!, vbox, hbox, qrotation, mesh!
+        using AbstractPlotting: Mesh, Scene, LineSegments, translate!, rotate!
+        using AbstractPlotting: vbox, hbox, qrotation, mesh!
         using GeometryBasics: Vec3f0, Point3f0, Sphere
         using AbstractPlotting: textslider
         using Observables: on
-        using GLMakie
 
         """
           example by @pbouffard from JuliaPlots/Makie.jl#307

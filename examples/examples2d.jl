@@ -23,7 +23,6 @@
             sleep(hopsec)
             frame_start += hopsec
         end
-
     end
     @cell "Test heatmap + image overlap" [image, heatmap, transparency] begin
         heatmap(RNG.rand(32, 32))
