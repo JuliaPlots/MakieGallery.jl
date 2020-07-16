@@ -261,7 +261,6 @@ makedocs(
             "animation.md",
             "interaction.md",
             "functions-overview.md",
-            "animation.md",
         ],
         "Documentation" => [
             "scenes.md",
