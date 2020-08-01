@@ -23,7 +23,7 @@ const Axis3D_attr_desc = Dict(
 # frame
 const Axis3D_attr_frame = Dict(
     :axiscolor => "Symbol or Colorant. Specifies the color of the axes. Can be a color symbol/string like :red, or a Colorant.",
-    :linewidth => "Number. Width of the axes lines.",
+    :linewidth => "Number. Width of the axes grid lines.",
     :linecolor => "Symbol or Colorant. Specifies the color of the grid lines. Can be a color symbol/string like :red, or a Colorant."
 )
 
