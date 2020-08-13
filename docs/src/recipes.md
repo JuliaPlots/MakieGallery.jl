@@ -26,6 +26,10 @@ This can be done for all plot types or for a subset of plot types:
 convert_arguments(P::Type{<:AbstractPlot}, x::MyType) = convert_arguments(P, rand(10, 10))
 # Only for scatter plots
 convert_arguments(P::Type{<:Scatter}, x::MyType) = convert_arguments(P, rand(10, 10))
+# For a group of plots, using a conversion trait for instance PointBased plots, which includes Lines and Scatter
+convert_arguments(P::PointBased, x::MyType)
+# It is also possible to convert multiple arguments
+convert_arguments(P::Type{<:Scatter}, x::MyType, y::MyOtherType)
 ```
 
 Optionally you may define the default plot type so that `plot(x::MyType)` will
