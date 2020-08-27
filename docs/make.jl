@@ -6,7 +6,6 @@
 ##############################
 
 using Documenter, Markdown, Pkg, Random, FileIO, JSON, HTTP, GitHub
-using D3TypeTrees, D3Trees
 
 
 ##############################
@@ -33,9 +32,6 @@ using MakieGallery: eval_examples, generate_thumbnail, master_url,
 
 MakieGallery.current_ref_version[] = "master"
 
-empty!(MakieGallery.plotting_backends)
-append!(MakieGallery.plotting_backends, ["Makie"])
-
 cd(@__DIR__)
 database = MakieGallery.load_database()
 
@@ -44,7 +40,6 @@ docspath  = joinpath(pathroot, "docs")
 srcpath   = joinpath(docspath, "src")
 buildpath = joinpath(docspath, "build")
 genpath   = joinpath(srcpath, "generated")
-mediapath = download_reference()
 
 mkpath(genpath)
 

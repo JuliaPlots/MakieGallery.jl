@@ -2,7 +2,6 @@
 
 Makie overloads the `FileIO` interface, so it is simple to save Scenes as images.
 
-
 ## Static plots
 
 To save a `scene` as an image, you can just write e.g.:
@@ -28,10 +27,38 @@ st = Stepper(scene, @replace_with_a_path)
 ```
 
 and save the scene content & increment the stepper by using:
+
 ```julia
 step!(st)
 ```
 
-@example_database("Stepper demo")
+```julia
+function stepper_demo()
+    scene = Scene()
+    pos = (50, 50)
+    steps = ["Step 1", "Step 2", "Step 3"]
+    colors = AbstractPlotting.ColorBrewer.palette("Set1", length(steps))
+    lines!(scene, Rect(0,0,500,500), linewidth = 0.0001)
+    # initialize the stepper and give it an output destination
+    st = Stepper(scene, @replace_with_a_path)
+
+    for i = 1:length(steps)
+        text!(
+            scene,
+            steps[i],
+            position = pos,
+            align = (:left, :bottom),
+            textsize = 100,
+            font = "Blackchancery",
+            color = colors[i],
+            scale_plot = false
+        )
+        pos = pos .+ 100
+        step!(st) # saves the step and increments the step by one
+    end
+    return st
+end
+stepper_demo()
+```
 
 For more info, consult the [Example Gallery](http://juliaplots.org/MakieReferenceImages/gallery/index.html).
