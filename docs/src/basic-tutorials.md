@@ -26,8 +26,13 @@ The first use of Makie might take a little bit of time, due to precompilation.
 
 The `Scene` object holds everything in a plot, and you can initialize it like so:
 
-```julia
-scene = Scene()
+```@example 1
+# `using Makie` is equivalent to `using AbstractPlotting, GLMakie`
+using Makie
+using AbstractPlotting
+# Inline output into documentation / IJulia / Pluto.jl
+AbstractPlotting.inline!(true)
+scene = Scene();
 ```
 
 Note that before you put anything in the scene, it will be blank!
@@ -48,14 +53,14 @@ It is worth noting initally that if you run a Makie.jl example and nothing shows
 
 ### Scatter plot
 
-```julia
-x = RNG.rand(10)
-y = RNG.rand(10)
-colors = RNG.rand(10)
+```@example 1
+x = rand(10)
+y = rand(10)
+colors = rand(10)
 scene = scatter(x, y, color = colors)
 ```
 
-```julia
+```@example 1
 x = 1:10
 y = 1:10
 sizevec = x ./ 10
@@ -64,7 +69,7 @@ scene = scatter(x, y, markersize = sizevec)
 
 ### Line plot
 
-```julia
+```@example 1
 x = range(0, stop = 2pi, length = 40)
 f(x) = sin.(x)
 y = f(x)
@@ -73,11 +78,12 @@ scene = lines(x, y, color = :blue)
 
 ### Adding a title
 
-````julia
-scene = lines(RNG.rand(10), axis=(names=(title="Random lines",),))
+```@example 1
+scene = lines(rand(10), axis=(names=(title="Random lines",),))
+```
 
 ### Adding to a scene
-```julia
+```@example 1
 x = range(0, stop = 2pi, length = 80)
 f1(x) = sin.(x)
 f2(x) = exp.(-x) .* cos.(2pi*x)
@@ -89,11 +95,11 @@ scatter!(scene, x, y1, color = :red, markersize = 0.1)
 
 lines!(scene, x, y2, color = :black)
 scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
-````
+```
 
 ### Removing from a scene
 
-```julia
+```@example 1
 x = range(0, stop = 2pi, length = 80)
 y1 = sin.(x)
 y2 = exp.(-x) .* cos.(2pi * x)
@@ -104,7 +110,7 @@ scatter!(scene, x, y1, color = :red, markersize = 0.1)
 lines!(scene, x, y2, color = :black)
 scatter!(scene, x, y2, color = :green, marker = :utriangle, markersize = 0.1)
 # initialize the stepper and give it an output destination
-st = Stepper(scene, @replace_with_a_path)
+st = Stepper(scene, "output_folder")
 step!(st)
 
 # remove last plot in scene
@@ -118,7 +124,7 @@ st
 
 ### Adjusting scene limits
 
-```julia
+```@example 1
 x = range(0, stop = 10, length = 40)
 y = x
 #= specify the scene limits, note that the arguments for FRect are
@@ -134,7 +140,7 @@ You can also use the convenience functions [`xlims!`](@ref), [`ylims!`](@ref) an
 
 ### Basic theming
 
-```julia
+```@example 1
 x = range(0, stop = 2pi, length = 40)
 y = cos.(x)
 scene = lines(x, y, color = :blue)
@@ -148,7 +154,7 @@ scene
 
 ### Statistical plotting
 
-`Makie` has a lot of support for statistical plots through `AlgebraOfGraphics.jl`.
+`Makie` has a nice API for statistical plotting through [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/).
 
 ## Controlling display programmatically
 

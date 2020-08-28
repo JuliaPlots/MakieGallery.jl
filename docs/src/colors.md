@@ -37,7 +37,7 @@ To show the colormap and its scaling, you can use a color legend. Color legends 
 
 To simply produce a color legend and plot it to the left of the original plot, you can produce a colorlegend and `vbox` it.
 
-```julia
+```@example
 
 using ColorSchemes      # colormaps galore
 

@@ -19,16 +19,22 @@ When recording, you can make changes to any aspect of the Scene or its plots.
 
 Below is a small example of using `record`.
 
-```julia
-scene = lines(RNG.rand(10); linewidth=10)
 
-record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
+```@setup 1
+using Makie, AbstractPlotting
+```
+
+```@example 1
+scene = lines(rand(10); linewidth=10)
+
+record(scene, "out.mp4", 1:255; framerate = 60) do i
     scene.plots[2][:color] = RGBf0(i/255, (255 - i)/255, 0) # animate scene
     # `scene.plots` gives the plots of the Scene.
     # `scene.plots[1]` is always the Axis if it exists,
     # and `scene.plots[2]` onward are the user-defined plots.
-end
+end;
 ```
+![](out.mp4)
 
 ```@docs
 record
@@ -40,13 +46,13 @@ In both cases, the returned value is a path pointing to the location of the reco
 
 To animate a scene, you can also create a `Node`, e.g.:
 
-```julia
+```@example 1
 time = Node(0.0)
 ```
 
 and use `lift` on the Node to set up a pipeline to access its value. For example:
 
-```julia
+```@example 1
 scene = Scene()
 time = Node(0.1)
 myfunc(v, t) = sin.(v .* t)
@@ -56,15 +62,15 @@ scene = lines!(scene, positions)
 
 now, whenever the Node `time` is updated (e.g. when you `push!` to it), the plot will also be updated.
 
-```julia
-push!(time, Base.time())
+```@example 1
+push!(time, Base.time());
 ```
 
 You can also set most attributes equal to `Observable`s, so that you need only update
 a single variable (like time) during your animation loop. A translation of the first
 example to this `Observables` paradigm is below:
 
-```julia
+```@example 1
 "'Time' - an Observable that controls the animation"
 t = Node(0)
 
@@ -73,34 +79,38 @@ c = lift(t) do t
     RGBf0(t/255, (255 - t)/255, 0)
 end
 
-scene = lines(RNG.rand(10); linewidth=10, color = c)
+scene = lines(rand(10); linewidth=10, color = c)
 
-record(scene, @replace_with_a_path(mp4), 1:255; framerate = 60) do i
+record(scene, "out2.mp4", 1:255; framerate = 60) do i
     t[] = i # update `t`'s value
 end
 ```
+![](out2.mp4)
 
 A more complicated example:
 
-```julia
-scene = Scene()
+```@example 1
+let
+    scene = Scene()
 
-f(t, v, s) = (sin(v + t) * s, cos(v + t) * s, (cos(v + t) + sin(v)) * s)
-t = Node(Base.time()) # create a life signal
-limits = FRect3D(Vec3f0(-1.5, -1.5, -3), Vec3f0(3, 3, 6))
-p1 = meshscatter!(scene, lift(t-> f.(t, range(0, stop = 2pi, length = 50), 1), t), markersize = 0.05)[end]
-p2 = meshscatter!(scene, lift(t-> f.(t * 2.0, range(0, stop = 2pi, length = 50), 1.5), t), markersize = 0.05)[end]
+    f(t, v, s) = (sin(v + t) * s, cos(v + t) * s, (cos(v + t) + sin(v)) * s)
+    t = Node(Base.time()) # create a life signal
+    limits = FRect3D(Vec3f0(-1.5, -1.5, -3), Vec3f0(3, 3, 6))
+    p1 = meshscatter!(scene, lift(t-> f.(t, range(0, stop = 2pi, length = 50), 1), t), markersize = 0.05)[end]
+    p2 = meshscatter!(scene, lift(t-> f.(t * 2.0, range(0, stop = 2pi, length = 50), 1.5), t), markersize = 0.05)[end]
 
-lines = lift(p1[1], p2[1]) do pos1, pos2
-map((a, b)-> (a, b), pos1, pos2)
-end
-linesegments!(scene, lines, linestyle = :dot, limits = limits)
-# record a video
-N = 150
-record(scene, @replace_with_a_path(mp4), 1:N) do i
-    t[] = Base.time()
+    lines = lift(p1[1], p2[1]) do pos1, pos2
+        map((a, b)-> (a, b), pos1, pos2)
+    end
+    linesegments!(scene, lines, linestyle = :dot, limits = limits)
+    # record a video
+    N = 150
+    record(scene, "out3.mp4", 1:N) do i
+        t[] = Base.time()
+    end
 end
 ```
+![](out3.mp4)
 
 ## Appending data to a plot
 
@@ -158,7 +168,7 @@ end
 
 can be recorded just by changing the for loop to a `record-do` "loop":
 
-```julia
+```@example 1
 positions = Node(Point2f0.(rand(10), rand(10)))
 scene = Scene()
 scatter!(scene, positions)
@@ -167,16 +177,16 @@ record(scene, "name.mp4", 1:10) do i
     sleep(1/4)
 end
 ```
+![](name.mp4)
 
 ## More complex examples
 
-```julia
+```@example 1
 scene = Scene();
 function xy_data(x, y)
-    r = sqrt(x^2 + y^2)
-    r == 0.0 ? 1f0 : (sin(r)/r)
+    val = sqrt(x^2 + y^2)
+    val == 0.0 ? 1f0 : (sin(val)/val)
 end
-
 r = range(-2, stop = 2, length = 50)
 surf_func(i) = [Float32(xy_data(x*i, y*i)) for x = r, y = r]
 z = surf_func(20)
@@ -187,9 +197,10 @@ wf = wireframe!(scene, r, r, lift(x-> x .+ 1.0, surf[3]),
 )
 N = 150
 scene
-record(scene, @replace_with_a_path(mp4), range(5, stop = 40, length = N)) do i
+record(scene, "out5.mp4", range(5, stop = 40, length = N)) do i
     surf[3] = surf_func(i)
 end
 ```
+![](out5.mp4)
 
 You can see yet more complicated examples in the [Example Gallery](index.html)!

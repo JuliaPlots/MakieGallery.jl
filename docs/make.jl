@@ -5,7 +5,7 @@
 #      Generic imports       #
 ##############################
 
-using Documenter, Markdown, Pkg, Random, FileIO, JSON, HTTP, GitHub
+using Documenter, Markdown, Pkg, Random, FileIO
 
 
 ##############################
@@ -16,9 +16,7 @@ using MakieGallery, AbstractPlotting
 
 import AbstractPlotting: to_string
 
-using MakieGallery: eval_examples, generate_thumbnail, master_url,
-                    print_table, download_reference,
-                    @cell, @block, @substep
+using MakieGallery: print_table
 
 
 ################################################################################
@@ -29,8 +27,6 @@ using MakieGallery: eval_examples, generate_thumbnail, master_url,
 ################################################################################
 #                                    Setup                                     #
 ################################################################################
-
-MakieGallery.current_ref_version[] = "master"
 
 cd(@__DIR__)
 database = MakieGallery.load_database()
@@ -81,20 +77,10 @@ open(path, "w") do io
         println(io, "$fname")
         println(io, "```\n")
         # add previews of all tags related to function
-        for example in database
-            fname in example.tags || continue
-            base_path = joinpath(mediapath, string(example.unique_name))
-            thumb = master_url(mediapath, joinpath(base_path, "media", "thumb.jpg"))
-            code = master_url(mediapath, joinpath(base_path, "index.html"))
-            src_lines = example.file_range
-            println(io, """[![library lines $src_lines]($thumb)]($code)""")
-        end
         println(io, "\n")
     end
 end
 
-
-cd(docspath)
 
 ########################################
 #       Plot attributes overview       #
@@ -152,17 +138,6 @@ open(path, "w") do io
         println(io)
     end
 
-    # Examples on the bottom of the page
-    println(io, """
-
-    ### Examples
-
-    @example_database("Unicode Marker")
-
-    @example_database("Axis + Surface")
-
-    @example_database("Axis theming")
-    """)
 end
 
 ########################################
@@ -198,22 +173,6 @@ MakieGallery.generate_colorschemes_markdown(; GENDIR = genpath)
 #              Type trees              #
 ########################################
 
-@info "Generating type trees"
-open(joinpath(srcpath, "typetrees.md"), "w") do f
-
-    println(f, "# Type Trees")
-    println(f)
-
-    for typ in [AbstractPlotting.Transformable, AbstractPlotting.AbstractCamera]
-        println(f, "## $(Symbol(typ))")
-        println(f)
-        println(f, "```@raw html")
-        show(f, MIME("text/html"), TypeTree(typ))
-        println(f, "```")
-        println(f)
-    end
-
-end
 ################################################################################
 #                 Building HTML documentation with Documenter                  #
 ################################################################################
@@ -233,7 +192,6 @@ makedocs(
     sitename = "Makie.jl",
     expandfirst = [
         "basic-tutorials.md",
-        "statsmakie.md",
         "animation.md",
         "interaction.md",
         "functions-overview.md",
@@ -252,7 +210,6 @@ makedocs(
         "Home" => "index.md",
         "Basics" => [
             "basic-tutorials.md",
-            "statsmakie.md",
             "animation.md",
             "interaction.md",
             "functions-overview.md",
@@ -275,9 +232,7 @@ makedocs(
         "Developer Documentation" => [
             "why-makie.md",
             "devdocs.md",
-            "gallery.md",
             "AbstractPlotting Reference" => "abstractplotting_api.md",
-            "Type Trees" => "typetrees.md"
         ],
     ]
 )

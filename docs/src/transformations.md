@@ -10,13 +10,13 @@ rotate!
 scale!
 ```
 
-```julia
-data = RNG.rand(10)
-
+```@example
+using Makie
+data = rand(10)
 scene = Scene()
-st = Stepper(scene, @replace_with_a_path)
-lineplot = lines!(scene, data)[end]    # gets the last defined plot for the Scene
-scatplot = scatter!(scene, data)[end]  # same thing but the last defined plot is scatter
+st = Stepper(scene, "output_folder")
+# same thing but the last defined plot is scatter
+scatplot = scatter!(scene, data)[end]  
 step!(st)
 
 rotate!(lineplot, 0.025π) # only the lines are rotated, not the scatter

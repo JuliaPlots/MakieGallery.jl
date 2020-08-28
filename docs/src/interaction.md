@@ -16,59 +16,41 @@ Have a peek at [Animation](@ref) for some more information once you're done with
 A `Node` is a Julia structure that allows its value to be updated interactively. This means that anything that uses a `Node` could have its behavior updated interactively, as we will showcase in this page.
 
 Let's start by creating a `Node`:
-```julia
+```@example 1
+using Makie, AbstractPlotting
+```
+
+```@example 1
 x = Node(0.0) # set up a Node, and give it a default value of 0.0
 ```
 
-```
-Observable{Float64} with 0 listeners. Value:
-0
-```
-
 The value of the `x` can be changed by setting the empty index, i.e.:
-```julia
-julia> x[] = 3.34;
-julia> x
-Observable{Float64} with 0 listeners. Value:
-3.34
+```@example 1
+x[] = 3.34;
 ```
 
 Notice that you can access the value of a `Node` by indexing it with nothing, i.e. `x[]`. However, we recommend to use the function [`to_value`](@ref) to get the value of a `Node`, because `to_value` is a general function that works with all types instead of only `Node`s. E.g.:
-```julia
+```@example 1
 to_value(x)
-```
-
-```
-3.34
 ```
 
 ### `Node`s depending on other `Node`s
 
 You can create a node depending on another node using [`lift`](@ref):
 
-```julia
+```@example 1
 f(a) = a^2
 y = lift(a -> f(a), x)
-```
-
-```
-Observable{Float64} with 0 listeners. Value:
-11.1556
 ```
 
 Now, for every value of the `Node` `x`, the derived `Node` `y` will hold the value `f(x)`. Updating the value of `x` _will also update_ the value of `y`!
 
 For example:
-```julia
+```@example 1
 x[] = 10.0
 for i in (x, y)
     println(to_value(i))
 end
-```
-
-```
-10.0
-100.0
 ```
 
 That is to say, the `Node` `y` maps the function `f` (which is `a -> a^2` in this case) on `x` whenever the `Node` `x` is updated, and updates the corresponding value in `y`.
@@ -77,7 +59,7 @@ Any plot created based on this pipeline system will get updated whenever the nod
 
 !!! note
     For now, `lift` is just an alias for `Observables.map`,
-    and `Node` is just an alias for `Observables.Observable`. 
+    and `Node` is just an alias for `Observables.Observable`.
     This allows decoupling of the APIs.
 
 #### Shorthand macro for `lift`
@@ -86,7 +68,7 @@ When using [`lift`](@ref), it can be tedious to reference each participating `No
 at least three times, once as an argument to `lift`, once as an argument to the closure that
 is the first argument, and at least once inside the closure:
 
-```julia
+```@example 1
 x = Node(rand(100))
 y = Node(rand(100))
 z = lift((x, y) -> x .+ y, x, y)
@@ -97,17 +79,17 @@ you want to do with the lifted `Node`s and prepend each `Node` variable
 with a dollar sign $. The macro will lift every Node variable it finds and wrap
 the whole expression in a closure. The equivalent to the above statement using `@lift` is:
 
-```julia
+```@example 1
 z = @lift($x .+ $y)
 ```
 
 This also works with multiline statements and tuple or array indexing:
 
-```julia
+```@example 1
 multiline_node = @lift begin
     a = $x[1:50] .* $y[51:100]
     b = sum($z)
-    a - b
+    a .- b
 end
 ```
 
@@ -115,24 +97,16 @@ end
 Often it is the case that you want an event to be triggered each time a `Node` has its value updated.
 This is done using the `on-do` block from `Observables`.
 For example, the following code block "triggers" whenever `x`'s value is changed:
-```julia
+```@example 1
 on(x) do val
     println("x just got the value $val")
 end
 ```
 
-```
-#29 (generic function with 1 method)
-```
-
 As you can see, at we have run this block in Julia, but nothing happened yet.
 Instead, a function was defined. However, upon doing:
-```julia
-x[] = 5.0;
-```
-
-```
-x just got the value 5.0
+```@example 1
+x[] = rand(100);
 ```
 
 Boom! The event of the `on-do` block was triggered!
@@ -216,11 +190,11 @@ If you want to record the Scene you're interacting with, you can do that from wi
 
 ```julia
 record(scene, "test.mp4"; framerate = 10) do io
-      for i = 1:100        # sampling time
-          sleep(0.1)       # sampling rate 
-          recordframe!(io) # record a new frame
-      end
-  end
+    for i = 1:100        # sampling time
+        sleep(0.1)       # sampling rate
+        recordframe!(io) # record a new frame
+    end
+end
 ```
-  
-  This will sample from the Scene `scene` for 10 seconds, at a rate of 10 frames per second.
+
+This will sample from the Scene `scene` for 10 seconds, at a rate of 10 frames per second.

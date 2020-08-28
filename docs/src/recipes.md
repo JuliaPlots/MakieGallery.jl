@@ -11,18 +11,22 @@ theme and define a custom plotting function.
 Type recipes are really simple and just overload the argument conversion
 pipeline, converting from one type to another, plottable type.
 
-!!! warning
-`convert_arguments` must always return a Tuple.
+!!! warning `convert_arguments` must always return a Tuple.
 
 An example is:
 
-```julia
+```@setup 1
+using Makie
+using AbstractPlotting
+```
+
+```@example 1
 convert_arguments(x::Circle) = (decompose(Point2f, x),)
 ```
 
 This can be done for all plot types or for a subset of plot types:
 
-```julia
+```@example 1
 # All plot types
 convert_arguments(P::Type{<:AbstractPlot}, x::MyType) = convert_arguments(P, rand(10, 10))
 # Only for scatter plots
@@ -36,7 +40,7 @@ convert_arguments(P::Type{<:Scatter}, x::MyType, y::MyOtherType)
 Optionally you may define the default plot type so that `plot(x::MyType)` will
 use this:
 
-```julia
+```@example 1
 plottype(::MyType) = Surface
 ```
 
@@ -48,7 +52,7 @@ Second is a custom `plot!` for `MyPlot`, implemented in terms of the atomic
 plotting functions.
 We use an example to show how this works:
 
-```julia
+```@example 1
 # arguments (x, y, z) && theme are optional
 @recipe(MyPlot, x, y, z) do scene
     Theme(
@@ -59,7 +63,7 @@ end
 
 This macro expands to several things. Firstly a type definition:
 
-```julia
+```@example 1
 const MyPlot{ArgTypes} = Combined{myplot, ArgTypes}
 ```
 
@@ -68,7 +72,7 @@ symbol. This way the mapping from `MyPlot` to `myplot` is safer and simpler.
 (The downside is we always need a function `myplot` - TODO: is this a problem?)
 The following signatures are defined to make `MyPlot` nice to use:
 
-```julia
+```@example 1
 myplot(args...; kw_args...) = ...
 myplot!(scene, args...; kw_args...) = ...
 myplot(kw_args::Dict, args...) = ...
@@ -93,7 +97,7 @@ The theme given in the body of the `@recipe` invocation is inserted into a
 specialization of `default_theme` which inserts the theme into any scene that
 plots `Myplot`:
 
-```julia
+```@example 1
 function default_theme(scene, ::Myplot)
     Theme(
         plot_color => :red
@@ -104,7 +108,7 @@ end
 As the second part of defining `MyPlot`, you should implement the actual
 plotting of the `MyPlot` object by specializing `plot!`:
 
-```julia
+```@example 1
 function plot!(plot::MyPlot)
     # normal plotting code, building on any previously defined recipes
     # or atomic plotting operations, and adding to the combined `plot`:
@@ -118,7 +122,7 @@ It's possible to add specializations here, depending on the argument _types_
 supplied to `myplot`. For example, to specialize the behavior of `myplot(a)`
 when `a` is a 3D array of floating point numbers:
 
-```julia
+```@example 1
 const MyVolume = MyPlot{Tuple{<:AbstractArray{<: AbstractFloat, 3}}}
 argument_names(::Type{<: MyVolume}) = (:volume,) # again, optional
 function plot!(plot::MyVolume)
@@ -128,7 +132,7 @@ function plot!(plot::MyVolume)
 end
 ```
 
-```julia
+```@example 1
 import AbstractPlotting: Plot, default_theme, plot!, to_value
 
 struct Simulation
@@ -148,7 +152,7 @@ function AbstractPlotting.plot!(p::Plot(Simulation))
     sim = to_value(p[1]) # first argument is the SimulationResult
     # when advance changes, get new positions from the simulation
     mpos = lift(p[:advance]) do i
-        sim.grid .+ RNG.rand(Point3f0, length(sim.grid)) .* 0.01f0
+        sim.grid .+ rand(Point3f0, length(sim.grid)) .* 0.01f0
     end
     # size shouldn't change, so we might as well get the value instead of signal
     pos = to_value(mpos)
