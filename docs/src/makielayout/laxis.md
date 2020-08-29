@@ -100,11 +100,11 @@ by overloading `get_tickvalues` and `get_ticklabels`. Here are the signatures of
 the existing methods:
 
 ```@docs
-MakieLayout.get_tickvalues
+AbstractPlotting.MakieLayout.get_tickvalues
 ```
 
 ```@docs
-MakieLayout.get_ticklabels
+AbstractPlotting.MakieLayout.get_ticklabels
 ```
 
 
