@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 ## Elements are squashed into the lower left corner
 
 Layoutable elements require a bounding box that they align themselves to. If you
@@ -50,3 +55,8 @@ save("faq_shrunk_row.svg", scene); nothing # hide
 ```
 
 ![shrunk row](faq_shrunk_row.svg)
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```
