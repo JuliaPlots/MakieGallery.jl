@@ -171,7 +171,7 @@ also say `end+1`.
 ```@example tutorial
 leg = layout[1, end+1] = LLegend(scene,
     [line1, scat1, line2, scat2],
-    ["f(x) = x", "Data", "f(x) = -x + 6", "Data"])
+    ["f(x) = x", "Data", "f(x) = -x + 26", "Data"])
 
 save("step_008.svg", scene) # hide
 nothing # hide
@@ -502,7 +502,6 @@ nothing # hide
 And there we have it! Hopefully this tutorial has given you an overview how to
 approach the creation of a complex figure in MakieLayout. Check the rest of the
 documentation for more details and other dynamic parts like sliders and buttons!
-
 
 ```@eval
 using GLMakie
