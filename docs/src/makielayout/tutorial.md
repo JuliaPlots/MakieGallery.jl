@@ -252,7 +252,7 @@ two axes at once. The number of cells and objects has to match to do this.
 ```@example tutorial
 hm_axes = layout[1:2, 3] = [LAxis(scene, title = t) for t in ["Low Activity", "High Activity"]]
 
-heatmaps = [heatmap!(ax, i .+ rand(100, 100)) for (i, ax) in enumerate(hm_axes)]
+heatmaps = [heatmap!(ax, i .+ rand(20, 20)) for (i, ax) in enumerate(hm_axes)]
 
 save("step_013.svg", scene) # hide
 nothing # hide

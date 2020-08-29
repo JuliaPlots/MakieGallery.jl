@@ -230,7 +230,7 @@ makedocs(
             "troubleshooting.md"
         ],
         "MakieLayout" => [
-            "Tutorial" => "makielayout/index.md",
+            "Tutorial" => "makielayout/tutorial.md",
             "GridLayout" => "makielayout/grids.md",
             "LAxis" => "makielayout/laxis.md",
             "LLegend" => "makielayout/llegend.md",
