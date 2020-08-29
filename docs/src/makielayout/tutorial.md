@@ -8,7 +8,7 @@ CairoMakie.activate!()
 In this tutorial, we will see some of the capabilities of MakieLayout.jl while
 building a complex figure step by step. This is the final result we will create:
 
-![step_21](step_21.svg)
+![step_22](step_22.svg)
 
 All right, let's get started!
 
@@ -379,6 +379,19 @@ nothing # hide
 ![step_18](step_18.svg)
 
 
+We don't really like the automatically chosen tick values here. Sometimes, the automatic
+algorithms just don't choose the values we want, so let's change them.
+We can set the `ticks` attribute to any iterable of numbers that we want.
+
+```@example tutorial
+cbar.ticks = 1:0.5:3
+
+save("step_18b.svg", scene) # hide
+nothing # hide
+```
+![step_18b](step_18b.svg)
+
+
 ## Adding a Title
 
 Now the plot could use a title! While other plotting packages sometimes have
@@ -447,9 +460,9 @@ nothing # hide
 
 That looks good! You can see that the letters, larger than the axis titles, have
 increased the gap between the title and the axes to fit them. In most other
-plotting software, you would probably have an overlap issue now.
+plotting software, you can easily get overlap issues when you add labels like these between other elements.
 
-One last thing we'll fix, is giving the labels a bit of padding at the bottom and the right,
+We still want to give the labels a bit of padding at the bottom and the right,
 so they are not too close to the axes. The order of the padding values
 is (left, right, bottom, top).
 
@@ -461,6 +474,30 @@ save("step_21.svg", scene) # hide
 nothing # hide
 ```
 ![step_21](step_21.svg)
+
+## Tweaking aspect ratios
+
+One last thing we could improve is the shape of the heatmaps. We have square heatmaps in terms of data ratios,
+but they are a bit rectangular in the plot. In order to correctly make them square and have the rest of the layout
+adapt correctly, we don't just set the aspect ratio of each heatmap axis to 1. This would be possible,
+but would leave gaps where the assigned space which is still rectangular isn't used.
+
+Instead, we will tell the layout, that we want the column in which both heatmaps are should be at an aspect ratio of
+1 with the first row. As both rows are at Auto size, they will both be square afterwards, and the layout will still be tight
+because the left two axes will grow to fill the remaining space.
+
+```@example tutorial
+# Aspect(1, 1) means that relative to row 1
+# (row because we're setting a colsize,
+# and aspect ratios are always about the other side)
+# we set the column to an aspect ratio of 1
+
+colsize!(hm_sublayout, 1, Aspect(1, 1))
+
+save("step_22.svg", scene) # hide
+nothing # hide
+```
+![step_22](step_22.svg)
 
 And there we have it! Hopefully this tutorial has given you an overview how to
 approach the creation of a complex figure in MakieLayout. Check the rest of the
