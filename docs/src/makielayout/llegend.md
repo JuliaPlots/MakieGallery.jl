@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 ## Creating a legend
 
 ```@example
@@ -244,3 +249,8 @@ save("example_multilegend.svg", scene); nothing # hide
 ```
 
 ![example multilegend](example_multilegend.svg)
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```

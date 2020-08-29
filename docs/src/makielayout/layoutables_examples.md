@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 ## LSlider
 
 A simple slider without a label. You can create a label using an `LText` object,
@@ -196,3 +201,8 @@ save("example_lmenu.svg", scene); nothing # hide
 
 To remove axes, colorbars and other layoutables from their layout and the scene,
 use `delete!(layoutable)`.
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```

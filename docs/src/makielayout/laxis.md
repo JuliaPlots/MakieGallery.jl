@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 ## LAxis
 
 This object represents a 2D axis that has many functions to make it more convenient
@@ -393,3 +398,8 @@ a button during zooming or panning. By default those buttons are `x` and `y`,
 respectively, but you can change them with the attributes `xpankey`, `ypankey`,
 `xzoomkey` and `yzoomkey`. Buttons can be found in `AbstractPlotting.Keyboard`,
 for example the `x` button is accessed as `AbstractPlotting.Keyboard.x`.
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```

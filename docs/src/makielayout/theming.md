@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 ## Theming
 
 Every layoutable object can be themed by adding attributes under a key with
@@ -37,3 +42,8 @@ save("example_theming.svg", scene); nothing # hide
 ```
 
 ![example theming](example_theming.svg)
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```
