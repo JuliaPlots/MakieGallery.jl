@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 ## Setting column and row sizes correctly
 
 There are four different types of sizes you can give rows and columns.
@@ -288,3 +293,9 @@ save("example_trimming_3.svg", scene); nothing # hide
 ```
 
 ![trimming 3](example_trimming_3.svg)
+
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```
