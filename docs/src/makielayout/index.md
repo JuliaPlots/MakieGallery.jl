@@ -1,23 +1,3 @@
-```@eval
-using AbstractPlotting
-using AbstractPlotting: px
-
-set_theme!(
-    font = "Noto Sans Light",
-    LAxis = (
-        titlefont = "Noto Sans Semibold",
-    ),
-    LLegend = (
-        titlefont = "Noto Sans Semibold",
-    )
-)
-
-# replace the font paths with only the docs font folder
-empty!(AbstractPlotting.FreeTypeAbstraction.valid_fontpaths)
-push!(AbstractPlotting.FreeTypeAbstraction.valid_fontpaths, joinpath(@__DIR__, "fonts"))
-nothing
-```
-
 # MakieLayout.jl Tutorial
 
 In this tutorial, we will see some of the capabilities of MakieLayout.jl while
