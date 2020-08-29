@@ -8,7 +8,7 @@ also choose to specify a bounding box manually if you need more control.
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 1200))
 
@@ -37,7 +37,7 @@ of that row or column to `Auto(false)` (or any other value than `Auto(true)`).
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 1200))
 

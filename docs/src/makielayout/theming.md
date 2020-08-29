@@ -18,7 +18,7 @@ set_theme!(
 Here is an example of theming `LAxis` and `LColorbar`:
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 
 set_theme!(

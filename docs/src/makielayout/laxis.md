@@ -17,7 +17,7 @@ is adjusted to its new size. All axis decorations then also update their positio
 
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using Animations
 
@@ -57,7 +57,7 @@ the values you set with these functions will probably not be exactly what you ge
 but they will be changed to fit the chosen ratio.
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 
 scene, layout = layoutscene(resolution = (1200, 900))
@@ -109,7 +109,7 @@ MakieLayout.get_ticklabels
 
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 
 scene, layout = layoutscene(resolution = (1200, 900))
@@ -149,7 +149,7 @@ waste space. In this example, we set the column and row gaps to zero, so we can
 see the shrinking white space better.
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 
 scene = Scene(resolution = (600, 600), camera=campixel!)
@@ -224,7 +224,7 @@ it necessarily has to break the layout a little bit.
 
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using FileIO
 using Random # hide
@@ -279,7 +279,7 @@ You can see the different ways to get a plot with an unstretched circle, using
 different ways of setting aspect ratios, in the following example.
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using Animations
 
@@ -343,7 +343,7 @@ separately.
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 

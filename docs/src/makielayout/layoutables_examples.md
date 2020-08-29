@@ -8,7 +8,7 @@ To create a horizontal layout containing a label, a slider, and a value label, u
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 
@@ -37,7 +37,7 @@ so rows and columns in a GridLayout can shrink to the appropriate width or heigh
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 
@@ -56,7 +56,7 @@ save("example_ltext.svg", scene); nothing # hide
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 
@@ -80,7 +80,7 @@ facet plots or when a rectangular placeholder is needed.
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using ColorSchemes
 
 scene, layout = layoutscene(resolution = (1200, 900))
@@ -105,7 +105,7 @@ are not inherited from the main scene (which has a pixel camera and no axis, e.g
 
 ```julia
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 
@@ -123,7 +123,7 @@ or disable properties of an interactive plot.
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 
@@ -149,7 +149,7 @@ to the option value of an element when it is selected.
 
 ```@example
 using AbstractPlotting
-using MakieLayout
+using AbstractPlotting.MakieLayout
 
 scene, layout = layoutscene(resolution = (1200, 900))
 

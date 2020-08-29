@@ -1,7 +1,7 @@
 ## Creating a legend
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using AbstractPlotting: px
 
@@ -29,7 +29,7 @@ You can control the number of banks with the `nbanks` attribute. Banks are colum
 when in vertical mode, and rows when in horizontal mode.
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using AbstractPlotting: px
 
@@ -60,7 +60,7 @@ variables. You can use the margin keyword to keep the legend from touching the a
 spines.
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 
 haligns = [:left, :right, :center]
@@ -105,13 +105,13 @@ arrangement for `MarkerElement`s or poly shape for `PolyElement`s. You can check
 the list using this function:
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 MakieLayout.attributenames(LegendEntry)
 ```
 
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using AbstractPlotting: px
 
@@ -159,7 +159,7 @@ if you place the legend below or above the axis.
 
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using AbstractPlotting: px
 
@@ -196,7 +196,7 @@ You can shift the position of the titles relative to each group with the
 `titleposition` attribute, either `:left` or `:top`.
 
 ```@example
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using AbstractPlotting: px
 

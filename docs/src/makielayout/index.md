@@ -15,7 +15,7 @@ which has a `GridLayout` attached to it that always fills the whole scene area.
 You can pass the outer padding of the top layout as the first argument.
 
 ```@example tutorial
-using MakieLayout
+using AbstractPlotting.MakieLayout
 using CairoMakie; CairoMakie.activate!()
 using Random # hide
 using AbstractPlotting
