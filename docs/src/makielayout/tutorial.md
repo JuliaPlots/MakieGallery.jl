@@ -1,3 +1,8 @@
+```@eval
+using CairoMakie
+CairoMakie.activate!()
+```
+
 # MakieLayout.jl Tutorial
 
 In this tutorial, we will see some of the capabilities of MakieLayout.jl while
@@ -16,7 +21,6 @@ You can pass the outer padding of the top layout as the first argument.
 
 ```@example tutorial
 using AbstractPlotting.MakieLayout
-using CairoMakie; CairoMakie.activate!()
 using Random # hide
 using AbstractPlotting
 Random.seed!(2) # hide
@@ -40,8 +44,11 @@ We create the axis and place it into the layout in one go. You place objects in
 a layout by using indexing syntax. You can save the axis in a variable by chaining
 the `=` expressions.
 
+We call the axis title "Pre Treatment" because we're going to plot some made up measurements,
+like they could result from an experimental trial.
+
 ```@example tutorial
-ax1 = layout[1, 1] = LAxis(scene, title = "Sine")
+ax1 = layout[1, 1] = LAxis(scene, title = "Pre Treatment")
 
 save("step_002.svg", scene) # hide
 nothing # hide
@@ -55,10 +62,11 @@ Contrary to Makie, these calls return the plot objects, not the Scene or LAxis,
 so it's easier to save them.
 
 ```@example tutorial
-xx = 0:0.2:4pi
-line1 = lines!(ax1, sin.(xx), xx, color = :red)
-scat1 = scatter!(ax1, sin.(xx) .+ 0.2 .* randn.(), xx,
-    color = (:red, 0.5), markersize = 15px, marker = '■')
+data1 = randn(50, 2) * [1 2.5; 2.5 1] .+ [10 10]
+
+line1 = lines!(ax1, 5..15, x -> x, color = :red, linewidth = 2)
+scat1 = scatter!(ax1, data1,
+    color = (:red, 0.3), markersize = 15px, marker = '■')
 
 save("step_003.svg", scene) # hide
 nothing # hide
@@ -67,7 +75,7 @@ nothing # hide
 
 ## Multiple Axes
 
-This looks nice already, but we want another axis with a cosine this time, to
+This looks nice already, but we want another axis with a second dataset, to
 the right of the one we have. Currently our layout has one row and one cell, and
 only one LAxis inside of it:
 
@@ -79,7 +87,7 @@ We can extend the grid by indexing into new grid cells. Let's place a new axis
 next to the one we have, in row 1 and column 2.
 
 ```@example tutorial
-ax2 = layout[1, 2] = LAxis(scene, title = "Shifted Cosine")
+ax2 = layout[1, 2] = LAxis(scene, title = "Post Treatment")
 
 save("step_004.svg", scene) # hide
 nothing # hide
@@ -98,10 +106,11 @@ Let's plot into the new axis, the same way we did the scatter plots before.
 
 
 ```@example tutorial
+data2 = randn(50, 2) * [1 -2.5; -2.5 1] .+ [13 13]
 
-line2 = lines!(ax2, cos.(xx), pi .+ xx, color = :blue)
-scat2 = scatter!(ax2, cos.(xx) .+ 0.2 .* randn.(), pi .+ xx,
-    color = (:blue, 0.5), markersize = 15px, marker = '▲')
+line2 = lines!(ax2, 7..17, x -> -x + 26, color = :blue, linewidth = 2)
+scat2 = scatter!(ax2, data2,
+    color = (:blue, 0.3), markersize = 15px, marker = '▲')
 
 
 save("step_005.svg", scene) # hide
@@ -127,7 +136,7 @@ nothing # hide
 
 This looks good, but now both y-axes are the same, so we can hide the right one
 to make the plot less cluttered. We keep the grid lines, though. You can see that
-now that the y-axis is gone the two LAxes grow to fill the gap.
+now that the y-axis is gone, the two LAxes grow to fill the gap.
 
 ```@example tutorial
 hideydecorations!(ax2, grid = false)
@@ -142,9 +151,9 @@ Even though our plots are entirely made up, we should follow best practice and l
 the axes. We can do this with the `xlabel` and `ylabel` attributes of the `LAxis`.
 
 ```@example tutorial
-ax1.xlabel = "Amplitude"
-ax2.xlabel = "Amplitude"
-ax1.ylabel = "Time [ms]"
+ax1.xlabel = "Weight [kg]"
+ax2.xlabel = "Weight [kg]"
+ax1.ylabel = "Maximum Velocity [m/sec]"
 
 save("step_007_2.svg", scene) # hide
 nothing # hide
@@ -162,7 +171,7 @@ also say `end+1`.
 ```@example tutorial
 leg = layout[1, end+1] = LLegend(scene,
     [line1, scat1, line2, scat2],
-    ["True", "Measured", "True", "Measured"])
+    ["f(x) = x", "Data", "f(x) = -x + 6", "Data"])
 
 save("step_008.svg", scene) # hide
 nothing # hide
@@ -250,7 +259,7 @@ versions of layout assignment syntax for convenience. Here, we create and assign
 two axes at once. The number of cells and objects has to match to do this.
 
 ```@example tutorial
-hm_axes = layout[1:2, 3] = [LAxis(scene, title = t) for t in ["Low Activity", "High Activity"]]
+hm_axes = layout[1:2, 3] = [LAxis(scene, title = t) for t in ["Cell Assembly Pre", "Cell Assembly Post"]]
 
 heatmaps = [heatmap!(ax, i .+ rand(20, 20)) for (i, ax) in enumerate(hm_axes)]
 
@@ -330,7 +339,7 @@ for hm in heatmaps
     hm.colorrange = (1, 3)
 end
 
-cbar = hm_sublayout[:, 2] = LColorbar(scene, heatmaps[1], label = "Activity Level")
+cbar = hm_sublayout[:, 2] = LColorbar(scene, heatmaps[1], label = "Activity [spikes/sec]")
 
 save("step_016.svg", scene) # hide
 nothing # hide
@@ -456,3 +465,9 @@ nothing # hide
 And there we have it! Hopefully this tutorial has given you an overview how to
 approach the creation of a complex figure in MakieLayout. Check the rest of the
 documentation for more details and other dynamic parts like sliders and buttons!
+
+
+```@eval
+using GLMakie
+GLMakie.activate!()
+```
