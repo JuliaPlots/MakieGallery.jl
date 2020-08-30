@@ -229,6 +229,16 @@ makedocs(
             "backends.md",
             "troubleshooting.md"
         ],
+        "MakieLayout" => [
+            "Tutorial" => "makielayout/tutorial.md",
+            "GridLayout" => "makielayout/grids.md",
+            "LAxis" => "makielayout/laxis.md",
+            "LLegend" => "makielayout/llegend.md",
+            "Layoutables Examples" => "makielayout/layoutables_examples.md",
+            "Theming Layoutables" => "makielayout/theming.md",
+            "How Layouting Works" => "makielayout/layouting.md",
+            "Frequently Asked Questions" => "makielayout/faq.md",
+        ],
         "Developer Documentation" => [
             "why-makie.md",
             "devdocs.md",
