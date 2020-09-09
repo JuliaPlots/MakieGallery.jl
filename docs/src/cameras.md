@@ -4,12 +4,10 @@ A `Camera` is simply a viewport through which the Scene is visualized.  `Makie` 
 
 To specify the camera you want to use for your Scene, you can set the `camera` attribute.  Currently, we offer four types of camera:
 
-```@docs
-cam2d!
-cam3d!
-campixel!
-cam3d_cad!
-```
+[`cam2d!`](@ref)
+[`cam3d!`](@ref)
+[`campixel!`](@ref)
+[`cam3d_cad!`](@ref)
 
 which will mutate the camera of the Scene into the specified type.
 
@@ -18,11 +16,9 @@ which will mutate the camera of the Scene into the specified type.
 We offer several functions to control the camera programatically.  
 You can rotate, translate, zoom and change the speed of the camera, as well as setting it to "look at" a certain point.
 
-```@docs
-translate_cam!
-rotate_cam!
-zoom!
-```
+[`translate_cam!`](@ref)
+[`rotate_cam!`](@ref)
+[`zoom!`](@ref)
 
 
 In addition, the camera can be configured by setting the fields of `cam = cameracontrols(scene)`:
@@ -46,12 +42,9 @@ As an example, to set the rotation speed of the camera, simply execute `cam.rota
 To force a plot to be visualized in 3D, you can set the limits to have a nonzero \(z\)-axis interval, or ensure that a 3D camera type is used.
 For example, you could pass the keyword argument `limits = Rect([0,0,0],[1,1,1])`, or `camera = cam3d!`.
 
-You can use the camera given by `campixel!` (also called a pixel camera), to create a plot which looks like a 2D plot from the user perspective (it generates a subscene with an orthographic view, aligned to pixel space).
+You can use the camera given by [`campixel!`](@ref) (also called a pixel camera), to create a plot which looks like a 2D plot from the user perspective (it generates a subscene with an orthographic view, aligned to pixel space).
 To ensure that the camera's view is not modified, you can pass the attribute `raw = true`.
 
 ## Updating the camera
 
-Often, when modifying the Scene, the camera can get "out of sync" with the Scene.  To fix this, you can call the `update_cam!` function on the Scene:
-```@docs
-update_cam!
-```
+Often, when modifying the Scene, the camera can get "out of sync" with the Scene.  To fix this, you can call the [`update_cam!`](@ref) function on the Scene.

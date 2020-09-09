@@ -4,11 +4,10 @@ Plots, Scenes and Subscenes are all `Transformable`, meaning that `Transformatio
 
 There are three main convenience functions provided for transformation:
 
-```@docs
-translate!
-rotate!
-scale!
-```
+[`translate!`](@ref)
+[`rotate!`](@ref)
+[`scale!`](@ref)
+
 
 ```@example
 using Makie
