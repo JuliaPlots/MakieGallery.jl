@@ -7,7 +7,7 @@
 For line plots, you can provide a single color or symbol that will color the entire line;
 or, you can provide an array of values that map to colors using a colormap.
 
-Any color symbol supported by [Colors.jl](github.com/JuliaGraphics/Colors.jl) is supported, check out their page on [named colors](http://juliagraphics.github.io/Colors.jl/latest/namedcolors.html) to see what you can get away with! You can also pass RGB or RGBA values.
+Any color symbol supported by [Colors.jl](https://github.com/JuliaGraphics/Colors.jl) is supported, check out their page on [named colors](https://juliagraphics.github.io/Colors.jl/latest/namedcolors.html) to see what you can get away with! You can also pass RGB or RGBA values.
 
 ## Colormaps
 
@@ -21,7 +21,7 @@ You can copy this code and substitute `cmap` with any `Colormap` to show the col
 
 ### Builtins
 
-Makie relies on [PlotUtils](http://github.com/JuliaPlots/PlotUtils.jl) for colormap support, so all of Plots' colormap features are supported here. There are many ways of specifying a colormap:
+Makie relies on [PlotUtils](https://github.com/JuliaPlots/PlotUtils.jl) for colormap support, so all of Plots' colormap features are supported here. There are many ways of specifying a colormap:
 
 - You can pass a `Symbol` or `String` corresponding to a colormap name.
 - You can pass a `Vector{Colorant}` (which can be anything that `Colors.jl` can parse to a color).
