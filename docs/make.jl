@@ -237,6 +237,7 @@ makedocs(
             "Theming Layoutables" => "makielayout/theming.md",
             "How Layouting Works" => "makielayout/layouting.md",
             "Frequently Asked Questions" => "makielayout/faq.md",
+            "API Reference" => "makielayout/reference.md",
         ],
         "Developer Documentation" => [
             "why-makie.md",
