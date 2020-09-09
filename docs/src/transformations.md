@@ -8,17 +8,3 @@ There are three main convenience functions provided for transformation:
 [`rotate!`](@ref)
 [`scale!`](@ref)
 
-
-```@example
-using Makie
-data = rand(10)
-scene = Scene()
-st = Stepper(scene, "output_folder")
-# same thing but the last defined plot is scatter
-scatplot = scatter!(scene, data)[end]  
-step!(st)
-
-rotate!(lineplot, 0.025π) # only the lines are rotated, not the scatter
-step!(st)
-st
-```
