@@ -17,7 +17,7 @@ The plotting pipeline heavily relies on conversion functions which check the att
 document what's possible to pass and convert them to the types that the backends need.
 They usually look like this:
 
-```@example
+```julia
 to_positions(backend, positions) = Point3f0.(positions) # E.g. everything that can be converted to a Point
 ```
 
@@ -39,7 +39,7 @@ Inside the function you can just use all of the plotting and drawing API to crea
 a rich visual representation of your type.
 The signature that needs overloading is:
 
-```@example
+```julia
 function plot(obj::MyType, kw_args::Dict)
     # use primitives and other recipes to create a new plot
     scatter(obj, kw_arg[:my_attribute])
