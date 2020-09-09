@@ -38,7 +38,7 @@ To show the colormap and its scaling, you can use a color legend. Color legends 
 To simply produce a color legend and plot it to the left of the original plot, you can produce a colorlegend and `vbox` it.
 
 ```@example
-
+using Makie
 using ColorSchemes      # colormaps galore
 
 t = range(0, stop=1, length=500) # time steps
