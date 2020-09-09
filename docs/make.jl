@@ -189,22 +189,6 @@ makedocs(
         ],
     ),
     sitename = "Makie.jl",
-    expandfirst = [
-        "basic-tutorials.md",
-        "animation.md",
-        "interaction.md",
-        "functions-overview.md",
-        "scenes.md",
-        "signatures.md",
-        "plot-attributes.md",
-        "generated/colors.md",
-        "theming.md",
-        "cameras.md",
-        "backends.md",
-        "axis.md",
-        "recipes.md",
-        "output.md"
-    ],
     pages = Any[
         "Home" => "index.md",
         "Basics" => [
