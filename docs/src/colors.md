@@ -48,15 +48,6 @@ t = range(0, stop=1, length=500) # time steps
 x = t .* cos.(θ) # x coords of spiral
 y = t .* sin.(θ) # y coords of spiral
 
-p1 = lines(using ColorSchemes      # colormaps galore
-
-t = range(0, stop=1, length=500) # time steps
-
-θ = (6π) .* t    # angles
-
-x = t .* cos.(θ) # x coords of spiral
-y = t .* sin.(θ) # y coords of spiral
-
 p1 = lines(
     x,
     y,
