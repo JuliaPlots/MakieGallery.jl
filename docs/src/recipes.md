@@ -15,18 +15,13 @@ pipeline, converting from one type to another, plottable type.
 
 An example is:
 
-```@setup 1
-using Makie
-using AbstractPlotting
-```
-
-```@example 1
+```julia
 convert_arguments(x::Circle) = (decompose(Point2f, x),)
 ```
 
 This can be done for all plot types or for a subset of plot types:
 
-```@example 1
+```julia
 # All plot types
 convert_arguments(P::Type{<:AbstractPlot}, x::MyType) = convert_arguments(P, rand(10, 10))
 # Only for scatter plots
@@ -40,7 +35,7 @@ convert_arguments(P::Type{<:Scatter}, x::MyType, y::MyOtherType)
 Optionally you may define the default plot type so that `plot(x::MyType)` will
 use this:
 
-```@example 1
+```julia
 plottype(::MyType) = Surface
 ```
 
@@ -52,7 +47,7 @@ Second is a custom `plot!` for `MyPlot`, implemented in terms of the atomic
 plotting functions.
 We use an example to show how this works:
 
-```@example 1
+```julia
 # arguments (x, y, z) && theme are optional
 @recipe(MyPlot, x, y, z) do scene
     Theme(
@@ -63,7 +58,7 @@ end
 
 This macro expands to several things. Firstly a type definition:
 
-```@example 1
+```julia
 const MyPlot{ArgTypes} = Combined{myplot, ArgTypes}
 ```
 
@@ -72,7 +67,7 @@ symbol. This way the mapping from `MyPlot` to `myplot` is safer and simpler.
 (The downside is we always need a function `myplot` - TODO: is this a problem?)
 The following signatures are defined to make `MyPlot` nice to use:
 
-```@example 1
+```julia
 myplot(args...; kw_args...) = ...
 myplot!(scene, args...; kw_args...) = ...
 myplot(kw_args::Dict, args...) = ...
@@ -97,7 +92,7 @@ The theme given in the body of the `@recipe` invocation is inserted into a
 specialization of `default_theme` which inserts the theme into any scene that
 plots `Myplot`:
 
-```@example 1
+```julia
 function default_theme(scene, ::Myplot)
     Theme(
         plot_color => :red
@@ -108,7 +103,7 @@ end
 As the second part of defining `MyPlot`, you should implement the actual
 plotting of the `MyPlot` object by specializing `plot!`:
 
-```@example 1
+```julia
 function plot!(plot::MyPlot)
     # normal plotting code, building on any previously defined recipes
     # or atomic plotting operations, and adding to the combined `plot`:
@@ -122,7 +117,7 @@ It's possible to add specializations here, depending on the argument _types_
 supplied to `myplot`. For example, to specialize the behavior of `myplot(a)`
 when `a` is a 3D array of floating point numbers:
 
-```@example 1
+```julia
 const MyVolume = MyPlot{Tuple{<:AbstractArray{<: AbstractFloat, 3}}}
 argument_names(::Type{<: MyVolume}) = (:volume,) # again, optional
 function plot!(plot::MyVolume)
@@ -132,7 +127,11 @@ function plot!(plot::MyVolume)
 end
 ```
 
-```@example 1
+Here is a complete example of creating a custom type and a recipe for it.
+
+```@example
+using Makie
+using AbstractPlotting
 import AbstractPlotting: Plot, default_theme, plot!, to_value
 
 struct Simulation
@@ -191,7 +190,11 @@ end
 result = Simulation(molecules)
 scene = plot(result)
 N = 100
-record(scene, @replace_with_a_path(mp4), 1:N) do i
+record(scene, "molecules_simulation.mp4", 1:N) do i
     scene[end][:advance] = i
 end
+
+nothing # hide
 ```
+
+![molecules simulation](molecules_simulation.mp4)
