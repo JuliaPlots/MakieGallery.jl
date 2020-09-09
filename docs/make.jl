@@ -180,7 +180,6 @@ MakieGallery.generate_colorschemes_markdown(; GENDIR = genpath)
 @info("Running `makedocs` with Documenter.")
 
 makedocs(
-    modules = [AbstractPlotting],
     doctest = false, clean = true,
     format = Documenter.HTML(
         prettyurls = false,
