@@ -283,7 +283,8 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
 
     @info String(take!(io))
 
-    return all_ok ? subfolder : nothing
+    return Documenter.DeployDecision(; all_ok = all_ok, branch = devbranch, repo = repo,
+        subfolder = subfolder)
 end
 
 Documenter.authentication_method(::Gitlab) = Documenter.SSH
@@ -295,5 +296,5 @@ end
 deploydocs(
     repo = "github.com/JuliaPlots/MakieGallery.jl",
     deploy_config = Gitlab(),
-    push_preview = true
+    push_preview = false
 )
