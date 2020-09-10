@@ -180,7 +180,6 @@ MakieGallery.generate_colorschemes_markdown(; GENDIR = genpath)
 @info("Running `makedocs` with Documenter.")
 
 makedocs(
-    modules = [AbstractPlotting],
     doctest = false, clean = true,
     format = Documenter.HTML(
         prettyurls = false,
@@ -190,22 +189,6 @@ makedocs(
         ],
     ),
     sitename = "Makie.jl",
-    expandfirst = [
-        "basic-tutorials.md",
-        "animation.md",
-        "interaction.md",
-        "functions-overview.md",
-        "scenes.md",
-        "signatures.md",
-        "plot-attributes.md",
-        "generated/colors.md",
-        "theming.md",
-        "cameras.md",
-        "backends.md",
-        "axis.md",
-        "recipes.md",
-        "output.md"
-    ],
     pages = Any[
         "Home" => "index.md",
         "Basics" => [
@@ -238,6 +221,7 @@ makedocs(
             "Theming Layoutables" => "makielayout/theming.md",
             "How Layouting Works" => "makielayout/layouting.md",
             "Frequently Asked Questions" => "makielayout/faq.md",
+            "API Reference" => "makielayout/reference.md",
         ],
         "Developer Documentation" => [
             "why-makie.md",
