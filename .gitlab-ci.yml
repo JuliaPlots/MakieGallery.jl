@@ -5,13 +5,10 @@ variables:
   CI_DEV_PKGS: ""
 
 stages:
-  - test
-  - refimages
+  - documentation
 
-gallerytest:
-
-  stage: test
-
+docs:
+  stage: documentation
   tags:
       - xorg
 
@@ -20,7 +17,7 @@ gallerytest:
   cache:
     key: ${CI_JOB_NAME}
     paths:
-      - .julia/artifacts
+      - .julia/
 
   before_script:
       - apt-get -qq update
@@ -31,34 +28,5 @@ gallerytest:
     - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
     - glxinfo | grep 'version'
     - julia -e 'using InteractiveUtils; versioninfo()'
-    - julia --project -e 'using Pkg; pkg"add AbstractPlotting#master GLMakie#master"; pkg"test"'
-
-  artifacts:
-    when: always
-    paths:
-      - test/tested_different
-      - test/test_recordings
-      - Project.toml
-      - Manifest.toml
-    expire_in: 4 days
-
-deploy:
-
-  stage: refimages
-
-  when: manual
-
-  dependencies:
-    - gallerytest
-
-  tags:
-    - xorg
-
-  image: "juliagpu/julia:v1.3-${CI_IMAGE_TAG}"
-
-  before_script:
-      - apt-get -qq update
-      - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
-
-  script:
-    - julia --project test/upgrade_recordings.jl
+    - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
+    - julia --project=docs/ docs/make.jl
