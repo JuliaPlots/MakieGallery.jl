@@ -235,36 +235,65 @@ makedocs(
 #                           Deploying documentation                            #
 ################################################################################
 
-using Documenter, Base64
+# add a custom configuration for Gitlab so the GPU-powered docs can be
+# automatically uploaded to Github Pages
 
-ENV["DOCUMENTER_DEBUG"] = "true"
-
-# do this only if local, otherwise let Documenter handle it
-if !haskey(ENV, "CI") && !haskey(ENV, "GITHUB_TOKEN")
-    @info "Manually deploying - setting environment variables!"
-    # Workaround for when deploying locally and silly Windows truncating the env variable
-    # on the CI these should be set!
-    ENV["CI"] = "no"
-    ENV["TRAVIS"] = :lolno
-    ENV["TRAVIS_BRANCH"] = "master"
-    ENV["TRAVIS_PULL_REQUEST"] = "false"
-    ENV["TRAVIS_REPO_SLUG"] = "github.com/JuliaPlots/MakieGallery.jl"
-    ENV["TRAVIS_TAG"] = ""
-    ENV["TRAVIS_OS_NAME"] = ""
-    ENV["TRAVIS_JULIA_VERSION"] = ""
-    # ENV["PATH"] = string(ENV["PATH"], Sys.iswindows() ? ";" : ":", Conda.SCRIPTDIR)
-    ENV["DOCUMENTER_KEY"] = get(ENV, "DOCUMENTER_KEY", readchomp(joinpath(homedir(), "documenter.key")))
+struct Gitlab <: Documenter.DeployConfig
+    commit_branch::String
+    pull_request_iid::String
+    repo_slug::String
+    commit_tag::String
+    pipeline_source::String
 end
 
-############################################
-# Set up for pushing preview docs from PRs #
-############################################
+function Gitlab()
+    commit_branch = get(ENV, "CI_COMMIT_BRANCH", "")
+    pull_request_iid = get(ENV, "CI_EXTERNAL_PULL_REQUEST_IID", "")
+    repo_slug = get(ENV, "CI_PROJECT_PATH_SLUG", "")
+    commit_tag = get(ENV, "CI_COMMIT_TAG", "")
+    pipeline_source = get(ENV, "CI_PIPELINE_SOURCE", "")
+    Gitlab(
+        commit_branch,
+        pull_request_iid,
+        repo_slug,
+        commit_tag,
+        pipeline_source,
+    )
+end
 
-cd(@__DIR__)
+function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, devurl, kwargs...)
+    io = IOBuffer()
+    all_ok = true
 
-Documenter.authentication_method(::Documenter.GitHubActions) = Documenter.SSH
+    println(io, "Gitlab config:\n", cfg)
 
-Base.invokelatest(deploydocs,
+    subfolder = if cfg.commit_tag != ""
+        tag_ok = occursin(Base.VERSION_REGEX, cfg.commit_tag)
+        println("tag_ok: ", tag_ok)
+        all_ok &= tag_ok
+
+        cfg.commit_tag
+    else
+        devurl
+    end
+
+    key_ok = haskey(ENV, "DOCUMENTER_KEY")
+    println(io, "key_ok: ", key_ok)
+    all_ok &= key_ok
+
+    @info String(take!(io))
+
+    return all_ok ? subfolder : nothing
+end
+
+Documenter.authentication_method(::Gitlab) = Documenter.SSH
+
+function Documenter.documenter_key(::Gitlab)
+    return ENV["DOCUMENTER_KEY"]
+end
+
+deploydocs(
     repo = "github.com/JuliaPlots/MakieGallery.jl",
+    deploy_config = Gitlab(),
     push_preview = true
 )
