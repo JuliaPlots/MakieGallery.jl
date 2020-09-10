@@ -1,30 +1,80 @@
-# Makie.jl
-
 ![Makie.jl](assets/logo.png)
 
-Hi! Welcome to [`Makie`](https://github.com/JuliaPlots/Makie.jl/), a high-performance, extendable, and multi-platform plotting package for [Julia](https://julialang.org/).
+Welcome to [`Makie`](https://github.com/JuliaPlots/Makie.jl/), a high-performance, extendable, and multi-platform plotting ecosystem for the [Julia](https://julialang.org/) programming language.
 
-## Installation & tutorial
+## Installation and Import
 
-Install Makie by running `]add Makie` (in the REPL) or `Pkg.add("Makie")`.  
+The `Makie.jl` package is a convenience bundle of `AbstractPlotting.jl` and the commonly used `GLMakie.jl` backend.
+To install it, do:
 
-If installing the master branch, be sure to also add `AbstractPlotting#master` and `GLMakie#master`
+```julia
+# in the REPL
+]add Makie
 
-See the [Tutorial](@ref) for how to plot, or the Example Gallery below for examples.
+# elsewhere
+using Pkg
+Pkg.add("Makie")
 
-## I'm an expert!
+# import the package
+using Makie
+```
 
-Head straight to the [Plotting functions overview](@ref).
+If you want to use a different backend, for example `CairoMakie`, install `AbstractPlotting` as well.
+```julia
+# install
+]add AbstractPlotting, CairoMakie
 
-## The Ecosystem
+# import
+using AbstractPlotting
+using CairoMakie
 
-What makes up the Makie Ecosystem? `Makie.jl` is the metapackage for a rich ecosystem, which consists of [`GLMakie.jl`](https://github.com/JuliaPlots/GLMakie.jl), [`CairoMakie.jl`](https://github.com/JuliaPlots/CairoMakie.jl) and [`WGLMakie.jl`](https://github.com/JuliaPlots/WGLMakie.jl) (the backends); [`AbstractPlotting.jl`](https://github.com/JuliaPlots/AbstractPlotting.jl) (the bulk of the package); and [AlgebraOfGraphics.jl](http://juliaplots.org/AlgebraOfGraphics.jl/dev/) (statistical plotting support, as in [`StatsPlots.jl`](https://github.com/JuliaPlots/StatsPlots.jl)).
+# to switch between multiple loaded backends, use activate!()
+CairoMakie.activate!()
+```
 
-There are also a number of packages that are being built to extend and enable more customizability within Makie. While these are not part of Makie currently, if you are looking to go a little deeper into what is possible, it is worth looking into them: [MakieThemes.jl](https://github.com/JuliaPlots/MakieThemes.jl)
+If you want to try out the latest development versions, install the master branches of both `AbstractPlotting` and the backends you prefer:
+
+```
+]add AbstractPlotting#master, GLMakie#master
+```
+
+## Getting Started
+
+See the [Tutorial](@ref) to learn the basics of plotting with Makie.
+For an introduction to more complex plots and layouts, check the [MakieLayout Tutorial](@ref).
+
+
+## The Makie Ecosystem
+
+The Makie ecosystem spans several core and extension packages.
+
+### Core Packages
+
+`AbstractPlotting.jl` is the backbone of the ecosystem. It defines the infrastructure objects which can be visualized using backend packages.
+
+There are three backends:
+
+| Package | Description |
+| --- | --- |
+| [`GLMakie.jl`](https://github.com/JuliaPlots/GLMakie.jl) | Default Makie backend. GPU-powered, interactive 2D and 3D plotting in standalone `GLFW.jl` windows. |
+| [`CairoMakie.jl`](https://github.com/JuliaPlots/CairoMakie.jl) | `Cairo.jl` based, non-interactive 2D backend for publication-quality vector graphics. |
+| [`WGLMakie.jl`](https://github.com/JuliaPlots/WGLMakie.jl) | WebGL-based interactive 2D and 3D plotting that runs within browsers.
+
+
+### Extension Packages
+
+Here is a selection of peripheral packages which offer additional features:
+
+| Package | Description |
+| --- | --- |
+| [`AlgebraOfGraphics.jl`](https://github.com/JuliaPlots/AlgebraOfGraphics.jl/) | Grammar-of-graphics style plotting, inspired by ggplot2. |
+| [`GeoMakie.jl`](https://github.com/JuliaPlots/GeoMakie.jl) | Geographic plotting utilities. |
+
 
 ## Getting Help
 
-If you run into any issues or have questions that you cannot solve on your own by using the help mode in the REPL, here are your options:
+If have questions or run into any issues, you can:
 
-1) Open an issue in this repo or the main [Makie.jl](https://github.com/JuliaPlots/Makie.jl) repo.
-2) Join the [Julia Slack](https://slackinvite.julialang.org) and look for the `#makie` channel.
+1) Use the REPL `?` help mode
+1) Open an issue in the [Makie.jl](https://github.com/JuliaPlots/Makie.jl) repository.
+1) Join the `#makie` channel in the [Julia Slack group](https://slackinvite.julialang.org).
