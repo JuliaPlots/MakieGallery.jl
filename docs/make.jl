@@ -13,9 +13,7 @@ using Documenter, Markdown, Pkg, Random, FileIO
 ##############################
 
 using MakieGallery, AbstractPlotting
-
 import AbstractPlotting: to_string
-
 using MakieGallery: print_table
 
 
