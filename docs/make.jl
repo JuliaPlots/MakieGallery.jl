@@ -261,7 +261,15 @@ function Gitlab()
     )
 end
 
-function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, devurl, kwargs...)
+function Documenter.deploy_folder(cfg::Gitlab;
+        repo,
+        repo_previews = repo,
+        devbranch,
+        push_preview,
+        devurl,
+        branch = "gh-pages",
+        branch_previews = branch,
+        kwargs...)
 
     marker(x) = x ? "✔" : "✘"
 
@@ -292,6 +300,9 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
 
         is_preview = false
         subfolder = cfg.commit_tag
+        deploy_branch = branch
+        deploy_repo = repo
+        
     elseif build_type == :preview
         pr_number = tryparse(Int, cfg.pull_request_iid)
         pr_ok = pr_number !== nothing
@@ -303,12 +314,16 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
         println(io, "- $(marker(btype_ok)) `push_preview` keyword argument to deploydocs is `true`")
         ## deploy to previews/PR
         subfolder = "previews/PR$(something(pr_number, 0))"
+        deploy_branch = branch_previews
+        deploy_repo = repo_previews
     else
         branch_ok = !isempty(cfg.commit_tag) || cfg.commit_branch == devbranch
         all_ok &= branch_ok
         println(io, "- $(marker(branch_ok)) ENV[\"CI_COMMIT_BRANCH\"] matches devbranch=\"$(devbranch)\"")
         is_preview = false
         subfolder = devurl
+        deploy_branch = branch
+        deploy_repo = repo
     end
 
     key_ok = haskey(ENV, "DOCUMENTER_KEY")
@@ -318,7 +333,7 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
     print(io, "Deploying to folder \"$(subfolder)\": $(marker(all_ok))")
     @info String(take!(io))
 
-    return Documenter.DeployDecision(; all_ok = all_ok, branch = devbranch, repo = repo,
+    return Documenter.DeployDecision(; all_ok = all_ok, branch = deploy_branch, repo = deploy_repo,
         subfolder = subfolder, is_preview = is_preview)
 end
 
