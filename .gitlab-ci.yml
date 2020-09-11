@@ -22,7 +22,7 @@ docs:
   before_script:
       - apt-get -qq update
       # glfw
-      - apt-get install -y cmake xorg-dev mesa-utils p7zip-full
+      - apt-get install -y cmake xorg-dev mesa-utils p7zip-full ssh
 
   script:
     - mkdir -p $JULIA_DEPOT_PATH # Pkg.jl#325
