@@ -31,12 +31,6 @@ docs:
     - julia --project=docs/ -e 'using Pkg; Pkg.develop(PackageSpec(path=pwd())); Pkg.instantiate()'
     - julia --project=docs/ docs/make.jl
 
-  rules:
-    - if: '$CI_COMMIT_BRANCH == "master"' # trigger docs on master branch changes
-    # Also specifically trigger docs on PRs (only internal, not from forks).
-    # This should not double trigger pipelines because pull requests come from
-    # other branches than master.
-    # This is needed, because if not triggered via a specific rule, Github PRs don't
-    # trigger CI in Gitlab
-    - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
-    
+  only:
+    - master # trigger docs on master branch changes
+    - external_pull_requests # trigger docs on PRs (only internal, not from forks)
