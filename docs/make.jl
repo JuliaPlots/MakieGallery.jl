@@ -268,12 +268,12 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
     io = IOBuffer()
     all_ok = true
 
-    println(io, "Gitlab config:", cfg)
-    println(io, "  Commit branch:", cfg.commit_branch)
-    println(io, "  Pull request IID:", cfg.pull_request_iid)
-    println(io, "  Repo slug:", cfg.repo_slug)
-    println(io, "  Commit tag:", cfg.commit_tag)
-    println(io, "  Pipeline source:", cfg.pipeline_source)
+    println(io, "\nGitlab config:")
+    println(io, "  Commit branch: \"", cfg.commit_branch, "\"")
+    println(io, "  Pull request IID: \"", cfg.pull_request_iid, "\"")
+    println(io, "  Repo slug: \"", cfg.repo_slug, "\"")
+    println(io, "  Commit tag: \"", cfg.commit_tag, "\"")
+    println(io, "  Pipeline source: \"", cfg.pipeline_source, "\"")
 
     build_type = if cfg.pull_request_iid != ""
         :preview
