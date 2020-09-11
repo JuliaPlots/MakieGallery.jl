@@ -262,29 +262,62 @@ function Gitlab()
 end
 
 function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, devurl, kwargs...)
+
+    marker(x) = x ? "✔" : "✘"
+
     io = IOBuffer()
     all_ok = true
 
-    println(io, "Gitlab config:\n", cfg)
+    println(io, "Gitlab config:", cfg)
+    println(io, "  Commit branch:", cfg.commit_branch)
+    println(io, "  Pull request IID:", cfg.pull_request_iid)
+    println(io, "  Repo slug:", cfg.repo_slug)
+    println(io, "  Commit tag:", cfg.commit_tag)
+    println(io, "  Pipeline source:", cfg.pipeline_source)
 
-    subfolder = if cfg.commit_tag != ""
+    build_type = if cfg.pull_request_iid != ""
+        :preview
+    elseif cfg.commit_tag != ""
+        :release
+    else
+        :devbranch
+    end
+
+    println(io, "Detected build type: ", build_type)
+
+    if build_type == :release
         tag_ok = occursin(Base.VERSION_REGEX, cfg.commit_tag)
-        println("tag_ok: ", tag_ok)
+        println(io, "- $(marker(tag_ok)) ENV[\"CI_COMMIT_TAG\"] contains a valid VersionNumber")
         all_ok &= tag_ok
 
-        cfg.commit_tag
+        is_preview = false
+        subfolder = cfg.commit_tag
+    elseif build_type == :preview
+        pr_number = tryparse(Int, cfg.pull_request_iid)
+        pr_ok = pr_number !== nothing
+        all_ok &= pr_ok
+        println(io, "- $(marker(pr_ok)) ENV[\"CI_EXTERNAL_PULL_REQUEST_IID\"]=\"$(cfg.pull_request_iid)\" is a number")
+        btype_ok = push_preview
+        all_ok &= btype_ok
+        is_preview = true
+        println(io, "- $(marker(btype_ok)) `push_preview` keyword argument to deploydocs is `true`")
     else
-        devurl
+        branch_ok = !isempty(cfg.commit_tag) || cfg.commit_branch == devbranch
+        all_ok &= branch_ok
+        println(io, "- $(marker(branch_ok)) ENV[\"CI_COMMIT_BRANCH\"] matches devbranch=\"$(devbranch)\"")
+        is_preview = false
+        subfolder = devurl
     end
 
     key_ok = haskey(ENV, "DOCUMENTER_KEY")
-    println(io, "key_ok: ", key_ok)
+    println(io, "- $(marker(key_ok)) ENV[\"DOCUMENTER_KEY\"] exists")
     all_ok &= key_ok
 
+    print(io, "Deploying: $(marker(all_ok))")
     @info String(take!(io))
 
     return Documenter.DeployDecision(; all_ok = all_ok, branch = devbranch, repo = repo,
-        subfolder = subfolder)
+        subfolder = subfolder, is_preview = is_preview)
 end
 
 Documenter.authentication_method(::Gitlab) = Documenter.SSH
