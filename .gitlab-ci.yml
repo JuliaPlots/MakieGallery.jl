@@ -33,9 +33,4 @@ docs:
 
   only:
     - master # trigger docs on master branch changes
-    # Also specifically trigger docs on PRs (only internal, not from forks).
-    # This should not double trigger pipelines because pull requests come from
-    # other branches than master.
-    # This is needed, because if not triggered via a specific rule, Github PRs don't
-    # trigger CI in Gitlab
-    - external_pull_requests
+    - external_pull_requests # trigger docs on PRs (only internal, not from forks)
