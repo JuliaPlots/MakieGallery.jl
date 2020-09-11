@@ -241,7 +241,7 @@ axes = [LAxis(scene) for i in 1:2, j in 1:3]
 tightlimits!.(axes)
 layout[1:2, 1:3] = axes
 
-img = rotr90(load("cow.png"))
+img = rotr90(load("../assets/cow.png"))
 
 for ax in axes
     image!(ax, img)
