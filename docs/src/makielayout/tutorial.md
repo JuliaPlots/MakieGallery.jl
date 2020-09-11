@@ -3,7 +3,7 @@ using CairoMakie
 CairoMakie.activate!()
 ```
 
-# MakieLayout.jl Tutorial
+# MakieLayout Tutorial
 
 In this tutorial, we will see some of the capabilities of MakieLayout.jl while
 building a complex figure step by step. This is the final result we will create:
