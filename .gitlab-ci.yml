@@ -39,3 +39,4 @@ docs:
     # This is needed, because if not triggered via a specific rule, Github PRs don't
     # trigger CI in Gitlab
     - if: '$CI_PIPELINE_SOURCE == "external_pull_request_event"'
+    
