@@ -301,6 +301,8 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
         all_ok &= btype_ok
         is_preview = true
         println(io, "- $(marker(btype_ok)) `push_preview` keyword argument to deploydocs is `true`")
+        ## deploy to previews/PR
+        subfolder = "previews/PR$(something(pr_number, 0))"
     else
         branch_ok = !isempty(cfg.commit_tag) || cfg.commit_branch == devbranch
         all_ok &= branch_ok
@@ -313,7 +315,7 @@ function Documenter.deploy_folder(cfg::Gitlab; repo, devbranch, push_preview, de
     println(io, "- $(marker(key_ok)) ENV[\"DOCUMENTER_KEY\"] exists")
     all_ok &= key_ok
 
-    print(io, "Deploying: $(marker(all_ok))")
+    print(io, "Deploying to folder \"$(subfolder)\": $(marker(all_ok))")
     @info String(take!(io))
 
     return Documenter.DeployDecision(; all_ok = all_ok, branch = devbranch, repo = repo,
