@@ -90,7 +90,7 @@ frequency = Node(3.0) # Node === Observable
 phase = Node(0.0)
 
 ys = lift(frequency, phase) do fr, ph
-    @. 0.3 * sin(fr * (xs + ph))
+    @. 0.3 * sin(fr * xs - ph)
 end
 
 lines!(scene, xs, ys, color = :blue, linewidth = 3)
@@ -105,6 +105,11 @@ with the current `frequency` and `phase` applied
 to the values in `xs`. (If you haven't used the `do` syntax before, it is Julia's way of passing
 an anonymous function as the first argument to another function.
 It's very useful for dealing with `Observables`.)
+
+!!! note
+    For short functions, there is a really convenient macro alternative to `lift`.
+    Instead of what we wrote above, we could have written `ys = @lift(0.3 * sin($frequency .* xs .- $phase))`.
+    Just prefix expressions that reference observables with a `$` symbol.
 
 Now, we can change the `frequency` to a different value and the plot will change with it.
 `Observables` are mutated with empty square brackets (like `Ref`s).
