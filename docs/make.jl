@@ -192,7 +192,7 @@ makedocs(
     pages = Any[
         "Home" => "index.md",
         "Basics" => [
-            "basic-tutorials.md",
+            "basic-tutorial.md",
             "animation.md",
             "interaction.md",
             "functions-overview.md",

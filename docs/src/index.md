@@ -32,12 +32,6 @@ using CairoMakie
 CairoMakie.activate!()
 ```
 
-If you want to try out the latest development versions, install the master branches of both `AbstractPlotting` and the backends you prefer:
-
-```
-]add AbstractPlotting#master, GLMakie#master
-```
-
 ## Getting Started
 
 See the [Tutorial](@ref) to learn the basics of plotting with Makie.
