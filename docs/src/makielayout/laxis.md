@@ -3,53 +3,45 @@ using CairoMakie
 CairoMakie.activate!()
 ```
 
-## LAxis
+## Creating an LAxis
 
-This object represents a 2D axis that has many functions to make it more convenient
-to use with layouts. For a grid layout, the axis is a rectangle whose size is not
-yet determined, which has "protrusions" sticking out its sides. Those protrusions
-are the axis decorations like labels, ticks and titles. The protrusions only change
-if you change something about the axis attributes, but they stay the same when
-the layout is resized. Therefore, the main axis area will always be determined
-by the remaining space after the protrusions are subtracted.
+The `LAxis` is a 2D axis that works well with automatic layouts.
+Here's how you create one 
 
-The axis interacts in two directions with the layout. When the size of one of its
-protrusions changes, this will notify its GridContent. This will
-then notify its parent GridLayout and so on, until the full layout is recomputed.
-When that's done, the LAxis object will have received a new bounding box with which
-it should align given its size and alignment attributes. This is now updated and the axis' subscene
-is adjusted to its new size. All axis decorations then also update their positions.
-
-
-```@example
+```@example laxis
 using AbstractPlotting.MakieLayout
 using AbstractPlotting
-using Animations
 
-scene, layout = layoutscene(resolution = (600, 600))
+scene, layout = layoutscene(resolution = (1200, 900))
 
-axes = [LAxis(scene, xlabel = "x label", ylabel = "y label", title = "title")
-    for i in 1:2, j in 1:2]
-layout[1:2, 1:2] = axes
+ax = layout[1, 1] = LAxis(scene, xlabel = "x label", ylabel = "y label",
+    title = "Title")
 
-a_title = Animation([0, 2], [20.0, 50.0], sineio(n=2, yoyo=true, prewait=0.2))
-a_xlabel = Animation([2, 4], [20.0, 40.0], sineio(n=2, yoyo=true, prewait=0.2))
-a_ylabel = Animation([4, 6], [20.0, 40.0], sineio(n=2, yoyo=true, prewait=0.2))
-
-record(scene, "example_protrusion_changes.mp4", 0:1/60:6, framerate = 60) do t
-
-    axes[1, 1].titlesize = a_title(t)
-    axes[1, 1].xlabelsize = a_xlabel(t)
-    axes[1, 1].ylabelsize = a_ylabel(t)
-
-end
-
+save("basic_axis.svg", scene) # hide
 nothing # hide
 ```
 
-![protrusion changes](example_protrusion_changes.mp4)
+![basic axis](basic_axis.svg)
 
-## Setting axis limits and reversing axes
+## Plotting Into an LAxis
+
+You can use all the normal mutating 2D plotting functions with an `LAxis`.
+The only difference is, that they return the created plot object and not
+the axis (like Makie's base functions return the `Scene`). This is so
+that it is more convenient to save and manipulate the plot objects.
+
+
+```@example laxis
+lineobject = lines!(ax, 0..10, sin, color = :red)
+
+save("basic_axis_plotting.svg", scene) # hide
+nothing # hide
+```
+
+![basic axis plotting](basic_axis_plotting.svg)
+
+
+## Setting Axis Limits and Reversing Axes
 
 You can set axis limits with the functions `xlims!`, `ylims!` or `limits!`. The
 numbers are meant in the order left right for `xlims!`, and bottom top for `ylims!`.
@@ -90,28 +82,30 @@ nothing # hide
 
 ## Modifying ticks
 
-There are multiple ways to set or determine tick values and labels. Internally,
-first `get_tickvalues(ticks, vmin, vmax)` is called with the `ax.xticks` or `ax.yticks`
-attribute as `ticks`,
-and the limits of the respective axis as `vmin` and `vmax`. This function retrieves
-the numeric values of the ticks.
-To determine the actual strings being displayed, `get_ticklabels(format, ticks, values)`
-is then called where `format` is the content
-of the attribute `ax.xtickformat` or `ax.ytickformat` and `values` is the result
+Tick values are computed using `get_tickvalues(ticks, vmin, vmax)`, where `ticks` is either
+the `ax.xticks` or `ax.yticks` attribute
+and the limits of the respective axis are `vmin` and `vmax`.
+
+To create the actual tick labels, `get_ticklabels(format, ticks, values)` is called, where `format` is
+`ax.xtickformat` or `ax.ytickformat`, `ticks` is the same as above, and `values` is the result
 of `get_tickvalues`.
 
-The most common use cases are predefined but custom tick finding behavior can be implemented
-by overloading `get_tickvalues` and `get_ticklabels`. Here are the signatures of
-the existing methods:
+The most common use cases are predefined. Additionally, custom tick finding behavior can be implemented
+by overloading `get_tickvalues` while custom formatting can be implemented by overloading `get_ticklabels`.
+
+Here are the existing methods for `get_tickvalues`:
 
 ```@docs
 AbstractPlotting.MakieLayout.get_tickvalues
 ```
 
+And here are the existing methods for `get_ticklabels`:
+
 ```@docs
 AbstractPlotting.MakieLayout.get_ticklabels
 ```
 
+Here are a couple of examples that show off different settings for ticks and formats.
 
 ```@example
 using AbstractPlotting.MakieLayout
@@ -145,74 +139,35 @@ nothing # hide
 
 ![axis ticks](example_axis_ticks.svg)
 
-## Hiding axis decorations
+## Hiding Axis Spines and Decorations
 
-Hiding axis decorations frees up the space for them in the layout if there
-are no other protrusions sticking into the same column or row gap that prevent
-enlarging the axis area. This makes it easy to achieve tight layouts that don't
-waste space. In this example, we set the column and row gaps to zero, so we can
-see the shrinking white space better.
+You can hide all axis elements manually, by setting their specific visibility attributes to `false`, like
+`xticklabelsvisible`, but that can be tedious. There are a couple of convenience functions for this.
+
+To hide spines, you can use `hidespines!`.
 
 ```@example
 using AbstractPlotting.MakieLayout
 using AbstractPlotting
 
-scene = Scene(resolution = (600, 600), camera=campixel!)
+scene, layout = layoutscene(resolution = (1200, 900))
 
-layout = GridLayout(
-    scene, 2, 2, # we need to specify rows and columns so the gap sizes don't get lost
-    addedcolgaps = Fixed(0),
-    addedrowgaps = Fixed(0),
-    alignmode = Outside(30))
+ax1 = layout[1, 1] = LAxis(scene, title = "Axis 1")
+ax2 = layout[1, 2] = LAxis(scene, title = "Axis 2")
 
-axes = [LAxis(scene, xlabel = "x label", ylabel = "y label", title = "title")
-    for j in 1:2, i in 1:2]
-layout[1:2, 1:2] = axes
+hidespines!(ax1)
+hidespines!(ax2, :t, :r) # only top and right
 
-record(scene, "example_hiding_decorations.mp4", framerate=3) do io
-
-    recordframe!(io)
-    for ax in axes
-        ax.titlevisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.xlabelvisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.ylabelvisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.xticklabelsvisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.yticklabelsvisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.xticksvisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.yticksvisible = false
-        recordframe!(io)
-    end
-    for ax in axes
-        ax.bottomspinevisible = false
-        ax.leftspinevisible = false
-        ax.topspinevisible = false
-        ax.rightspinevisible = false
-        recordframe!(io)
-    end
-end
-
+save("example_axis_hidespines.svg", scene) # hide
 nothing # hide
 ```
 
-![hiding decorations](example_hiding_decorations.mp4)
+![axis hide spines](example_axis_hidespines.svg)
+
+To hide decorations, you can use `hidedecorations!`, or the specific `hidexdecorations!` and `hideydecorations!`.
+When hiding, you can set `label = false`, `ticklabels = false`, `ticks = false` or `grid = false` as keyword
+arguments if you want to keep those elements.
+It's common, e.g., to hide everything but the grid lines in facet plots.
 
 ## Controlling Axis Aspect Ratios
 
@@ -288,7 +243,10 @@ using AbstractPlotting.MakieLayout
 using AbstractPlotting
 using Animations
 
+
+
 # scene setup for animation
+###########################################################
 
 container_scene = Scene(camera = campixel!, resolution = (1200, 1200))
 
@@ -310,7 +268,9 @@ outer_layout = GridLayout(scene, alignmode = Outside(30))
 
 
 
+
 # example begins here
+###########################################################
 
 layout = outer_layout[1, 1] = GridLayout()
 
