@@ -214,7 +214,7 @@ nothing # hide
 
 ![hiding decorations](example_hiding_decorations.mp4)
 
-## Axis aspect ratios
+## Controlling Axis Aspect Ratios
 
 If you're plotting images, you might want to force a specific aspect ratio
 of an axis, so that the images are not stretched. The default is that an axis
@@ -271,7 +271,7 @@ nothing # hide
 ![axis aspects](example_axis_aspects.svg)
 
 
-## Controlling data aspect ratios
+## Controlling Data Aspect Ratios
 
 If you want the content of an axis to adhere to a certain data aspect ratio, there is
 another way than forcing the aspect ratio of the whole axis to be the same, and
@@ -314,7 +314,7 @@ outer_layout = GridLayout(scene, alignmode = Outside(30))
 
 layout = outer_layout[1, 1] = GridLayout()
 
-titles = ["aspect via layout", "axis aspect", "no aspect", "data aspect"]
+titles = ["aspect enforced\nvia layout", "axis aspect\nset directly", "no aspect enforced", "data aspect conforms\nto axis size"]
 axs = layout[1:2, 1:2] = [LAxis(scene, title = t) for t in titles]
 
 for a in axs
