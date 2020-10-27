@@ -71,4 +71,4 @@ If have questions or run into any issues, you can:
 
 1) Use the REPL `?` help mode
 1) Open an issue in the [Makie.jl](https://github.com/JuliaPlots/Makie.jl) repository.
-1) Join the `#makie` channel in the [Julia Slack group](https://slackinvite.julialang.org).
+1) Join the `#makie` channel in the [Julia Slack workspace](https://julialang.org/slack/).
