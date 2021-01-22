@@ -2,10 +2,7 @@
 <img src="https://raw.githubusercontent.com/JuliaPlots/Makie.jl/master/assets/logo.png" alt="Makie.jl" width="480">
 </div>
 
-Build status: [![][gitlab-img]][gitlab-url]
-
-[gitlab-img]: https://gitlab.com/JuliaGPU/MakieGallery-jl/badges/master/pipeline.svg
-[gitlab-url]: https://gitlab.com/JuliaGPU/MakieGallery-jl/pipelines
+MakieGallery is deprecated. Testing got moved to AbstractPlotting, and the Makie documentation contains now important examples.
 
 [Makie example gallery generated with this package](http://juliaplots.org/MakieReferenceImages/gallery/index.html)
 
