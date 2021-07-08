@@ -739,7 +739,10 @@ end
         RecordEvents(scene, @replace_with_a_path)
     end
 
-    @cell "Ambient Occlusion" [SSAO, shading, interaction] begin
+    @cell "Ambient Occlusion" [SSAO, ssao, shading, interaction] begin
+        using GLMakie
+        GLMakie.enable_SSAO[] = true
+
         # SSAO (Screen Space Ambient Occlusion) has a couple of per-scene
         # attributes.
         # - `radius` sets the range of SSAO. You may want to scale this up or
@@ -752,6 +755,7 @@ end
         #   washed out by blurring. Small `blur` will be faster, sharper and
         #   more patterned. Large `blur` will be slower and smoother. Typically
         #   `blur = 2` is a good compromise.
+
         s1, radius = textslider(0.0f0:0.1f0:2f0, "Radius", start = 0.2f0)
         s2, bias = textslider(0f0:0.005f0:0.1f0, "Bias", start = 0.015f0)
         s3, blur = textslider(Int32(0):Int32(1):Int32(5), "Blur", start = Int32(2))
